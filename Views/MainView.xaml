@@ -1,0 +1,40 @@
+﻿<Window x:Class="HyunDaiINJ.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HyunDaiINJ.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:con="clr-namespace:HyunDaiINJ.Views.Controls"
+        mc:Ignorable="d"
+        Style="{StaticResource MaterialDesignWindow}"
+        Title="MainView" Height="750" Width="1350">
+    <Grid>
+        <!-- Row Definitions -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="100"/>
+            <!-- 헤더 영역 -->
+            <RowDefinition Height="*" />
+            <!-- 데이터 영역 -->
+        </Grid.RowDefinitions>
+
+        <!-- Header UserControl -->
+        <con:Header Grid.Row="0" />
+
+        <!-- Data Section -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="193*" />
+                <ColumnDefinition Width="967*" />
+                <ColumnDefinition Width="191*"/>
+            </Grid.ColumnDefinitions>
+            <!-- Side Tab -->
+            <con:SideTab Grid.Column="0" DataContext="{Binding}" Grid.ColumnSpan="2" Margin="0,0,967,0"/>
+            <!-- 여기에 콘텐츠 추가 -->
+            <!-- Page Content -->
+            <con:SelectedTab Grid.Column="1" DataContext="{Binding}" Grid.ColumnSpan="2">
+                <!-- 여기에 콘텐츠 추가 -->
+            </con:SelectedTab>
+        </Grid>
+    </Grid>
+</Window>

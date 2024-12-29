@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="HyunDaiINJ.Views.Controls.SideTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyunDaiINJ.Views.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             >
+    <Grid>
+        <StackPanel Margin="4" Orientation="Vertical">
+            <!-- 모니터링 그룹 -->
+            <Expander Header="모니터링" IsExpanded="False" Margin="4" >
+                <StackPanel Orientation="Vertical" >
+                    <RadioButton Content="실시간 모니터링"
+                     Margin="4"
+                     Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                     CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                     Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
+                </StackPanel>
+            </Expander>
+
+            <!-- 생산관리 그룹 -->
+            <Expander Header="생산관리" IsExpanded="False" Margin="4">
+                <StackPanel Orientation="Vertical">
+                    <RadioButton Content="생산계획/지시"
+                     Margin="4"
+                     Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                     CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                     Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
+                    <RadioButton Content="생산실적"
+                     Margin="4"
+                     Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                     CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                     Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
+                </StackPanel>
+            </Expander>
+
+        </StackPanel>
+    </Grid>
+</UserControl>
