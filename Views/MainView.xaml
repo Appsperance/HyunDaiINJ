@@ -8,7 +8,7 @@
         xmlns:con="clr-namespace:HyunDaiINJ.Views.Controls"
         mc:Ignorable="d"
         Style="{StaticResource MaterialDesignWindow}"
-        Title="MainView" Height="750" Width="1350">
+        Title="MainView" Height="1080" Width="2000">
     <Grid>
         <!-- Row Definitions -->
         <Grid.RowDefinitions>
@@ -24,17 +24,16 @@
         <!-- Data Section -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="193*" />
-                <ColumnDefinition Width="967*" />
+                <ColumnDefinition Width="193" />
+                <ColumnDefinition Width="967" />
                 <ColumnDefinition Width="191*"/>
             </Grid.ColumnDefinitions>
+
             <!-- Side Tab -->
             <con:SideTab Grid.Column="0" DataContext="{Binding}" Grid.ColumnSpan="2" Margin="0,0,967,0"/>
-            <!-- 여기에 콘텐츠 추가 -->
+
             <!-- Page Content -->
-            <con:SelectedTab Grid.Column="1" DataContext="{Binding}" Grid.ColumnSpan="2">
-                <!-- 여기에 콘텐츠 추가 -->
-            </con:SelectedTab>
+            <Frame Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding SelectedTab.CustomContent}" NavigationUIVisibility="Hidden" />
         </Grid>
     </Grid>
 </Window>

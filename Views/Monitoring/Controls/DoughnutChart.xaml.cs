@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyunDaiINJ.ViewModels.Monitoring;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,16 +14,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HyunDaiINJ.Views.Controls
+namespace HyunDaiINJ.Views.Monitoring.Controls
 {
     /// <summary>
-    /// MainChart.xaml에 대한 상호 작용 논리
+    /// DoughnutChart.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MainChart : UserControl
+    public partial class DoughnutChart : UserControl
     {
-        public MainChart()
+        public DoughnutChart()
         {
             InitializeComponent();
+            
+            DataContext = new DoughnutChartViewModel(); // ViewModel 연결
+
         }
     }
 }

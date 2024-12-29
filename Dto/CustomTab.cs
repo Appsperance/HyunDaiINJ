@@ -13,17 +13,17 @@ namespace HyunDaiINJ.DTO
         /// <summary>
         /// 탭의 헤더 제목
         /// </summary>
-        public string CustomHeader { get; set; }
+        public string? CustomHeader { get; set; }
 
         /// <summary>
         /// 탭의 콘텐츠
         /// </summary>
-        public Page CustomContent { get; set; }
+        public Object? CustomContent { get; set; }
 
         /// <summary>
         /// 탭 닫기 명령
         /// </summary>
-        public ICommand CloseCommand { get; set; }
+        public ICommand? CloseCommand { get; set; }
 
         /// <summary>
         /// 탭의 닫기 동작을 수행하기 위한 파라미터
