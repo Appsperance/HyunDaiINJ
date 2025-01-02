@@ -55,6 +55,7 @@ namespace HyunDaiINJ.ViewModels
             object? controlContent = tabHeader switch
             {
                 "실시간 모니터링" => new HyunDaiINJ.Views.Monitoring.Pages.Monitoring(), // Monitoring Page
+                "MQTT" => new HyunDaiINJ.Views.MQTT.MQTTTEST(),// Monitoring Page
                 "생산계획/지시" => new DataGrid(), // 생산계획 예시 (Page 또는 Control)
                 "생산실적" => new DataGrid(), // 도넛 차트
                 _ => null
