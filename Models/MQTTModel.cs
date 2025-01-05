@@ -12,7 +12,6 @@ using System.Diagnostics;
 public class MQTTModel
 {
     private IMqttClient? mqttClient;
-
     public event Action<string, MQTTDTO>? MqttMesageReceived;
 
     public bool mqttConnected => mqttClient?.IsConnected ?? false;
@@ -52,9 +51,10 @@ public class MQTTModel
             Console.WriteLine($"MQTT 연결 실패: {ex.Message}");
         }
     }
+
     public async Task SubscribeMQTT(string topic)
     {
-        if (mqttClient.IsConnected)
+        if (mqttClient?.IsConnected == true)
         {
             await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
                 .WithTopic(topic)
@@ -69,29 +69,29 @@ public class MQTTModel
 
     public async Task MqttRecivedMessage(MqttApplicationMessageReceivedEventArgs e)
     {
-        var topic = e.ApplicationMessage.Topic;
-        var payload = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
-
-        Console.WriteLine($"MQTT 메시지 저장 완료 , 메시지 저장 완료 , 메시지 저장 완료 , 메시지 저장 완료 , 메시지 저장 완료 , 메시지 저장 완료 , 메시지 저장 완료");
-
-        try
+        await Task.Run(() =>
         {
-            if (topic.StartsWith("Vision/ng"))
-            {
-                var visionNg = JsonConvert.DeserializeObject<MQTTDTO>(payload);
-                MqttMesageReceived?.Invoke(topic, visionNg);
-                Console.WriteLine($"{visionNg}");
+            var topic = e.ApplicationMessage.Topic;
+            var payload = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
 
-            }
-            else if (topic.StartsWith("Vision/sensor"))
+            Console.WriteLine("MQTT 메시지 저장 완료");
+
+            try
             {
-                var visionSensor = JsonConvert.DeserializeObject<MQTTDTO>(payload);
-                MqttMesageReceived?.Invoke(topic, visionSensor);
+                if (topic.StartsWith("Vision/ng"))
+                {
+                    var visionNg = JsonConvert.DeserializeObject<MQTTDTO>(payload);
+                    if (visionNg != null)
+                    {
+                        MqttMesageReceived?.Invoke(topic, visionNg);
+                        Console.WriteLine($"{visionNg}");
+                    }
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[MqttService] 역직렬화 실패: {ex.Message}");
-        }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MqttService] 역직렬화 실패: {ex.Message}");
+            }
+        });
     }
 }

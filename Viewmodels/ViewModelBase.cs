@@ -10,10 +10,10 @@ namespace HyunDaiINJ.ViewModels
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public static event PropertyChangedEventHandler StaticPropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public static event PropertyChangedEventHandler? StaticPropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             Console.WriteLine($"Property changed: {propertyName}");
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
