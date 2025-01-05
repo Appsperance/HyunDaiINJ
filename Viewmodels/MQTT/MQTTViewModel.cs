@@ -19,10 +19,6 @@ namespace HyunDaiINJ.ViewModels.MQTT
         // MQTT 연결 상태
         public bool mqttConnected => MqttModel.mqttConnected;
 
-        // 수신된 메시지 리스트
-        public ObservableCollection<MQTTDTO> ReceivedMessage { get; } = new ObservableCollection<MQTTDTO>();
-
-
         // 최신 메시지
         private MQTTDTO currentMessage;
         public MQTTDTO CurrentMessage
@@ -35,8 +31,8 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
         // 현재 표시 중인 이미지
-        private BitmapImage currentImage;
-        public BitmapImage CurrentImage
+        private BitmapImage? currentImage;
+        public BitmapImage? CurrentImage
         {
             get => currentImage;
             set
@@ -55,11 +51,16 @@ namespace HyunDaiINJ.ViewModels.MQTT
         {
             MqttModel = mqttModel ?? throw new ArgumentNullException(nameof(mqttModel));
 
+            // 필드 초기화
+            currentMessage = new MQTTDTO();
+            currentImage = new BitmapImage();
+
             // MQTT 연결 및 구독
             ConnectAndSubscribeAsync().ConfigureAwait(false);
 
             // 메시지 수신 이벤트 구독
             MqttModel.MqttMesageReceived += OnMqttMessageReceived;
+
         }
 
         private async Task ConnectAndSubscribeAsync()
@@ -78,8 +79,7 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
 
-        private void OnMqttMessageReceived(string topic, MQTTDTO message)
-        {
+        private void OnMqttMessageReceived(string topic, MQTTDTO message) =>
             // UI 스레드에서 작업
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -93,10 +93,9 @@ namespace HyunDaiINJ.ViewModels.MQTT
                     Console.WriteLine("이미지 데이터 처리 완료");
                 }
             });
-        }
 
         // 이미지 변환 (byte[] -> BitmapImage)
-        private BitmapImage ConvertImage(byte[] image)
+        private static BitmapImage? ConvertImage(byte[] image)
         {
             try
             {
@@ -118,8 +117,8 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

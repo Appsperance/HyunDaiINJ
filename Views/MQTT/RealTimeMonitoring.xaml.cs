@@ -6,9 +6,9 @@ using HyunDaiINJ.ViewModels.MQTT;
 
 namespace HyunDaiINJ.Views.MQTT
 {
-    public partial class MQTTTEST : Page
+    public partial class RealTimeMonitoring : Page
     {
-        public MQTTTEST()
+        public RealTimeMonitoring()
         {
             InitializeComponent();
 
