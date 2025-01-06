@@ -3,101 +3,157 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       mc:Ignorable="d"
       xmlns:chart="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:vm="clr-namespace:HyunDaiINJ.ViewModels.MQTT"
+      xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
       d:DesignHeight="750" d:DesignWidth="1350">
 
-    <Grid Background="#2B2B2B" Margin="10">
-    <Grid.RowDefinitions>
-        <!-- Header Rows -->
-        <RowDefinition Height="200" />
-        <RowDefinition Height="2*" />
-        <RowDefinition Height="*" />
-        <RowDefinition Height="2*" />
-    </Grid.RowDefinitions>
+    <Page.DataContext>
+        <vm:MqttViewModel/>
+    </Page.DataContext>
 
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-    
-    <!-- 첫 번째 그리드: OEE 설비종합효율 -->
-    <Border Grid.Row="0" Grid.Column="0" Margin="10" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="OEE 설비종합효율" 
+    <Grid Background="#2B2B2B" Margin="10">
+        <Grid.RowDefinitions>
+            <!-- Header Rows -->
+            <RowDefinition Height="200" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- 첫 번째 그리드: OEE 설비종합효율 -->
+        <Border Grid.Row="0" Grid.Column="0" Margin="10" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="현재 총 생산량" 
                        FontSize="20" 
                        FontWeight="Bold" 
                        Foreground="White" 
                        Margin="0,5,0,0"
                        HorizontalAlignment="Center" />
 
-            <chart:GaugeChart Height="160" Grid.Row="1" Padding="2"/>
-        </Grid>
-    </Border>
+                <chart:GaugeChart Height="160" Grid.Row="1" Padding="2"/>
+            </Grid>
+        </Border>
 
-    <!-- 두 번째 그리드 -->
-    <Border Grid.Row="0" Grid.Column="1" Margin="10" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="시간가동률" 
+        <!-- 두 번째 그리드 -->
+        <Border Grid.Row="0" Grid.Column="1" Margin="10" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="????" 
                        FontSize="20" 
                        FontWeight="Bold" 
                        Foreground="White"
                        Margin="0,5,0,0" 
                        HorizontalAlignment="Center" />
 
-            <chart:GaugeChart Height="160" Grid.Row="1" Padding="2"/>
-        </Grid>
-    </Border>
+                <chart:GaugeChart Height="160" Grid.Row="1" Padding="2"/>
+            </Grid>
+        </Border>
 
-    <!-- 세 번째 그리드 -->
-    <Border Grid.Row="0" Grid.Column="2" Margin="10" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="생산가동률" 
+        <!-- 세 번째 그리드 -->
+        <Border Grid.Row="0" Grid.Column="2" Margin="10" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="????" 
                        FontSize="20" 
                        FontWeight="Bold" 
                        Foreground="White" 
                        Margin="0,5,0,0"
                        HorizontalAlignment="Center" />
 
-            <chart:GaugeChart Height="160" Grid.Row="1" Padding="2"/>
-        </Grid>
-    </Border>
+                <chart:GaugeChart Height="160" Grid.Row="1" Padding="2"/>
+            </Grid>
+        </Border>
 
-    <!-- 네 번째 그리드 -->
-    <Border Grid.Row="0" Grid.Column="3" Margin="10" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="양품률" 
+        <!-- 네 번째 그리드 -->
+        <Border Grid.Row="0" Grid.Column="3" Margin="10" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="라인 담당자" 
                        FontSize="20" 
                        FontWeight="Bold" 
                        Foreground="White" 
                        Margin="0,5,0,0"
                        HorizontalAlignment="Center" />
 
-            <chart:GaugeChart Height="160" Grid.Row="1" Padding="2"/>
-        </Grid>
-    </Border>
+                <ListView Grid.Row="1" ItemsSource="{Binding DowntimeData}"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.View>
+                        <GridView>
+                            <!-- 시간(분) Column -->
+                            <GridViewColumn Header="라인1">
+                                <GridViewColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="라인1" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#00BFFF" 
+                                                   HorizontalAlignment="Left" 
+                                                   VerticalAlignment="Center"
+                                                   FontSize="12" 
+                                                    />
+                                    </DataTemplate>
+                                </GridViewColumn.HeaderTemplate>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Time}" 
+                                                   Foreground="White" 
+                                                   HorizontalAlignment="Center" 
+                                                   VerticalAlignment="Center" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <!-- 비가동 원인 Column -->
+                            <GridViewColumn Header="나굳셈">
+                                <GridViewColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="나굳셈" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#00BFFF" 
+                                                   HorizontalAlignment="left" 
+                                                   VerticalAlignment="Center"
+                                                   FontSize="12" 
+                                                   Margin="0,2,0,2" />
+                                    </DataTemplate>
+                                </GridViewColumn.HeaderTemplate>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Cause}" 
+                                                   Foreground="White" 
+                                                   HorizontalAlignment="Center" 
+                                                   VerticalAlignment="Center" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Border>
 
         <Grid Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="0">
             <Grid.RowDefinitions>
@@ -156,493 +212,298 @@
 
         <!-- 두 번째 행 -->
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="3*" />
-            </Grid.ColumnDefinitions>
+            <!-- 두 번째 행 -->
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
 
-            <!-- 비가동 TOP 5 -->
-            <Border Grid.Column="0" Background="White" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                </Grid.ColumnDefinitions>
 
-                    <!-- Header -->
-                    <TextBlock Text="비가동 TOP 5" 
-                   FontSize="18" 
-                   FontWeight="Bold" 
-                   Foreground="White" 
-                   Margin="5"
-                   HorizontalAlignment="Center" />
 
-                    <!-- ListView -->
-                    <Grid Grid.Row="1">
-                        <ListView ItemsSource="{Binding Items1}">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn
-                                        DisplayMemberBinding="{Binding Code}"
-                                        Header="Code" Width="100"/>
-                                    <GridViewColumn
-                                        DisplayMemberBinding="{Binding Name}"
-                                        Header="Name" Width="100" />
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
+                <!-- 생산라인 현황 -->
+                <Border Grid.Column="0" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="생산라인 현황" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   Foreground="White" 
+                                   Margin="5"
+                                   HorizontalAlignment="Center" />
+
+                        <!-- 3개의 그룹 -->
+                        <Grid Grid.Row="1" Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <!-- 첫 번째 그룹 -->
+                            <Grid Grid.Row="0" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Background="#FF4CAF50" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="투입" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <Border Grid.Column="1" Background="#FF9800" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="가열" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <Border Grid.Column="2" Background="#F44336" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="취출" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </Grid>
+
+                            <!-- 두 번째 그룹 -->
+                            <Grid Grid.Row="1" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Background="#FF4CAF50" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="투입" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <Border Grid.Column="1" Background="#FF9800" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="가열" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <Border Grid.Column="2" Background="#F44336" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="취출" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </Grid>
+
+                            <!-- 세 번째 그룹 -->
+                            <Grid Grid.Row="2" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Background="#FF4CAF50" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="투입" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <Border Grid.Column="1" Background="#FF9800" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="가열" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <Border Grid.Column="2" Background="#F44336" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="취출" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Border>
+                </Border>
 
-            <!-- 비가동 TOP 5 -->
-            <Border Grid.Column="0" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
 
-                    <!-- Header -->
-                    <TextBlock Text="비가동 TOP 5" 
-                   FontSize="18" 
-                   FontWeight="Bold" 
-                   Foreground="White" 
-                   Margin="5"
-                   HorizontalAlignment="Center" />
+                <!-- 생산실적 발생현황 -->
+                <Border Grid.Column="1" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="현재 생산량" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   Foreground="White" 
+                                   Margin="5"
+                                   HorizontalAlignment="Center" />
 
-                    <!-- ListView -->
-                    <Grid Grid.Row="1">
-                        <ListView ItemsSource="{Binding DowntimeData}" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListView.View>
-                                <GridView>
-                                    <!-- 시간(분) Column -->
-                                    <GridViewColumn Header="시간(분)" Width="150">
-                                        <GridViewColumn.HeaderTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="시간(분)" 
-                                               FontWeight="Bold" 
-                                               Foreground="#00BFFF" 
-                                               HorizontalAlignment="Left" 
-                                               VerticalAlignment="Center"
-                                               FontSize="12" 
-                                               Margin="10,2,0,2" />
-                                            </DataTemplate>
-                                        </GridViewColumn.HeaderTemplate>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Time}" 
-                                               Foreground="White" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <!-- 비가동 원인 Column -->
-                                    <GridViewColumn Header="비가동 원인" Width="150">
-                                        <GridViewColumn.HeaderTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="비가동 원인" 
-                                               FontWeight="Bold" 
-                                               Foreground="#00BFFF" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center"
-                                               FontSize="12" 
-                                               Margin="0,2,0,2" />
-                                            </DataTemplate>
-                                        </GridViewColumn.HeaderTemplate>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Cause}" 
-                                               Foreground="White" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
+                        <!-- 차트 자리-->
+                        
                     </Grid>
-                </Grid>
-            </Border>
+                </Border>
 
-            <!-- 비가동 TOP 5 -->
-            <Border Grid.Column="1" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                <!-- 생산실적 발생현황 -->
+                <Border Grid.Column="2" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="현재 생산량" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   Foreground="White" 
+                                   Margin="5"
+                                   HorizontalAlignment="Center" />
 
-                    <!-- Header -->
-                    <TextBlock Text="비가동 TOP 5" 
-                   FontSize="18" 
-                   FontWeight="Bold" 
-                   Foreground="White" 
-                   Margin="5"
-                   HorizontalAlignment="Center" />
+                        <!-- 차트 자리-->
+                        <chart:DoughnutChart Grid.Row="1"/>
 
-                    <!-- ListView -->
-                    <Grid Grid.Row="1">
-                        <ListView ItemsSource="{Binding DowntimeData}" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListView.View>
-                                <GridView>
-                                    <!-- 시간(분) Column -->
-                                    <GridViewColumn Header="시간(분)" Width="150">
-                                        <GridViewColumn.HeaderTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="시간(분)" 
-                                               FontWeight="Bold" 
-                                               Foreground="#00BFFF" 
-                                               HorizontalAlignment="Left" 
-                                               VerticalAlignment="Center"
-                                               FontSize="12" 
-                                               Margin="10,2,0,2" />
-                                            </DataTemplate>
-                                        </GridViewColumn.HeaderTemplate>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Time}" 
-                                               Foreground="White" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <!-- 비가동 원인 Column -->
-                                    <GridViewColumn Header="비가동 원인" Width="150">
-                                        <GridViewColumn.HeaderTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="비가동 원인" 
-                                               FontWeight="Bold" 
-                                               Foreground="#00BFFF" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center"
-                                               FontSize="12" 
-                                               Margin="0,2,0,2" />
-                                            </DataTemplate>
-                                        </GridViewColumn.HeaderTemplate>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Cause}" 
-                                               Foreground="White" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
                     </Grid>
-                </Grid>
-            </Border>
-
-            <!-- 생산실적 발생현황 -->
-            <Border Grid.Column="2" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="생산실적 발생현황" 
-                           FontSize="18" 
-                           FontWeight="Bold" 
-                           Foreground="White" 
-                           Margin="5"
-                           HorizontalAlignment="Center" />
-                    <lvc:CartesianChart Grid.Row="1" 
-                                    Series="{Binding ProductionTrendSeries}" 
-                                    XAxes="{Binding ProductionTrendXAxes}" 
-                                    YAxes="{Binding ProductionTrendYAxes}" 
-                                    VerticalAlignment="Stretch" 
-                                    HorizontalAlignment="Stretch" />
-                </Grid>
-            </Border>
+                </Border>
+            </Grid>
         </Grid>
 
-        <!-- 3번째 구역: 4개의 카드 -->
-        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <!-- 세 번째 행 -->
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6">
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
 
-            <!-- 첫 번째 카드 -->
-            <Border Grid.Column="0" Margin="5" Background="#FF4CAF50" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="투입" 
-                       FontSize="16" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1" Text="90.9%" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-                </Grid>
-            </Border>
+                </Grid.ColumnDefinitions>
 
-            <!-- 두 번째 카드 -->
-            <Border Grid.Column="1" Margin="5" Background="#FFFFC107" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="가열" 
-                       FontSize="16" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1" Text="76.4%" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-                </Grid>
-            </Border>
+                <!-- 품질 라인 현황 -->
+                <Border Grid.Column="0" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5,5,5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="품질라인 현황" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   Foreground="White" 
+                                   Margin="5"
+                                   HorizontalAlignment="Center" />
 
-            <!-- 세 번째 카드 -->
-            <Border Grid.Column="2" Margin="5" Background="#FFF44336" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="냉각" 
-                       FontSize="16" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1" Text="45.5%" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-                </Grid>
-            </Border>
+                        <!-- 3개의 그룹 -->
+                        <Grid Grid.Row="1" Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-            <!-- 네 번째 카드 -->
-            <Border Grid.Column="3" Margin="5" Background="#FF2196F3" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="취출" 
-                       FontSize="16" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1" Text="54.6%" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-                </Grid>
-            </Border>
-        </Grid>
+                            <!-- 첫 번째 그룹 -->
+                            <Grid Grid.Row="0" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-        <!-- 4번째 구역 -->
-        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="6" Margin="10">
-            <Border Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                                <Border Grid.Column="0" Background="#FF4CAF50" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="투입" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
 
-                    <!-- Header -->
-                    <TextBlock Text="설비별 생산현황" 
-               FontSize="18" 
-               FontWeight="Bold" 
-               Foreground="White" 
-               Margin="5"
-               HorizontalAlignment="Center" />
+                                <Border Grid.Column="1" Background="#FF9800" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="가열" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
 
-                    <!-- Data Grid -->
-                    <ListView Grid.Row="1" ItemsSource="{Binding EquipmentProductionData}" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <ListView.View>
-                            <GridView>
-                                <!-- 설비 Column -->
-                                <GridViewColumn Width="200">
-                                    <GridViewColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="설비" 
-                                       FontWeight="Bold" 
-                                       Foreground="#00BFFF" 
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="14" 
-                                       Margin="10,0,10,0" />
-                                        </DataTemplate>
-                                    </GridViewColumn.HeaderTemplate>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Equipment}" 
-                                       Foreground="White" 
-                                       HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                                <Border Grid.Column="2" Background="#F44336" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="취출" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </Grid>
 
-                                <!-- 가동여부 Column -->
-                                <GridViewColumn Width="200">
-                                    <GridViewColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="가동여부" 
-                                       FontWeight="Bold" 
-                                       Foreground="#00BFFF" 
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="14" 
-                                       Margin="10,0,10,0" />
-                                        </DataTemplate>
-                                    </GridViewColumn.HeaderTemplate>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Status}" 
-                                       Foreground="{Binding StatusColor}" 
-                                       HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                            <!-- 두 번째 그룹 -->
+                            <Grid Grid.Row="1" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                                <!-- 상태 Column -->
-                                <GridViewColumn Width="200">
-                                    <GridViewColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="상태" 
-                                       FontWeight="Bold" 
-                                       Foreground="#00BFFF" 
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="14" 
-                                       Margin="10,0,10,0" />
-                                        </DataTemplate>
-                                    </GridViewColumn.HeaderTemplate>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding State}" 
-                                       Foreground="White" 
-                                       HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                                <Border Grid.Column="0" Background="#FF4CAF50" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="투입" FontSize="16" FontWeight="Bold" Foreground="White"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
 
-                                <!-- 목표수량 Column -->
-                                <GridViewColumn Width="200">
-                                    <GridViewColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="목표수량" 
-                                       FontWeight="Bold" 
-                                       Foreground="#00BFFF" 
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="14" 
-                                       Margin="10,0,10,0" />
-                                        </DataTemplate>
-                                    </GridViewColumn.HeaderTemplate>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding TargetQuantity}" 
-                                       Foreground="White" 
-                                       HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                                <Border Grid.Column="1" Background="#FF9800" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="가열" FontSize="16" FontWeight="Bold" Foreground="White"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
 
-                                <!-- 생산수량 Column -->
-                                <GridViewColumn Width="200">
-                                    <GridViewColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="생산수량" 
-                                       FontWeight="Bold" 
-                                       Foreground="#00BFFF" 
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="14" 
-                                       Margin="10,0,10,0" />
-                                        </DataTemplate>
-                                    </GridViewColumn.HeaderTemplate>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding ProducedQuantity}" 
-                                       Foreground="White" 
-                                       HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                                <Border Grid.Column="2" Background="#F44336" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="취출" FontSize="16" FontWeight="Bold" Foreground="White"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </Grid>
 
-                                <!-- OEE Column -->
-                                <GridViewColumn Width="80">
-                                    <GridViewColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="OEE" 
-                                       FontWeight="Bold" 
-                                       Foreground="#00BFFF" 
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="14" 
-                                       Margin="10,0,10,0" />
-                                        </DataTemplate>
-                                    </GridViewColumn.HeaderTemplate>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding OEE}" 
-                                       Foreground="White" 
-                                       HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                            <!-- 세 번째 그룹 -->
+                            <Grid Grid.Row="2" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                                <!-- H1 Column -->
-                                <GridViewColumn Header="H1" Width="50">
-                                    <GridViewColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="H1" 
-                                       FontWeight="Bold" 
-                                       Foreground="#00BFFF" 
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="14" 
-                                       Margin="10,0,10,0" />
-                                        </DataTemplate>
-                                    </GridViewColumn.HeaderTemplate>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding H1}" 
-                                       Foreground="White" 
-                                       HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <!-- Add more columns as needed -->
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-            </Border>
+                                <Border Grid.Column="0" Background="#FF4CAF50" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="투입" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+
+                                <Border Grid.Column="1" Background="#FF9800" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="가열" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+
+                                <Border Grid.Column="2" Background="#F44336" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5">
+                                    <TextBlock Text="취출" FontSize="16" FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+
+
+
+
+                <!-- 품질 사진 -->
+                <Border Grid.Column="1" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5,5,5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="품질 사진" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   Foreground="White" 
+                                   Margin="5"
+                                   HorizontalAlignment="Center" />
+
+                        <!-- 품질 이미지 -->
+                        <Image Source="{Binding CurrentImage}" Width="800" Height="800" Stretch="Uniform"/>
+                    </Grid>
+                </Border>
+
+                <!-- 품질 발생현황 -->
+                <Border Grid.Column="2" Background="#1E1E1E" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5,5,5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="품질 현황" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   Foreground="White" 
+                                   Margin="5"
+                                   HorizontalAlignment="Center" />
+
+                        <!-- 차트 자리 -->
+
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

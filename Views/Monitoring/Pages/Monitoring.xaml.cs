@@ -1,4 +1,5 @@
 ﻿using HyunDaiINJ.ViewModels.Monitoring;
+using HyunDaiINJ.ViewModels.MQTT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,12 @@ namespace HyunDaiINJ.Views.Monitoring.Pages
         public Monitoring()
         {
             InitializeComponent();
+
+            var mqttModel = new MQTTModel();
+
+            var mqttViewModel = new MqttViewModel(mqttModel);
+
+            DataContext = mqttViewModel;
         }
     }
 }

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace HyunDaiINJ.DTO
 {
-    public class MQTTDTO
+    public class MqttVisionDTO
     {
         [JsonProperty("lineId")]
         public string? LineId { get; set; }

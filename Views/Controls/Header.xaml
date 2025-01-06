@@ -38,11 +38,12 @@
 
                 <!-- 헤더 콘텐츠 -->
                 <StackPanel Orientation="Horizontal">
-                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" Foreground="White"/>
 
                     <TextBlock Margin="40,0,0,0"
                                VerticalAlignment="Center"
                                FontWeight="Medium"
+                               Foreground="White"
                                Text="HYUNDAIINJ" />
                 </StackPanel>
             </DockPanel>

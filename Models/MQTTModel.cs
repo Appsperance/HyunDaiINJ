@@ -8,11 +8,15 @@ using HyunDaiINJ.DTO;
 using System.IO;
 using MQTTnet.Server;
 using System.Diagnostics;
+using System.Linq;
 
 public class MQTTModel
 {
     private IMqttClient? mqttClient;
-    public event Action<string, MQTTDTO>? MqttMesageReceived;
+    public event Action<string, MqttVisionDTO>? VisionMessageReceived;
+    public event Action<string, MqttProcessDTO>? ProcessMessageReceived;
+
+
 
     public bool mqttConnected => mqttClient?.IsConnected ?? false;
     public async Task MqttConnect()
@@ -80,11 +84,21 @@ public class MQTTModel
             {
                 if (topic.StartsWith("Vision/ng"))
                 {
-                    var visionNg = JsonConvert.DeserializeObject<MQTTDTO>(payload);
+                    var visionNg = JsonConvert.DeserializeObject<MqttVisionDTO>(payload);
                     if (visionNg != null)
                     {
-                        MqttMesageReceived?.Invoke(topic, visionNg);
+                        VisionMessageReceived?.Invoke(topic, visionNg);
                         Console.WriteLine($"{visionNg}");
+                    }
+                }
+
+                if (topic.StartsWith("Process/PLC"))
+                {
+                    var processPlc = JsonConvert.DeserializeObject<MqttProcessDTO>(payload);
+                    if (processPlc != null)
+                    {
+                        ProcessMessageReceived?.Invoke(topic, processPlc);
+                        Console.WriteLine($"{processPlc}");
                     }
                 }
             }

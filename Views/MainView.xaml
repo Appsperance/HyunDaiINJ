@@ -8,7 +8,8 @@
         xmlns:con="clr-namespace:HyunDaiINJ.Views.Controls"
         mc:Ignorable="d"
         Style="{StaticResource MaterialDesignWindow}"
-        Title="MainView" Height="1080" Width="2000">
+        WindowStartupLocation="CenterScreen"
+        Title="MainView" Height="800" Width="1520">
     <Grid>
         <!-- Row Definitions -->
         <Grid.RowDefinitions>
