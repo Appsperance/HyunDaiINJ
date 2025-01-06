@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using HyunDaiINJ.DTO;
+using HyunDaiINJ.DATA.DTO;
 using Newtonsoft.Json;
 using WpfApp1;
 
@@ -44,12 +44,23 @@ namespace HyunDaiINJ.ViewModels.MQTT
 
         // 최신 메시지
         private MqttProcessDTO currentProcessMessage;
-        public MqttVisionDTO CurrentProcessMessage
+        public MqttProcessDTO CurrentProcessMessage
         {
-            get => CurrentProcessMessage;
+            get => currentProcessMessage;
             set
             {
-                CurrentProcessMessage = value;
+                currentProcessMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private BitmapImage? stageValImage;
+        public BitmapImage? StageValImage
+        {
+            get => stageValImage;
+            set
+            {
+                stageValImage = value;
                 OnPropertyChanged();
             }
         }
@@ -81,9 +92,11 @@ namespace HyunDaiINJ.ViewModels.MQTT
             try
             {
                 await MqttModel.MqttConnect(); // MQTT 연결
-                if (mqttConnected)
+
+                if (mqttConnected) // 연결 성공 여부 확인
                 {
-                    Console.WriteLine("MQTT 자동 연결 성공");
+                    Console.WriteLine("MQTT 자동 연결 성공"); // 성공 메시지 출력
+                    await MqttModel.SubscribeMQTT("#"); // 토픽 구독
                 }
             }
             catch (Exception ex)
@@ -92,7 +105,8 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
 
-        private void OnVisionMessageReceived(string topic, MqttVisionDTO message) =>
+        private async void OnVisionMessageReceived(string topic, MqttVisionDTO message)
+        {
             // UI 스레드에서 작업
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -106,6 +120,57 @@ namespace HyunDaiINJ.ViewModels.MQTT
                     Console.WriteLine("이미지 데이터 처리 완료");
                 }
             });
+
+            switch (message.StageVal)
+            {
+                case "100":
+                    await DisplayImageSequenceAsync(new[] { "Resources/Process1.png", "Resources/Process2.png" });
+                    break;
+                case "010":
+                    await DisplayImageSequenceAsync(new[] { "Resources/Process3.png", "Resources/Process4.png" });
+                    break;
+                case "001":
+                    await DisplayImageSequenceAsync(new[] { "Resources/Process5.png", "Resources/Process6.png" });
+                    break;
+                default:
+                    App.Current.Dispatcher.Invoke(() => StageValImage = null); // 기본 상태
+                    break;
+            }
+        }
+
+        private async Task DisplayImageSequenceAsync(string[] imagePaths)
+        {
+            foreach (var path in imagePaths)
+            {
+                var image = LoadImageFromPath(path);
+
+                // UI 스레드에서 StageValImage 업데이트
+                App.Current.Dispatcher.Invoke(() => StageValImage = image);
+
+                // 1초 대기
+                await Task.Delay(1000);
+            }
+        }
+
+        private BitmapImage? LoadImageFromPath(string relativePath)
+        {
+            try
+            {
+                var imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.UriSource = new Uri(imagePath, UriKind.Absolute);
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+                return bitmapImage;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"이미지 로드 실패: {ex.Message}");
+                return null;
+            }
+        }
 
         // 이미지 변환 (byte[] -> BitmapImage)
         private static BitmapImage? ConvertImage(byte[] image)

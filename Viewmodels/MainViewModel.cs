@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using HyunDaiINJ.DTO;
+using HyunDaiINJ.DATA.DTO;
 using HyunDaiINJ.Views;
 using HyunDaiINJ.Views.Controls;
 using HyunDaiINJ.Views.Monitoring;

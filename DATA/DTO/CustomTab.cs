@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace HyunDaiINJ.DTO
+namespace HyunDaiINJ.DATA.DTO
 {
     public class CustomTab
     {
@@ -18,7 +18,7 @@ namespace HyunDaiINJ.DTO
         /// <summary>
         /// 탭의 콘텐츠
         /// </summary>
-        public Object? CustomContent { get; set; }
+        public object? CustomContent { get; set; }
 
         /// <summary>
         /// 탭 닫기 명령

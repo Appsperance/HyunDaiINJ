@@ -1,5 +1,4 @@
-﻿using HyunDaiINJ.ViewModels.Monitoring;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,18 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HyunDaiINJ.ViewModels.MQTT;
 
 namespace HyunDaiINJ.Views.Monitoring.Controls
 {
     /// <summary>
-    /// GaugeChart.xaml에 대한 상호 작용 논리
+    /// VisionProcedure.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class GaugeChart : UserControl
+    public partial class VisionProcedure : UserControl
     {
-        public GaugeChart()
+        public VisionProcedure()
         {
             InitializeComponent();
-            DataContext = new GaugeChartViewModel();
+            DataContext = new MqttViewModel(); // ViewModel 설정
         }
     }
 }
