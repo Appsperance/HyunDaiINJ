@@ -20,8 +20,8 @@ namespace HyunDaiINJ.ViewModels.MQTT
         public bool mqttConnected => MqttModel.mqttConnected;
 
         // 최신 메시지
-        private MQTTDTO currentMessage;
-        public MQTTDTO CurrentMessage
+        private MqttVisionDTO currentMessage;
+        public MqttVisionDTO CurrentMessage
         {
             get => currentMessage;
             set
@@ -42,6 +42,18 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
 
+        // 최신 메시지
+        private MqttProcessDTO currentProcessMessage;
+        public MqttVisionDTO CurrentProcessMessage
+        {
+            get => CurrentProcessMessage;
+            set
+            {
+                CurrentProcessMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         // 기본 생성자
         public MqttViewModel() : this(new MQTTModel())
         {
@@ -52,14 +64,15 @@ namespace HyunDaiINJ.ViewModels.MQTT
             MqttModel = mqttModel ?? throw new ArgumentNullException(nameof(mqttModel));
 
             // 필드 초기화
-            currentMessage = new MQTTDTO();
+            currentMessage = new MqttVisionDTO();
             currentImage = new BitmapImage();
 
             // MQTT 연결 및 구독
             ConnectAndSubscribeAsync().ConfigureAwait(false);
 
             // 메시지 수신 이벤트 구독
-            MqttModel.MqttMesageReceived += OnMqttMessageReceived;
+            MqttModel.VisionMessageReceived += OnVisionMessageReceived;
+            MqttModel.ProcessMessageReceived += OnProcessMessageReceived;
 
         }
 
@@ -79,7 +92,7 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
 
-        private void OnMqttMessageReceived(string topic, MQTTDTO message) =>
+        private void OnVisionMessageReceived(string topic, MqttVisionDTO message) =>
             // UI 스레드에서 작업
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -116,6 +129,16 @@ namespace HyunDaiINJ.ViewModels.MQTT
                 return null;
             }
         }
+
+        private void OnProcessMessageReceived(string topic, MqttProcessDTO message) =>
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Console.WriteLine($"수신된 Process 토픽: {topic}, 메시지: {message}");
+
+                // Process 데이터를 처리하는 로직 추가
+                // 예: UI 업데이트 또는 데이터 저장
+            });
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
