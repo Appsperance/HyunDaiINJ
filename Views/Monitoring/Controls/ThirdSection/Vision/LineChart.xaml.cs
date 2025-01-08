@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace HyunDaiINJ.Views.Monitoring.Controls.SecondSection.Vision
+namespace HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision
 {
     public partial class LineChart : UserControl
     {

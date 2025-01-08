@@ -4,7 +4,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:First="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.FirstSection.Vision"
-      xmlns:Second="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.SecondSection.Vision"
       xmlns:Third="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
@@ -315,7 +314,7 @@
         </StackPanel>
 
         <!-- 그래프 -->
-        <Grid Grid.Row="5" Grid.ColumnSpan="5">
+        <Grid Grid.Row="5" Grid.ColumnSpan="7">
             <Grid.ColumnDefinitions>
                 <!-- 연속 그래프 -->
                 <ColumnDefinition Width="*"/>
@@ -328,13 +327,13 @@
                         <RowDefinition Height="*"/>
                         <!-- 차트 -->
                     </Grid.RowDefinitions>
-                    <Second:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
                 </Grid>
             </Border>
         </Grid>
 
         <!-- 그래프 -->
-        <Grid Grid.Row="5" Grid.Column="5" Grid.ColumnSpan="5">
+        <Grid Grid.Row="5" Grid.Column="7" Grid.ColumnSpan="4">
             <Grid.ColumnDefinitions>
                 <!-- 연속 그래프 -->
                 <ColumnDefinition Width="*"/>
@@ -347,13 +346,13 @@
                         <RowDefinition Height="*"/>
                         <!-- 차트 -->
                     </Grid.RowDefinitions>
-                    <Second:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
                 </Grid>
             </Border>
         </Grid>
 
         <!-- 그래프 -->
-        <Grid Grid.Row="5" Grid.Column="10" Grid.ColumnSpan="5">
+        <Grid Grid.Row="5" Grid.Column="11" Grid.ColumnSpan="4">
             <Grid.ColumnDefinitions>
                 <!-- 연속 그래프 -->
                 <ColumnDefinition Width="*"/>
@@ -366,7 +365,7 @@
                         <RowDefinition Height="*"/>
                         <!-- 차트 -->
                     </Grid.RowDefinitions>
-                    <Second:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
                 </Grid>
             </Border>
         </Grid>
