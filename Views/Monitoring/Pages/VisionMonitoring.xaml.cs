@@ -14,17 +14,22 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HyunDaiINJ.ViewModels.MQTT;
 
-namespace HyunDaiINJ.Views.Monitoring.Controls
+namespace HyunDaiINJ.Views.Monitoring.Pages
 {
     /// <summary>
-    /// VisionProcedure.xaml에 대한 상호 작용 논리
+    /// VisionMonitoring.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class VisionProcedure : UserControl
+    public partial class VisionMonitoring : Page
     {
-        public VisionProcedure()
+        public VisionMonitoring()
         {
             InitializeComponent();
-            DataContext = new MqttViewModel(); // ViewModel 설정
+
+            var mqttModel = new MQTTModel();
+
+            var mqttViewModel = new MqttViewModel(mqttModel);
+
+            DataContext = mqttViewModel;
         }
     }
 }

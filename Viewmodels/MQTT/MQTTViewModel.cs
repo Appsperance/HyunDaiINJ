@@ -42,18 +42,6 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
 
-        // 최신 메시지
-        private MqttProcessDTO currentProcessMessage;
-        public MqttProcessDTO CurrentProcessMessage
-        {
-            get => currentProcessMessage;
-            set
-            {
-                currentProcessMessage = value;
-                OnPropertyChanged();
-            }
-        }
-
         private BitmapImage? stageValImage;
         public BitmapImage? StageValImage
         {
@@ -64,6 +52,40 @@ namespace HyunDaiINJ.ViewModels.MQTT
                 OnPropertyChanged();
             }
         }
+
+        private bool isInputBlinking;
+        public bool IsInputBlinking
+        {
+            get => isInputBlinking;
+            set
+            {
+                isInputBlinking = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool isVisionBlinking;
+        public bool IsVisionBlinking
+        {
+            get => isVisionBlinking;
+            set
+            {
+                isVisionBlinking = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool isCompleteBlinking;
+        public bool IsCompleteBlinking
+        {
+            get => isCompleteBlinking;
+            set
+            {
+                isCompleteBlinking = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         // 기본 생성자
         public MqttViewModel() : this(new MQTTModel())
@@ -112,6 +134,8 @@ namespace HyunDaiINJ.ViewModels.MQTT
             {
                 CurrentMessage = message; // 최신 메시지 업데이트
                 Console.WriteLine($"수신된 토픽: {topic}, 메시지: {message}");
+                // 상태 업데이트
+                UpdateBlinkingStates(message.StageVal);
 
                 // 이미지 데이터 처리
                 if (message.NgImg != null && message.NgImg.Length > 0)
@@ -124,14 +148,31 @@ namespace HyunDaiINJ.ViewModels.MQTT
             switch (message.StageVal)
             {
                 case "100":
-                    await DisplayImageSequenceAsync(new[] { "Resources/Process1.png", "Resources/Process2.png" });
+                    await DisplayImageSequenceAsync(new[]
+                    {
+                "Resources/1.png", "Resources/2.png", "Resources/3.png", "Resources/4.png",
+                "Resources/5.png", "Resources/6.png", "Resources/7.png", "Resources/8.png",
+                "Resources/9.png", "Resources/10.png", "Resources/11.png", "Resources/12.png",
+                "Resources/13.png", "Resources/14.png"
+            });
                     break;
+
                 case "010":
-                    await DisplayImageSequenceAsync(new[] { "Resources/Process3.png", "Resources/Process4.png" });
+                    await DisplayImageSequenceAsync(new[]
+                    {
+                "Resources/15.png", "Resources/16.png", "Resources/17.png", "Resources/18.png",
+                "Resources/19.png", "Resources/20.png", "Resources/21.png", "Resources/22.png"
+            });
                     break;
+
                 case "001":
-                    await DisplayImageSequenceAsync(new[] { "Resources/Process5.png", "Resources/Process6.png" });
+                    await DisplayImageSequenceAsync(new[]
+                    {
+                "Resources/23.png", "Resources/24.png", "Resources/25.png", "Resources/26.png",
+                "Resources/27.png", "Resources/28.png", "Resources/29.png"
+            });
                     break;
+
                 default:
                     App.Current.Dispatcher.Invoke(() => StageValImage = null); // 기본 상태
                     break;
@@ -140,6 +181,9 @@ namespace HyunDaiINJ.ViewModels.MQTT
 
         private async Task DisplayImageSequenceAsync(string[] imagePaths)
         {
+            // 각 사진이 표시될 시간 (밀리초 단위로 계산)
+            int displayTimePerImage = 3000 / imagePaths.Length;
+
             foreach (var path in imagePaths)
             {
                 var image = LoadImageFromPath(path);
@@ -147,8 +191,8 @@ namespace HyunDaiINJ.ViewModels.MQTT
                 // UI 스레드에서 StageValImage 업데이트
                 App.Current.Dispatcher.Invoke(() => StageValImage = image);
 
-                // 1초 대기
-                await Task.Delay(1000);
+                // 각 사진의 표시 시간만큼 대기
+                await Task.Delay(displayTimePerImage);
             }
         }
 
@@ -193,6 +237,13 @@ namespace HyunDaiINJ.ViewModels.MQTT
                 Console.WriteLine($"이미지 변환 실패: {ex.Message}");
                 return null;
             }
+        }
+
+        private void UpdateBlinkingStates(string stageVal)
+        {
+            IsInputBlinking = stageVal == "100";
+            IsVisionBlinking = stageVal == "010";
+            IsCompleteBlinking = stageVal == "001";
         }
 
         private void OnProcessMessageReceived(string topic, MqttProcessDTO message) =>

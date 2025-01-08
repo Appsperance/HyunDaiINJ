@@ -1,0 +1,375 @@
+﻿<Page x:Class="HyunDaiINJ.Views.Monitoring.Pages.VisionMonitoring"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:First="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.FirstSection.Vision"
+      xmlns:Second="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.SecondSection.Vision"
+      xmlns:Third="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="700" d:DesignWidth="1350"
+      Title="VisionMonitoring">
+    <Grid Background="#F0F0F0">
+        <!-- 전체 레이아웃 그리드 -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="2*"/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 헤더 -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5" Grid.ColumnSpan="3">
+            <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
+            <TextBlock Text="공정 상태 1"
+                FontSize="18" 
+                FontWeight="Bold" 
+                Foreground="#002E6B" 
+                Margin="10,0"
+                VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- 첫 번째 Border -->
+        <Border Grid.Column="0" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+            <Grid>
+                <!-- 내부 콘텐츠 -->
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <!-- 사진 영역 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 검사 개수 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 버튼 영역 -->
+                    </Grid.RowDefinitions>
+
+                    <!-- 사진 영역 -->
+                    <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="5" Margin="5">
+                        <!-- stageVal 나오는 곳-->
+                        <First:VisionProcedure Grid.Row="1"/>
+                    </Border>
+
+                    <!-- 검사 개수 -->
+                    <TextBlock Grid.Row="1" 
+                               Text="검사 개수: 30 / 2000"
+                               HorizontalAlignment="Center"
+                               Margin="10"
+                               FontSize="16"
+                               FontWeight="Bold"/>
+
+                    <!-- 버튼 영역 -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <!-- 투입 -->
+                        <Border Style="{StaticResource InputBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="투입" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold" />
+                        </Border>
+
+                        <!-- 비전 -->
+                        <Border Style="{StaticResource VisionBlinkingStyle}" BorderBrush="Black" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="비전" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
+
+                        <!-- 완료 -->
+                        <Border Style="{StaticResource CompleteBlinkingStyle}" BorderBrush="Black" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="완료" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
+                    </StackPanel>
+
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 두 번째 Border -->
+        <Border Grid.Column="3" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+            <Grid>
+                <!-- 내부 콘텐츠 -->
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <!-- 사진 영역 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 검사 개수 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 버튼 영역 -->
+                    </Grid.RowDefinitions>
+
+                    <!-- 사진 영역 -->
+                    <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="5" Margin="5" >
+                        <!-- stageVal 나오는 곳-->
+                        <First:VisionProcedure Grid.Row="1"/>
+                    </Border>
+
+                    <!-- 검사 개수 -->
+                    <TextBlock Grid.Row="1" 
+                       Text="검사 개수: 30 / 2000"
+                       HorizontalAlignment="Center"
+                       Margin="10"
+                       FontSize="16"
+                       FontWeight="Bold"/>
+
+                    <!-- 버튼 영역 -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="투입" Width="60" Height="40" Margin="5"/>
+                        <Button Content="비전" Width="60" Height="40" Margin="5"/>
+                        <Button Content="완료" Width="60" Height="40" Margin="5"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 세 번째 Border -->
+        <Border Grid.Column="6" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+            <Grid>
+                <!-- 내부 콘텐츠 -->
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <!-- 사진 영역 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 검사 개수 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 버튼 영역 -->
+                    </Grid.RowDefinitions>
+
+                    <!-- 사진 영역 -->
+                    <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="5" Margin="5">
+                        <!-- stageVal 나오는 곳-->
+                        <First:VisionProcedure Grid.Row="1"/>
+                    </Border>
+
+                    <!-- 검사 개수 -->
+                    <TextBlock Grid.Row="1" 
+                               Text="검사 개수: 30 / 2000"
+                               HorizontalAlignment="Center"
+                               Margin="10"
+                               FontSize="16"
+                               FontWeight="Bold"/>
+
+                    <!-- 버튼 영역 -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="투입" Width="60" Height="40" Margin="5"/>
+                        <Button Content="비전" Width="60" Height="40" Margin="5"/>
+                        <Button Content="완료" Width="60" Height="40" Margin="5"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 네 번째 Border -->
+        <Border Grid.Column="9" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+            <Grid>
+                <!-- 내부 콘텐츠 -->
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <!-- 사진 영역 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 검사 개수 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 버튼 영역 -->
+                    </Grid.RowDefinitions>
+
+                    <!-- 사진 영역 -->
+                    <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="5" Margin="5">
+                        <!-- stageVal 나오는 곳-->
+                        <First:VisionProcedure Grid.Row="1"/>
+                    </Border>
+
+                    <!-- 검사 개수 -->
+                    <TextBlock Grid.Row="1" 
+                               Text="검사 개수: 30 / 2000"
+                               HorizontalAlignment="Center"
+                               Margin="10"
+                               FontSize="16"
+                               FontWeight="Bold"/>
+
+                    <!-- 버튼 영역 -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="투입" Width="60" Height="40" Margin="5"/>
+                        <Button Content="비전" Width="60" Height="40" Margin="5"/>
+                        <Button Content="완료" Width="60" Height="40" Margin="5"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 다섯 번째 Border -->
+        <Border Grid.Column="12" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+            <Grid>
+                <!-- 내부 콘텐츠 -->
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <!-- 사진 영역 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 검사 개수 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 버튼 영역 -->
+                    </Grid.RowDefinitions>
+
+                    <!-- 사진 영역 -->
+                    <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="5" Margin="5">
+                        <!-- stageVal 나오는 곳-->
+                        <First:VisionProcedure Grid.Row="1"/>
+                    </Border>
+
+                    <!-- 검사 개수 -->
+                    <TextBlock Grid.Row="1" 
+                               Text="검사 개수: 30 / 2000"
+                               HorizontalAlignment="Center"
+                               Margin="10"
+                               FontSize="16"
+                               FontWeight="Bold"/>
+
+                    <!-- 버튼 영역 -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="투입" Width="60" Height="40" Margin="5"/>
+                        <Button Content="비전" Width="60" Height="40" Margin="5"/>
+                        <Button Content="완료" Width="60" Height="40" Margin="5"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+        
+        <!-- 헤더 -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="5" Grid.ColumnSpan="3">
+            <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
+            <TextBlock Text="품질 사진"
+                       FontSize="18" 
+                       FontWeight="Bold" 
+                       Foreground="#002E6B" 
+                       Margin="10,0"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+        
+        <!-- 품질 사진 1 -->
+        <Border Grid.Column="0" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" Grid.ColumnSpan="3">
+            <Grid>
+                <!-- 품질 이미지 -->
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+            </Grid>
+        </Border>
+
+        <!-- 품질 사진 2 -->
+        <Border Grid.Column="3" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" Grid.ColumnSpan="3">
+            <Grid>
+                <!-- 품질 이미지 -->
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+            </Grid>
+        </Border>
+
+        <!-- 품질 사진 3 -->
+        <Border Grid.Column="6" Grid.ColumnSpan="3" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5">
+            <Grid>
+                <!-- 품질 이미지 -->
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+            </Grid>
+        </Border>
+        
+        <!-- 품질 사진 4 -->
+        <Border Grid.Column="9" Grid.ColumnSpan="3" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5">
+            <Grid>
+                <!-- 품질 이미지 -->
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+            </Grid>
+        </Border>
+
+        <!-- 품질 사진 5 -->
+        <Border Grid.Column="12" Grid.ColumnSpan="3" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5">
+            <Grid>
+                <!-- 품질 이미지 -->
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+            </Grid>
+        </Border>
+
+        <!-- 헤더 -->
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="5" Grid.ColumnSpan="3">
+            <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
+            <TextBlock Text="품질 통계"
+                FontSize="18" 
+                FontWeight="Bold" 
+                Foreground="#002E6B" 
+                Margin="10,0"
+                VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- 그래프 -->
+        <Grid Grid.Row="5" Grid.ColumnSpan="5">
+            <Grid.ColumnDefinitions>
+                <!-- 연속 그래프 -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!-- 불량 통계 -->
+            <Border Grid.Column="0" Grid.Row="0"  BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                <!-- 차트 자리 -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <!-- 차트 -->
+                    </Grid.RowDefinitions>
+                    <Second:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- 그래프 -->
+        <Grid Grid.Row="5" Grid.Column="5" Grid.ColumnSpan="5">
+            <Grid.ColumnDefinitions>
+                <!-- 연속 그래프 -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!-- 불량 통계 -->
+            <Border Grid.Column="0" Grid.Row="0"  BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                <!-- 차트 자리 -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <!-- 차트 -->
+                    </Grid.RowDefinitions>
+                    <Second:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- 그래프 -->
+        <Grid Grid.Row="5" Grid.Column="10" Grid.ColumnSpan="5">
+            <Grid.ColumnDefinitions>
+                <!-- 연속 그래프 -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!-- 불량 통계 -->
+            <Border Grid.Column="0" Grid.Row="0"  BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                <!-- 차트 자리 -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <!-- 차트 -->
+                    </Grid.RowDefinitions>
+                    <Second:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>
+

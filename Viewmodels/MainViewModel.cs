@@ -54,7 +54,7 @@ namespace HyunDaiINJ.ViewModels
             // 새로운 탭 콘텐츠 생성
             object? controlContent = tabHeader switch
             {
-                "실시간 모니터링" => new HyunDaiINJ.Views.Monitoring.Pages.Monitoring(), // Monitoring Page
+                "품질 모니터링" => new HyunDaiINJ.Views.Monitoring.Pages.VisionMonitoring(), // Monitoring Page
                 "생산계획/지시" => new DataGrid(), // 생산계획 예시 (Page 또는 Control)
                 "생산실적" => new DataGrid(), // 도넛 차트
                 _ => null

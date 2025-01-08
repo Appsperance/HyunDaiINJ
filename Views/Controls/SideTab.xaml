@@ -12,7 +12,13 @@
             <!-- 모니터링 그룹 -->
             <Expander Header="모니터링" IsExpanded="False" Margin="4" >
                 <StackPanel Orientation="Vertical" Background="#F0F0F0">
-                    <RadioButton Content="실시간 모니터링"
+                    <RadioButton Content="생산 모니터링"
+                                 Margin="4"
+                                 Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                                 Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
+
+                    <RadioButton Content="품질 모니터링"
                                  Margin="4"
                                  Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                  CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"

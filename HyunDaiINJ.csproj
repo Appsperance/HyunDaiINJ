@@ -23,4 +23,21 @@
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Monitoring\Controls\SecondSection\Process\" />
+    <Folder Include="Views\Monitoring\Controls\ThirdSection\ProcessMonitoring\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Monitoring\Controls\FirstSection\Vision\VisionProcedure.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Monitoring\Controls\SecondSection\Vision\LineChart.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Monitoring\Controls\ThirdSection\Vision\LineManager.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>
