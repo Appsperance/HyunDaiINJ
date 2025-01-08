@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HyunDaiINJ.ViewModels.Monitoring
+namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
 {
-    public class VisionViewModel
+    public class NgCardViewModel
     {
-
     }
 }

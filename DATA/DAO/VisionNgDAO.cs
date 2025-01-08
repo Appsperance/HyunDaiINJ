@@ -41,13 +41,14 @@ namespace HyunDaiINJ.DATA.DAO
                                 {
                                     visionNgData.Add(new VisionNgDTO
                                     {
-                                        Id = reader.GetInt32(reader.GetOrdinal("id")),
-                                        LotId = reader["lot_id"]?.ToString(),
-                                        PartId = reader["part_id"]?.ToString(),
-                                        LineId = reader["line_id"]?.ToString(),
-                                        DateTime = reader.GetDateTime(reader.GetOrdinal("date_time")),
+                                        //Id = reader.GetInt32(reader.GetOrdinal("id")),
+                                        //LotId = reader["lot_id"]?.ToString(),
+                                        //PartId = reader["part_id"]?.ToString(),
+                                        //LineId = reader["line_id"]?.ToString(),
+                                        //DateTime = reader.GetDateTime(reader.GetOrdinal("date_time")),
                                         NgLabel = reader["ng_label"]?.ToString(),
-                                        NgImgPath = reader["ng_img_path"]?.ToString()
+                                        LabelCount = reader.GetInt32(reader.GetOrdinal("label_count"))
+                                        //NgImgPath = reader["ng_img_path"]?.ToString()
                                     });
                                 }
                                 catch (Exception ex)

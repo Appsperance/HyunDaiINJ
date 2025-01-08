@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace HyunDaiINJ.ViewModels
+namespace HyunDaiINJ.ViewModels.Main
 {
     internal class RelayCommand : ICommand
     {

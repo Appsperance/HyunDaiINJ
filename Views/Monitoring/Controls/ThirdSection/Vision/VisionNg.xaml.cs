@@ -1,18 +1,18 @@
-﻿using HyunDaiINJ.ViewModels.Monitoring.ThirdSection;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using HyunDaiINJ.ViewModels.Monitoring.ThirdSection;
 
 namespace HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision
 {
-    public partial class LineChart : UserControl
+    public partial class VisionNg : UserControl
     {
-        private readonly LineChartViewModel _viewModel;
+        private readonly VisionNgViewModel _viewModel;
 
-        public LineChart()
+        public VisionNg()
         {
             InitializeComponent();
-            _viewModel = new LineChartViewModel();
+            _viewModel = new VisionNgViewModel();
 
             // WebView2 초기화
             InitializeWebView2Async().ConfigureAwait(false);
@@ -22,44 +22,31 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision
         {
             try
             {
-                // WebView2 초기화 대기
-                await ChartWebView.EnsureCoreWebView2Async();
+                await WebViewChart.EnsureCoreWebView2Async();
 
-                // CoreWebView2 초기화 확인 후 HTML 로드
-                if (ChartWebView.CoreWebView2 != null)
+                if (WebViewChart.CoreWebView2 != null)
                 {
+                    Console.WriteLine("WebView2 initialized successfully.");
                     var chartScript = _viewModel.GenerateChartScript();
-
-                    // HTML 콘텐츠 생성 및 로드
                     var htmlContent = GenerateHtmlContent(chartScript);
-                    ChartWebView.NavigateToString(htmlContent);
-
-                }
-                else
-                {
-                    Console.WriteLine("CoreWebView2 초기화 실패. WebView2가 제대로 로드되지 않았습니다.");
+                    WebViewChart.NavigateToString(htmlContent);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"WebView2 초기화 실패: {ex.Message}");
-                Console.WriteLine($"WebView2 초기화 실패: {ex.Message}");
+                Console.WriteLine($"Error initializing WebView2: {ex.Message}");
             }
         }
 
         private string GenerateHtmlContent(string script)
         {
-            try
-            {
-                var html = $@"
+            return $@"
                 <!DOCTYPE html>
                 <html lang='en'>
                 <head>
                     <meta charset='UTF-8'>
                     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
                     <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
-                    <script src='https://cdn.jsdelivr.net/npm/luxon'></script>
-                    <script src='https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon'></script>
                     <style>
                         html, body {{
                             margin: 0;
@@ -85,14 +72,7 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision
                     </script>
                 </body>
                 </html>
-                ";
-                return html;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
+            ";
         }
     }
 }

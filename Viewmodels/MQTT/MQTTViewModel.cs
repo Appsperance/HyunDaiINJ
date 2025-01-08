@@ -86,6 +86,16 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
 
+        private ObservableCollection<BitmapImage> qualityImages = new();
+        public ObservableCollection<BitmapImage> QualityImages
+        {
+            get => qualityImages;
+            set
+            {
+                qualityImages = value;
+                OnPropertyChanged();
+            }
+        }
 
         // 기본 생성자
         public MqttViewModel() : this(new MQTTModel())
@@ -133,15 +143,18 @@ namespace HyunDaiINJ.ViewModels.MQTT
             App.Current.Dispatcher.Invoke(() =>
             {
                 CurrentMessage = message; // 최신 메시지 업데이트
-                Console.WriteLine($"수신된 토픽: {topic}, 메시지: {message}");
                 // 상태 업데이트
                 UpdateBlinkingStates(message.StageVal);
 
                 // 이미지 데이터 처리
                 if (message.NgImg != null && message.NgImg.Length > 0)
                 {
-                    CurrentImage = ConvertImage(message.NgImg); // 이미지 변환 및 설정
+                    var image = ConvertImage(message.NgImg); // 이미지 변환 및 설정
+                    CurrentImage = image;
                     Console.WriteLine("이미지 데이터 처리 완료");
+
+                    // 품질 사진에 이미지 추가
+                    QualityImages.Add(image);
                 }
             });
 

@@ -13,8 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HyunDaiINJ.ViewModels.MQTT;
+using HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision;
 
-namespace HyunDaiINJ.Views.Monitoring.Pages
+namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 {
     /// <summary>
     /// VisionMonitoring.xaml에 대한 상호 작용 논리
@@ -30,6 +31,20 @@ namespace HyunDaiINJ.Views.Monitoring.Pages
             var mqttViewModel = new MqttViewModel(mqttModel);
 
             DataContext = mqttViewModel;
+
+            NgCard.DataContext = mqttViewModel;
+        }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border && border.Child is Grid grid && grid.Children[0] is Image image && image.Source is BitmapImage bitmapImage)
+            {
+                // NgCard의 SelectedImage를 설정
+                if (NgCard.FindName("SelectedImage") is Image selectedImage)
+                {
+                    selectedImage.Source = bitmapImage;
+                }
+            }
         }
     }
 }

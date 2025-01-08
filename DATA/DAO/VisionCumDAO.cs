@@ -27,7 +27,6 @@ namespace HyunDaiINJ.DATA.DAO
                 using (var connection = new NpgsqlConnection(_connectionString))
                 {
                     connection.Open();
-                    Console.WriteLine("Database connection opened successfully.");
 
                     // 데이터 조회 쿼리
                     string query = VisionCumQueries.GetVisionData;

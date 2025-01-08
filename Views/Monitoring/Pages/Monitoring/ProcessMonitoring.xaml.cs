@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using HyunDaiINJ.ViewModels.MQTT;
 
-namespace HyunDaiINJ.Views.Monitoring.Pages
+namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 {
     /// <summary>
     /// ProcessMonitoring.xaml에 대한 상호 작용 논리

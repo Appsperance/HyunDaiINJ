@@ -14,7 +14,6 @@ namespace HyunDaiINJ.Models.Monitoring.ThirdSection
             try
             {
                 visionCumDAO = new VisionCumDAO();
-                Console.WriteLine("VisionCumDAO successfully initialized.");
             }
             catch (Exception ex)
             {
@@ -28,12 +27,10 @@ namespace HyunDaiINJ.Models.Monitoring.ThirdSection
             try
             {
                 var data = visionCumDAO.GetVisionCumData();
-                Console.WriteLine($"Retrieved {data.Count} records from VisionCumDAO.");
                 return data;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error retrieving data from VisionCumDAO: {ex.Message}");
                 throw;
             }
         }

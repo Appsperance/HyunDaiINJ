@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace HyunDaiINJ.ViewModels
+namespace HyunDaiINJ.ViewModels.Main
 {
     public class StringEqualsConverter : IValueConverter
     {

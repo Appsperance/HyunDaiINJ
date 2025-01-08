@@ -43,7 +43,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
             {
                 // VisionCumModel에서 데이터 가져오기
                 visionData = _visionCumModel.GetVisionCumData();
-                Console.WriteLine($"LineChartViewModel: Retrieved {visionData.Count} records from VisionCumModel.");
             }
             catch (Exception ex)
             {
@@ -99,7 +98,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"LineChartViewModel: Error processing data for Chart.js - {ex.Message}");
+                Console.WriteLine(ex.ToString());
                 throw;
             }
 
@@ -160,12 +159,11 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
                     const ctx = document.getElementById('chart1').getContext('2d');
                     new Chart(ctx, config);
                 ";
-                Console.WriteLine("LineChartViewModel: Chart.js script generated successfully.");
                 return script;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"LineChartViewModel: Error serializing Chart.js config - {ex.Message}");
+                Console.WriteLine(ex.Message);
                 throw;
             }
         }

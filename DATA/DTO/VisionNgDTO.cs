@@ -14,6 +14,7 @@ namespace HyunDaiINJ.DATA.DTO
         public string? LineId { get; set; } // varchar(10)
         public DateTime DateTime { get; set; } // timestamptz
         public string? NgLabel { get; set; } // varchar(50)
+        public int LabelCount { get; set; }
         public string? NgImgPath { get; set; } // text
     }
 }
