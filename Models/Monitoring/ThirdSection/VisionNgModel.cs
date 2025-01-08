@@ -40,5 +40,20 @@ namespace HyunDaiINJ.Models.Monitoring.ThirdSection
             }
         }
 
+        public List<VisionNgDTO> GetVisionNgDataAll()
+        {
+            try
+            {
+                var data = visionNgDAO.GetVisionNgDataAll();
+                Console.WriteLine($"Retrieved {data.Count} records from VisionNgDAO.");
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving data from VisionNgDAO: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

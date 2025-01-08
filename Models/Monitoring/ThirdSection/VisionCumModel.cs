@@ -31,6 +31,7 @@ namespace HyunDaiINJ.Models.Monitoring.ThirdSection
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error initializing VisionCumDAO: {ex.Message}");
                 throw;
             }
         }

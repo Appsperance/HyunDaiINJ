@@ -1,80 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HyunDaiINJ.DATA.DAO;
 using HyunDaiINJ.DATA.DTO;
 using HyunDaiINJ.DATA.Queries;
 using Npgsql;
+using System.Collections.Generic;
+using System;
 using WpfApp1;
 
-namespace HyunDaiINJ.DATA.DAO
+public class VisionNgDAO : IVisionNgDAO
 {
-    public class VisionNgDAO : IVisionNgDAO
+    private readonly string _connectionString;
+
+    public VisionNgDAO()
     {
-        private readonly string _connectionString;
+        _connectionString = App.ConnectionString
+            ?? throw new InvalidOperationException("ConnectionString has not been initialized.");
+    }
 
-        public VisionNgDAO()
+    public List<VisionNgDTO> GetVisionNgData()
+    {
+        var visionNgData = new List<VisionNgDTO>();
+        try
         {
-            // App.ConnectionString이 초기화되지 않은 경우 예외 발생
-            _connectionString = App.ConnectionString
-                ?? throw new InvalidOperationException("ConnectionString has not been initialized.");
-        }
-
-        public List<VisionNgDTO> GetVisionNgData() // 인터페이스 멤버 구현
-        {
-            var visionNgData = new List<VisionNgDTO>();
-            try
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                using (var connection = new NpgsqlConnection(_connectionString))
+                connection.Open();
+                string query = VisionNgQueries.GetVisionNgData;
+
+                using (var command = new NpgsqlCommand(query, connection))
+                using (var reader = command.ExecuteReader())
                 {
-                    connection.Open();
-                    Console.WriteLine("Database connection opened successfully.");
-
-                    // 데이터 조회 쿼리
-                    string query = VisionNgQueries.GetVisionNgData;
-
-                    using (var command = new NpgsqlCommand(query, connection))
+                    while (reader.Read())
                     {
-                        using (var reader = command.ExecuteReader())
+                        visionNgData.Add(new VisionNgDTO
                         {
-                            while (reader.Read())
-                            {
-                                try
-                                {
-                                    visionNgData.Add(new VisionNgDTO
-                                    {
-                                        //Id = reader.GetInt32(reader.GetOrdinal("id")),
-                                        //LotId = reader["lot_id"]?.ToString(),
-                                        //PartId = reader["part_id"]?.ToString(),
-                                        //LineId = reader["line_id"]?.ToString(),
-                                        //DateTime = reader.GetDateTime(reader.GetOrdinal("date_time")),
-                                        NgLabel = reader["ng_label"]?.ToString(),
-                                        LabelCount = reader.GetInt32(reader.GetOrdinal("label_count"))
-                                        //NgImgPath = reader["ng_img_path"]?.ToString()
-                                    });
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"Data parsing error: {ex.Message}");
-                                }
-                            }
-                        }
+                            NgLabel = reader["ng_label"]?.ToString(),
+                            LabelCount = reader.GetInt32(reader.GetOrdinal("label_count"))
+                        });
                     }
                 }
             }
-            catch (NpgsqlException npgsqlEx)
-            {
-                Console.WriteLine($"Database error: {npgsqlEx.Message}");
-                throw; // 필요하면 예외를 상위로 전달
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Unexpected error: {ex.Message}");
-                throw; // 필요하면 예외를 상위로 전달
-            }
-            finally
-            {
-                Console.WriteLine($"Retrieved {visionNgData.Count} records from the database.");
-            }
-            return visionNgData;
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetVisionNgData: {ex.Message}");
+            throw;
+        }
+        return visionNgData;
+    }
+
+    public List<VisionNgDTO> GetVisionNgDataAll()
+    {
+        var visionNgDataAll = new List<VisionNgDTO>();
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = VisionNgQueries.GetVisionNgDataAll;
+
+                using (var command = new NpgsqlCommand(query, connection))
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        visionNgDataAll.Add(new VisionNgDTO
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("id")),
+                            LotId = reader["lot_id"]?.ToString(),
+                            PartId = reader["part_id"]?.ToString(),
+                            LineId = reader["line_id"]?.ToString(),
+                            DateTime = reader.GetDateTime(reader.GetOrdinal("date_time")),
+                            NgLabel = reader["ng_label"]?.ToString(),
+                            NgImgPath = reader["ng_img_path"]?.ToString()
+                        });
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetVisionNgDataAll: {ex.Message}");
+            throw;
+        }
+        return visionNgDataAll;
     }
 }

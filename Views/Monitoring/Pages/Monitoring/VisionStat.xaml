@@ -5,39 +5,194 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Pages.Monitoring"
       xmlns:First="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.FirstSection.Vision"
+      xmlns:FirstVm="clr-namespace:HyunDaiINJ.ViewModels.Monitoring.FirstSection"
       xmlns:Third="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="750" d:DesignWidth="1350"
       Title="VisionStat">
 
-    <Grid Background="#F0F0F0">
-        <!-- 전체 레이아웃 그리드 -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="2*"/>
+    <Page.DataContext>
+        <FirstVm:TimeViewModel/>
+    </Page.DataContext>
 
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Grid Background="#F0F0F0">
+
+        <Grid Background="#F0F0F0" Margin="10">
+            <Grid.RowDefinitions>
+                <!-- Header Rows -->
+                <RowDefinition Height="33" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="33" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="33" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="33" />
+                <RowDefinition Height="*" />
+
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 헤더 -->
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5" Grid.ColumnSpan="3">
+                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
+                <TextBlock Text="품질 통계"
+                            FontSize="18" 
+                            FontWeight="Bold" 
+                            Foreground="#002E6B" 
+                            Margin="10,0"
+                            VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- 헤더 -->
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5" Grid.Column="5" Grid.ColumnSpan="3">
+                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
+                <TextBlock Text="품질 그래프"
+                            FontSize="18" 
+                            FontWeight="Bold" 
+                            Foreground="#002E6B" 
+                            Margin="10,0"
+                            VerticalAlignment="Center"/>
+            </StackPanel>
+            
+            <!-- 현재 총 생산량 -->
+            <ItemsControl ItemsSource="{Binding NgSummaryData}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="5" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="3" Background="#002E6B" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding NgLabel}" 
+                                           FontSize="20" 
+                                           FontWeight="Bold" 
+                                           Foreground="White" 
+                                           Margin="0,5,0,0"
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding LabelCount, StringFormat={}{0}개}"
+                                           Grid.Column="1" 
+                                           FontWeight="Bold" 
+                                           Foreground="White"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           FontSize="20"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- 헤더 -->
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="5" Grid.ColumnSpan="3">
+                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
+                <TextBlock Text="품질 통계"
+                           FontSize="18" 
+                           FontWeight="Bold" 
+                           Foreground="#002E6B" 
+                           Margin="10,0"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <DataGrid Grid.Row="3" Grid.ColumnSpan="5" Grid.RowSpan="7"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      HeadersVisibility="All"
+                      ItemsSource="{Binding NgDetailedData}"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Id}" Header="ID" Width="50" />
+                    <DataGridTextColumn Binding="{Binding LotId}" Header="Lot ID" Width="100" />
+                    <DataGridTextColumn Binding="{Binding PartId}" Header="Part ID" Width="100" />
+                    <DataGridTextColumn Binding="{Binding LineId}" Header="Line ID" Width="100" />
+                    <DataGridTextColumn Binding="{Binding DateTime}" Header="Date/Time" Width="150" />
+                    <DataGridTextColumn Binding="{Binding NgLabel}" Header="NG Label" Width="100" />
+                    <DataGridTextColumn Binding="{Binding LabelCount}" Header="Label Count" Width="100" />
+                    <DataGridTextColumn Binding="{Binding NgImgPath}" Header="Image Path" Width="200" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+
+
+
+            <!-- 그래프 -->
+            <Grid Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="4" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <!-- 연속 그래프 -->
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- 불량 통계 -->
+                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                    <!-- 차트 자리 -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <!-- 차트 -->
+                        </Grid.RowDefinitions>
+                        <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- 그래프 -->
+            <Grid Grid.Row="4" Grid.Column="5" Grid.ColumnSpan="4" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <!-- 연속 그래프 -->
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- 불량 통계 -->
+                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                    <!-- 차트 자리 -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <!-- 차트 -->
+                        </Grid.RowDefinitions>
+                        <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- 그래프 -->
+            <Grid Grid.Row="7" Grid.Column="5" Grid.ColumnSpan="4" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <!-- 연속 그래프 -->
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- 불량 통계 -->
+                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                    <!-- 차트 자리 -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <!-- 차트 -->
+                        </Grid.RowDefinitions>
+                        <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+        </Grid>
     </Grid>
 </Page>

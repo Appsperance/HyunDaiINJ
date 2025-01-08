@@ -23,6 +23,11 @@
                                  Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                  CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
                                  Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
+                    <RadioButton Content="품질 통계"
+                                 Margin="4"
+                                 Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                                 Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
                 </StackPanel>
             </Expander>
 

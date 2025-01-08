@@ -34,7 +34,7 @@
             <con:SideTab Grid.Column="0" DataContext="{Binding}" Grid.ColumnSpan="2" Margin="0,0,967,0" Background="#F0F0F0"/>
 
             <!-- Page Content -->
-            <Frame Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding SelectedTab.CustomContent}" NavigationUIVisibility="Hidden" Background="#F0F0F0 "/>
+            <Frame Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding SelectedTab.CustomContent}" NavigationUIVisibility="Visible" Background="#F0F0F0 "/>
         </Grid>
     </Grid>
 </Window>

@@ -13,5 +13,8 @@ namespace HyunDaiINJ.DATA.Queries
             FROM vision_ng
             GROUP BY  ng_label
             ORDER BY  ng_label;";
+
+        public const string GetVisionNgDataAll = @"
+            SELECT  * FROM vision_ng;";
     }
 }

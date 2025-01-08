@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HyunDaiINJ.ViewModels.Monitoring.ThirdSection;
 
 namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 {
@@ -23,6 +24,9 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
         public VisionStat()
         {
             InitializeComponent();
+
+            // ViewModel을 DataContext로 설정
+            DataContext = new VisionNgViewModel();
         }
     }
 }

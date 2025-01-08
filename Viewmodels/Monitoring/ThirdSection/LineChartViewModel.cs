@@ -113,12 +113,32 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
                 },
                 options = new
                 {
+                    layout = new
+                    {
+                        padding = new
+                        {
+                            left = 0,    // 그래프를 왼쪽으로 붙임
+                            right = 10,  // 오른쪽 여백 유지
+                            top = 10,    // 상단 여백
+                            bottom = 10  // 하단 여백
+                        }
+                    },
                     plugins = new
                     {
                         legend = new
                         {
                             display = true,
-                            position = "top"
+                            position = "bottom", // 범례를 아래로 이동
+                            labels = new
+                            {
+                                boxWidth = 10, // 범례 박스 너비
+                                boxHeight = 10, // 범례 박스 높이
+                                padding = 10,  // 범례 간격
+                                font = new
+                                {
+                                    size = 10 // 글자 크기 조정
+                                }
+                            }
                         }
                     },
                     scales = new
@@ -126,11 +146,10 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
                         x = new
                         {
                             type = "category",
-                            ticks = new 
+                            ticks = new
                             {
-                                autoSkip = false, // 축 레이블 자동 생략 방지
+                                autoSkip = false // 축 레이블 자동 생략 방지
                             },
-
                             grid = new
                             {
                                 display = false
@@ -147,9 +166,12 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
                                 color = "rgba(200, 200, 200, 0.2)"
                             }
                         }
-                    }
+                    },
+                    responsive = true,
+                    maintainAspectRatio = false // 그래프 크기 고정 해제
                 }
             };
+
 
             // JSON 형식으로 반환
             try
