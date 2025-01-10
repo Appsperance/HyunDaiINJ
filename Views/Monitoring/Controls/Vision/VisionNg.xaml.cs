@@ -3,16 +3,16 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using HyunDaiINJ.ViewModels.Monitoring.ThirdSection;
 
-namespace HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision
+namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {
     public partial class VisionNg : UserControl
     {
-        private readonly VisionNgViewModel _viewModel;
+        private readonly VisionNgViewModel viewModel;
 
         public VisionNg()
         {
             InitializeComponent();
-            _viewModel = new VisionNgViewModel();
+            viewModel = new VisionNgViewModel();
 
             // WebView2 초기화
         }

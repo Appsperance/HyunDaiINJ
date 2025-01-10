@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HyunDaiINJ.ViewModels.MQTT;
 
-namespace HyunDaiINJ.Views.Monitoring.Controls.FirstSection.Vision
+namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 { 
     /// <summary>
     /// VisionProcedure.xaml에 대한 상호 작용 논리

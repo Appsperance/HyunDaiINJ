@@ -16,11 +16,11 @@ namespace HyunDaiINJ.Models.Monitoring.ThirdSection
             try
             {
                 visionNgDAO = new VisionNgDAO();
-                Console.WriteLine("VisionCumDAO successfully initialized.");
+                Console.WriteLine("VisionNgModel : 연결 성공");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error initializing VisionNgDAO: {ex.Message}");
+                Console.WriteLine($"VisionNgModel {ex.Message}");
                 throw;
             }
         }
@@ -30,12 +30,12 @@ namespace HyunDaiINJ.Models.Monitoring.ThirdSection
             try
             {
                 var data = visionNgDAO.GetVisionNgData();
-                Console.WriteLine($"Retrieved {data.Count} records from VisionNgDAO.");
+                Console.WriteLine($"VisionNgModel : GetVisionNgData {data.Count}");
                 return data;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error retrieving data from VisionNgDAO: {ex.Message}");
+                Console.WriteLine($"VisionNgModel GetVisionNgData: {ex.Message}");
                 throw;
             }
         }
@@ -45,7 +45,22 @@ namespace HyunDaiINJ.Models.Monitoring.ThirdSection
             try
             {
                 var data = visionNgDAO.GetVisionNgDataAll();
-                Console.WriteLine($"Retrieved {data.Count} records from VisionNgDAO.");
+                Console.WriteLine($"VisionNgModel : GetVisionNgDataAll {data.Count}");
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"VisionNgModel GetVisionNgDataAll: {ex.Message}");
+                throw;
+            }
+        }
+
+        public List<VisionNgDTO> GetVisionNgDataWeek()
+        {
+            try
+            {
+                var data = visionNgDAO.GetVisionNgDataWeek();
+                Console.WriteLine($"VisionNgModel : GetVisionNgDataWeek {data.Count}");
                 return data;
             }
             catch (Exception ex)

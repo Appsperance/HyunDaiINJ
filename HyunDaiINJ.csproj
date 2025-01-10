@@ -25,16 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Monitoring\Controls\SecondSection\Process\" />
-    <Folder Include="Views\Monitoring\Controls\SecondSection\Vision\" />
-    <Folder Include="Views\Monitoring\Controls\ThirdSection\ProcessMonitoring\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Views\Monitoring\Controls\FirstSection\Vision\VisionProcedure.xaml.cs">
+    <Compile Update="Views\Monitoring\Controls\Vision\VisionProcedure.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Monitoring\Controls\ThirdSection\Vision\LineChart.xaml.cs">
+    <Compile Update="Views\Monitoring\Controls\Vision\LineChart.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

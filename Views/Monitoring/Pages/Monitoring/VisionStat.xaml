@@ -4,9 +4,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Pages.Monitoring"
-      xmlns:First="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.FirstSection.Vision"
+      xmlns:vision="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Vision"
       xmlns:FirstVm="clr-namespace:HyunDaiINJ.ViewModels.Monitoring.FirstSection"
-      xmlns:Third="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="1350"
@@ -150,7 +149,7 @@
                             <RowDefinition Height="*"/>
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
-                        <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -169,7 +168,7 @@
                             <RowDefinition Height="*"/>
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
-                        <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <vision:VisionWeek Grid.Row="1" Grid.ColumnSpan="2"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -188,7 +187,7 @@
                             <RowDefinition Height="*"/>
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
-                        <Third:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
                     </Grid>
                 </Border>
             </Grid>

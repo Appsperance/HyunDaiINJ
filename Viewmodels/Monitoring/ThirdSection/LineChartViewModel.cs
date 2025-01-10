@@ -1,193 +1,196 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using HyunDaiINJ.Models.Monitoring.ThirdSection;
 using HyunDaiINJ.DATA.DTO;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
 {
-    public class LineChartViewModel
+    public class LineChartViewModel : INotifyPropertyChanged
     {
-        private readonly VisionCumModel _visionCumModel;
-        private readonly List<string> _colorPalette; // 미리 정의된 색상 팔레트
+        private readonly List<string> _colorPalette;
+        private string _chartScript;
 
-        public LineChartViewModel()
+        public event Action ChartScriptUpdated;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string ChartScript
         {
-            try
+            get => _chartScript;
+            private set
             {
-                // VisionCumModel 초기화
-                _visionCumModel = new VisionCumModel();
-                Console.WriteLine("LineChartViewModel: VisionCumModel initialized successfully.");
-
-                // 색상 팔레트 초기화
-                _colorPalette = new List<string>
-                {
-                    "rgba(75, 192, 192, 1)",  // 청록색
-                    "rgba(255, 99, 132, 1)",  // 빨강
-                    "rgba(54, 162, 235, 1)",  // 파랑
-                    "rgba(255, 206, 86, 1)",  // 노랑
-                    "rgba(153, 102, 255, 1)"  // 보라
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"LineChartViewModel: Error initializing VisionCumModel - {ex.Message}");
-                throw;
+                _chartScript = value;
+                OnPropertyChanged();
+                ChartScriptUpdated?.Invoke();
             }
         }
 
-        public string GenerateChartScript()
+        public LineChartViewModel()
         {
-            List<VisionCumDTO> visionData;
+            _colorPalette = new List<string>
+    {
+        "rgba(75, 192, 192, 1)",
+        "rgba(255, 99, 132, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(255, 206, 86, 1)",
+        "rgba(153, 102, 255, 1)"
+    };
+
+            // ChartScript 기본값 설정
+            ChartScript = this.GenerateEmptyChartScript();
+            Console.WriteLine($"[DEBUG] Initial ChartScript: {ChartScript}");
+
+        }
+
+
+        public async Task ConnectToSocketServerAsync()
+        {
             try
             {
-                // VisionCumModel에서 데이터 가져오기
-                visionData = _visionCumModel.GetVisionCumData();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"LineChartViewModel: Error retrieving data from VisionCumModel - {ex.Message}");
-                throw;
-            }
+                using var client = new TcpClient("127.0.0.1", 51900);
+                using var stream = client.GetStream();
+                byte[] buffer = new byte[8192]; // 버퍼 크기를 충분히 크게 설정
+                StringBuilder completeData = new StringBuilder(); // 데이터를 누적할 StringBuilder
 
-            // 데이터 변환: VisionCumDTO를 Chart.js 데이터 형식으로 변환
-            var datasets = new List<object>();
-            var labels = new List<string>();
-            var groupedData = new Dictionary<string, List<int>>();
+                string request = "get_data";
+                byte[] requestBytes = Encoding.UTF8.GetBytes(request);
+                await stream.WriteAsync(requestBytes, 0, requestBytes.Length);
 
-            try
-            {
-                int colorIndex = 0;
-
-                foreach (var data in visionData)
+                while (true)
                 {
-                    // lot_id 기준으로 데이터를 그룹화
-                    if (!groupedData.ContainsKey(data.lotId))
+                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0) break; // 연결이 종료된 경우
+
+                    // 받은 데이터를 문자열로 변환하고 누적
+                    string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    completeData.Append(receivedData);
+
+                    // JSON이 완전한 형식인지 확인
+                    if (IsValidJson(completeData.ToString()))
                     {
-                        groupedData[data.lotId] = new List<int>();
+                        var jsonData = completeData.ToString();
+                        completeData.Clear(); // 데이터를 초기화
+
+                        Console.WriteLine($"[DEBUG] Full JSON Data Received: {jsonData}");
+                        var data = JsonSerializer.Deserialize<List<VisionCumDTO>>(jsonData);
+
+                        if (data != null && data.Count > 0)
+                        {
+                            ChartScript = GenerateChartScript(data); // 데이터를 기반으로 ChartScript 생성
+                        }
                     }
-
-                    groupedData[data.lotId].Add((int)data.total);
-
-                    // 날짜 레이블 추가
-                    var dateLabel = data.time.ToString("MM/dd");
-                    if (!labels.Contains(dateLabel))
-                    {
-                        labels.Add(dateLabel);
-                    }
-                }
-
-                // Chart.js용 데이터셋 생성
-                foreach (var group in groupedData)
-                {
-                    var color = _colorPalette[colorIndex % _colorPalette.Count]; // 순환 색상 할당
-                    var backgroundColor = color.Replace("1)", "0.2)"); // 배경색은 투명도 적용
-
-                    datasets.Add(new
-                    {
-                        label = group.Key, // lot_id
-                        data = group.Value, // 총계(total) 값
-                        borderColor = color,
-                        backgroundColor = backgroundColor,
-                        fill = true,
-                        tension = 0.4
-                    });
-
-                    colorIndex++;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
-                throw;
+                Console.WriteLine($"[DEBUG] Socket error: {ex.Message}");
             }
+        }
 
-            // Chart.js 구성 데이터 생성
+        // JSON 유효성 검사 메서드 추가
+        private bool IsValidJson(string jsonData)
+        {
+            try
+            {
+                JsonDocument.Parse(jsonData);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+        public string GenerateEmptyChartScript()
+        {
             var config = new
             {
                 type = "line",
                 data = new
                 {
-                    labels = labels, // X축 레이블
-                    datasets = datasets // 데이터셋
+                    labels = new string[] { "No Data" },
+                    datasets = new object[]
+                    {
+                new
+                {
+                    label = "Empty Dataset",
+                    data = new int[] { 0 },
+                    borderColor = "rgba(200, 200, 200, 1)",
+                    fill = false
+                }
+                    }
                 },
                 options = new
                 {
-                    layout = new
-                    {
-                        padding = new
-                        {
-                            left = 0,    // 그래프를 왼쪽으로 붙임
-                            right = 10,  // 오른쪽 여백 유지
-                            top = 10,    // 상단 여백
-                            bottom = 10  // 하단 여백
-                        }
-                    },
-                    plugins = new
-                    {
-                        legend = new
-                        {
-                            display = true,
-                            position = "bottom", // 범례를 아래로 이동
-                            labels = new
-                            {
-                                boxWidth = 10, // 범례 박스 너비
-                                boxHeight = 10, // 범례 박스 높이
-                                padding = 10,  // 범례 간격
-                                font = new
-                                {
-                                    size = 10 // 글자 크기 조정
-                                }
-                            }
-                        }
-                    },
+                    responsive = true,
                     scales = new
                     {
-                        x = new
-                        {
-                            type = "category",
-                            ticks = new
-                            {
-                                autoSkip = false // 축 레이블 자동 생략 방지
-                            },
-                            grid = new
-                            {
-                                display = false
-                            }
-                        },
-                        y = new
-                        {
-                            ticks = new
-                            {
-                                stepSize = 50
-                            },
-                            grid = new
-                            {
-                                color = "rgba(200, 200, 200, 0.2)"
-                            }
-                        }
-                    },
-                    responsive = true,
-                    maintainAspectRatio = false // 그래프 크기 고정 해제
+                        x = new { type = "category" },
+                        y = new { beginAtZero = true }
+                    }
                 }
             };
 
+            return JsonSerializer.Serialize(config);
+        }
 
-            // JSON 형식으로 반환
-            try
+
+        private string GenerateChartScript(List<VisionCumDTO> visionCumData)
+        {
+            var datasets = new List<object>();
+            var labels = new List<string>();
+            var dataPoints = new List<int>();
+
+            foreach (var entry in visionCumData)
             {
-                var script = $@"
-                    const config = {JsonSerializer.Serialize(config)};
-                    const ctx = document.getElementById('chart1').getContext('2d');
-                    new Chart(ctx, config);
-                ";
-                return script;
+                // time과 total만 사용
+                labels.Add(entry.lotId); // X축 라벨
+                dataPoints.Add(entry.total ?? 0); // Y축 데이터
             }
-            catch (Exception ex)
+
+            datasets.Add(new
             {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
+                label = "Total per Day",
+                data = dataPoints,
+                borderColor = "rgba(75, 192, 192, 1)",
+                fill = false,
+                tension = 0.4
+            });
+
+            var config = new
+            {
+                type = "line",
+                data = new
+                {
+                    labels = labels,
+                    datasets = datasets
+                },
+                options = new
+                {
+                    responsive = true,
+                    scales = new
+                    {
+                        x = new { type = "category" },
+                        y = new { beginAtZero = true }
+                    }
+                }
+            };
+
+            return JsonSerializer.Serialize(config);
+        }
+
+
+
+
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

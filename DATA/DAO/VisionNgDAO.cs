@@ -84,4 +84,48 @@ public class VisionNgDAO : IVisionNgDAO
         }
         return visionNgDataAll;
     }
+
+    public List<VisionNgDTO> GetVisionNgDataWeek()
+    {
+        var visionNgDataWeek = new List<VisionNgDTO>();
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = VisionNgQueries.GetVisionNgDataWeek;
+
+                using (var command = new NpgsqlCommand(query, connection))
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var data = new VisionNgDTO
+                        {
+                            YearNumber = reader.GetInt32(reader.GetOrdinal("year_number")),
+                            WeekNumber = reader.GetInt32(reader.GetOrdinal("week_number")),
+                            WeekStartDate = reader.GetDateTime(reader.GetOrdinal("week_start_date")),
+                            WeekEndDate = reader.GetDateTime(reader.GetOrdinal("week_end_date")),
+                            NgLabel = reader["ng_label"]?.ToString(),
+                            LabelCount = reader.GetInt32(reader.GetOrdinal("ng_count"))
+                        };
+
+                        visionNgDataWeek.Add(data);
+
+                        // 각 데이터 출력
+                        Console.WriteLine($"Year: {data.YearNumber}, Week: {data.WeekNumber}, Label: {data.NgLabel}, Count: {data.LabelCount}");
+                    }
+
+                    Console.WriteLine($"visiongNG : ", visionNgDataWeek.Count);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetVisionNgDataAll: {ex.Message}");
+            throw;
+        }
+        return visionNgDataWeek;
+    }
+
 }

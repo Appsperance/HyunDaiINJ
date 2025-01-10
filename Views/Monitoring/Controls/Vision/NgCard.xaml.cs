@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision
+namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {
     public partial class NgCard : UserControl
     {

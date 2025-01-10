@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HyunDaiINJ.DATA.DTO
 {
@@ -16,5 +12,11 @@ namespace HyunDaiINJ.DATA.DTO
         public string? NgLabel { get; set; } // varchar(50)
         public int LabelCount { get; set; }
         public string? NgImgPath { get; set; } // text
+
+        // 주별 데이터 속성 추가
+        public int YearNumber { get; set; } // 주별 연도
+        public int WeekNumber { get; set; } // 주 번호
+        public DateTime WeekStartDate { get; set; } // 주 시작 날짜
+        public DateTime WeekEndDate { get; set; } // 주 끝 날짜
     }
 }

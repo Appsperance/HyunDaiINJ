@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HyunDaiINJ.ViewModels.MQTT;
-using HyunDaiINJ.Views.Monitoring.Controls.ThirdSection.Vision;
+using HyunDaiINJ.Views.Monitoring.Controls.Vision;
 
 namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 {

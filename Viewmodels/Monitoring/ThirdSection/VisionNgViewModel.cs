@@ -9,17 +9,19 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
 {
     public class VisionNgViewModel
     {
-        private readonly VisionNgModel _visionNgModel;
+        private readonly VisionNgModel visionNgModel;
 
         // Chart.js용 데이터
         public List<VisionNgDTO> NgSummaryData { get; private set; }
+        // Chart.js용 데이터
+        public List<VisionNgDTO> NgWeekData { get; private set; }
 
         // DataGrid용 데이터
         public ObservableCollection<VisionNgDTO> NgDetailedData { get; private set; }
 
         public VisionNgViewModel()
         {
-            _visionNgModel = new VisionNgModel();
+            visionNgModel = new VisionNgModel();
             LoadData();
         }
 
@@ -29,8 +31,9 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
             try
             {
                 // VisionNgModel을 통해 데이터를 가져옴
-                NgSummaryData = _visionNgModel.GetVisionNgData();      // 요약 데이터
-                NgDetailedData = new ObservableCollection<VisionNgDTO>(_visionNgModel.GetVisionNgDataAll()); // 상세 데이터
+                NgSummaryData = visionNgModel.GetVisionNgData();      // 요약 데이터
+                NgWeekData = visionNgModel.GetVisionNgDataWeek();
+                NgDetailedData = new ObservableCollection<VisionNgDTO>(visionNgModel.GetVisionNgDataAll()); // 상세 데이터
             }
             catch (Exception ex)
             {
