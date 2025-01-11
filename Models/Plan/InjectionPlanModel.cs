@@ -31,6 +31,107 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
+        // (예시) 월/화/수/목/금/토/일 DailyQuan
+        private int? _mondayQuan;
+        public int? MondayQuan
+        {
+            get => _mondayQuan;
+            set
+            {
+                if (_mondayQuan != value)
+                {
+                    _mondayQuan = value;
+                    OnPropertyChanged(nameof(MondayQuan));
+                }
+            }
+        }
+
+        private int? _tuesdayQuan;
+        public int? TuesdayQuan
+        {
+            get => _tuesdayQuan;
+            set
+            {
+                if (_tuesdayQuan != value)
+                {
+                    _tuesdayQuan = value;
+                    OnPropertyChanged(nameof(TuesdayQuan));
+                }
+            }
+        }
+
+        private int? _wednesdayQuan;
+        public int? WednesdayQuan
+        {
+            get => _tuesdayQuan;
+            set
+            {
+                if (_tuesdayQuan != value)
+                {
+                    _tuesdayQuan = value;
+                    OnPropertyChanged(nameof(WednesdayQuan));
+                }
+            }
+        }
+
+        private int? _thursdayQuan;
+        public int? ThursdayQuan
+        {
+            get => _thursdayQuan;
+            set
+            {
+                if (_thursdayQuan != value)
+                {
+                    _thursdayQuan = value;
+                    OnPropertyChanged(nameof(WednesdayQuan));
+                }
+            }
+        }
+
+        private int? _fridayQuan;
+        public int? FridayQuan
+        {
+            get => _fridayQuan;
+            set
+            {
+                if (_fridayQuan != value)
+                {
+                    _fridayQuan = value;
+                    OnPropertyChanged(nameof(FridayQuan));
+                }
+            }
+        }
+
+        private int? _saturdayQuan;
+        public int? SaturdayQuan
+        {
+            get => _saturdayQuan;
+            set
+            {
+                if (_saturdayQuan != value)
+                {
+                    _saturdayQuan = value;
+                    OnPropertyChanged(nameof(SaturdayQuan));
+                }
+            }
+        }
+
+        private int? _sundayQuan;
+        public int? SundayQuan
+        {
+            get => _sundayQuan;
+            set
+            {
+                if (_sundayQuan != value)
+                {
+                    _sundayQuan = value;
+                    OnPropertyChanged(nameof(SundayQuan));
+                }
+            }
+        }
+
+
+
         public int Week
         {
             get => _dto.Week;

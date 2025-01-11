@@ -14,16 +14,18 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HyunDaiINJ.ViewModels.Plan;
 
-namespace HyunDaiINJ.Views.Plan.Pages
+namespace HyunDaiINJ.Views.Plan.Controls.Daily
 {
     /// <summary>
-    /// DailyPlan.xaml에 대한 상호 작용 논리
+    /// DailyPlanControl.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class DailyPlan : Page
+    public partial class DailyPlanControl : UserControl
     {
-        public DailyPlan()
+        public DailyPlanControl()
         {
             InitializeComponent();
+
+            this.DataContext = new InjectionPlanViewModel();
         }
     }
 }

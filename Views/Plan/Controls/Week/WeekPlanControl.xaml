@@ -32,17 +32,6 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10">
-            <TextBlock Text="제품명:"
-               VerticalAlignment="Center" 
-               Margin="5" />
-            <TextBox Text="{Binding PartIdHeader, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-             Width="200" 
-             VerticalAlignment="Center" 
-             Margin="5" />
-        </StackPanel>
-
-
         <Grid Grid.Row="0" Margin="5" Grid.ColumnSpan="3">
             <!-- 헤더 -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">

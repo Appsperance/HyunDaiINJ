@@ -39,6 +39,11 @@
                      Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                      CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
                      Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
+                    <RadioButton Content="일일계획/지시"
+                     Margin="4"
+                     Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                     CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                     Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
                     <RadioButton Content="생산실적"
                      Margin="4"
                      Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
