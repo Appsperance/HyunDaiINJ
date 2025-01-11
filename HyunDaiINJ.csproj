@@ -33,4 +33,8 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Plan\Controls\Daily\" />
+  </ItemGroup>
+
 </Project>

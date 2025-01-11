@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using HyunDaiINJ.DATA.DTO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Linq;
+using Newtonsoft.Json;
+using HyunDaiINJ.DATA.DTO;
 
 namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
 {
@@ -32,20 +33,16 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
         public LineChartViewModel()
         {
             _colorPalette = new List<string>
-    {
-        "rgba(75, 192, 192, 1)",
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
-        "rgba(153, 102, 255, 1)"
-    };
+            {
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(153, 102, 255, 1)"
+            };
 
-            // ChartScript 기본값 설정
-            ChartScript = this.GenerateEmptyChartScript();
-            Console.WriteLine($"[DEBUG] Initial ChartScript: {ChartScript}");
-
+            ChartScript = GenerateEmptyChartScript();
         }
-
 
         public async Task ConnectToSocketServerAsync()
         {
@@ -53,121 +50,145 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
             {
                 using var client = new TcpClient("127.0.0.1", 51900);
                 using var stream = client.GetStream();
-                byte[] buffer = new byte[8192]; // 버퍼 크기를 충분히 크게 설정
-                StringBuilder completeData = new StringBuilder(); // 데이터를 누적할 StringBuilder
+                var buffer = new byte[8192];
+                var completeData = new StringBuilder();
 
-                string request = "get_data";
-                byte[] requestBytes = Encoding.UTF8.GetBytes(request);
+                byte[] requestBytes = Encoding.UTF8.GetBytes("get_data");
                 await stream.WriteAsync(requestBytes, 0, requestBytes.Length);
+
+                Console.WriteLine($"[DEBUG] Sent request to server: {Encoding.UTF8.GetString(requestBytes)}");
 
                 while (true)
                 {
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                    if (bytesRead == 0) break; // 연결이 종료된 경우
 
-                    // 받은 데이터를 문자열로 변환하고 누적
+                    if (bytesRead == 0)
+                    {
+                        Console.WriteLine("[DEBUG] Connection closed by server.");
+                        break;
+                    }
+
                     string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    Console.WriteLine($"[DEBUG] Received data chunk: {receivedData}");
+
                     completeData.Append(receivedData);
 
-                    // JSON이 완전한 형식인지 확인
-                    if (IsValidJson(completeData.ToString()))
-                    {
                         var jsonData = completeData.ToString();
-                        completeData.Clear(); // 데이터를 초기화
+                        Console.WriteLine($"[DEBUG] Complete JSON Data: {jsonData}");
 
-                        Console.WriteLine($"[DEBUG] Full JSON Data Received: {jsonData}");
-                        var data = JsonSerializer.Deserialize<List<VisionCumDTO>>(jsonData);
+                        completeData.Clear(); // Clear after processing JSON
 
-                        if (data != null && data.Count > 0)
+                        try
                         {
-                            ChartScript = GenerateChartScript(data); // 데이터를 기반으로 ChartScript 생성
+                            var data = JsonConvert.DeserializeObject<List<VisionCumDTO>>(jsonData);
+                            if (data != null && data.Any())
+                            {
+                                Console.WriteLine("[DEBUG] Deserialized Data:");
+                                foreach (var entry in data)
+                                {
+                                    Console.WriteLine($"- Time: {entry.time}, LotId: {entry.lotId}, Total: {entry.total}");
+                                }
+
+                                ChartScript = GenerateChartScript(data);
+                            }
+                            else
+                            {
+                                Console.WriteLine("[DEBUG] No valid data found in JSON.");
+                            }
                         }
-                    }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[ERROR] Deserialization failed: {ex.Message}");
+                        }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DEBUG] Socket error: {ex.Message}");
+                Console.WriteLine($"[ERROR] Socket error: {ex.Message}");
             }
         }
-
-        // JSON 유효성 검사 메서드 추가
-        private bool IsValidJson(string jsonData)
-        {
-            try
-            {
-                JsonDocument.Parse(jsonData);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
 
         public string GenerateEmptyChartScript()
         {
             var config = new
             {
                 type = "line",
-                data = new
-                {
-                    labels = new string[] { "No Data" },
-                    datasets = new object[]
-                    {
-                new
-                {
-                    label = "Empty Dataset",
-                    data = new int[] { 0 },
-                    borderColor = "rgba(200, 200, 200, 1)",
-                    fill = false
-                }
-                    }
-                },
-                options = new
-                {
-                    responsive = true,
-                    scales = new
-                    {
-                        x = new { type = "category" },
-                        y = new { beginAtZero = true }
-                    }
-                }
+                data = new { labels = new[] { "No Data" }, datasets = new[] { new { label = "Empty", data = new[] { 0 } } } },
+                options = new { responsive = true, scales = new { x = new { type = "time" }, y = new { beginAtZero = true } } }
             };
 
-            return JsonSerializer.Serialize(config);
+            return JsonConvert.SerializeObject(config);
         }
-
 
         private string GenerateChartScript(List<VisionCumDTO> visionCumData)
         {
-            var datasets = new List<object>();
-            var labels = new List<string>();
-            var dataPoints = new List<int>();
+            Console.WriteLine($"[DEBUG] Input Data Count: {visionCumData.Count}");
 
-            foreach (var entry in visionCumData)
+            // 1. 유효한 데이터 필터링
+            var validData = visionCumData.Where(entry => entry.total > 0).ToList();
+            Console.WriteLine($"[DEBUG] Valid Data Count: {validData.Count}");
+            foreach (var entry in validData)
             {
-                // time과 total만 사용
-                labels.Add(entry.lotId); // X축 라벨
-                dataPoints.Add(entry.total ?? 0); // Y축 데이터
+                Console.WriteLine($"- Time: {entry.time}, LotId: {entry.lotId}, Total: {entry.total}");
             }
 
-            datasets.Add(new
-            {
-                label = "Total per Day",
-                data = dataPoints,
-                borderColor = "rgba(75, 192, 192, 1)",
-                fill = false,
-                tension = 0.4
-            });
+            // 2. 라벨 생성 (lotId 기준)
+            var labels = validData.Select(e => e.lotId)
+                                  .Distinct()
+                                  .OrderBy(e => e)
+                                  .ToList();
+            Console.WriteLine($"[DEBUG] Labels (LotId): {string.Join(", ", labels)}");
 
+            // 3. X축 데이터를 유니크한 시간(time) 값으로 생성
+            var uniqueTimes = validData.Select(e => e.time.ToString("yyyy-MM-dd HH:mm"))
+                                        .Distinct()
+                                        .OrderBy(e => e)
+                                        .ToList();
+            Console.WriteLine($"[DEBUG] Unique Times (X-axis): {string.Join(", ", uniqueTimes)}");
+
+            // 4. 데이터셋 생성 (lotId별 데이터)
+            var datasets = validData
+                .GroupBy(e => e.lotId)
+                .Select((group, index) =>
+                {
+                    // X축(time)에 대응하는 Y축(total) 값 생성
+                    var dataPoints = uniqueTimes.Select(time =>
+                    {
+                        var matchingEntry = group.FirstOrDefault(e => e.time.ToString("yyyy-MM-dd HH:mm") == time);
+                        return new
+                        {
+                            x = time,
+                            y = matchingEntry?.total ?? 0 // 매칭되는 값이 없으면 0으로 설정
+                        };
+                    }).ToList();
+
+                    var dataset = new
+                    {
+                        label = group.Key, // lotId를 데이터셋 라벨로 사용
+                        data = dataPoints,
+                        borderColor = _colorPalette[index % _colorPalette.Count],
+                        fill = false
+                    };
+
+                    Console.WriteLine($"[DEBUG] Dataset for LotId {group.Key}:");
+                    foreach (var dataPoint in dataset.data)
+                    {
+                        Console.WriteLine($"  - X: {dataPoint.x}, Y: {dataPoint.y}");
+                    }
+
+                    return dataset;
+                })
+                .ToList();
+
+            Console.WriteLine($"[DEBUG] Datasets Created: {datasets.Count}");
+
+            // 5. Chart.js 구성 생성
             var config = new
             {
                 type = "line",
                 data = new
                 {
-                    labels = labels,
+                    labels = uniqueTimes, // X축은 time 값으로 설정
                     datasets = datasets
                 },
                 options = new
@@ -175,16 +196,29 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
                     responsive = true,
                     scales = new
                     {
-                        x = new { type = "category" },
-                        y = new { beginAtZero = true }
+                        x = new
+                        {
+                            type = "time", // X축을 time으로 설정
+                            time = new
+                            {
+                                parser = "yyyy-MM-dd HH:mm", // 시간 형식 파싱
+                                tooltipFormat = "MMM dd, yyyy HH:mm", // 툴팁 형식
+                                displayFormats = new
+                                {
+                                    hour = "MMM dd HH:mm", // 축 시간 형식
+                                    day = "MMM dd"
+                                }
+                            }
+                        },
+                        y = new { beginAtZero = true } // Y축은 0부터 시작
                     }
                 }
             };
 
-            return JsonSerializer.Serialize(config);
+            Console.WriteLine($"[DEBUG] Chart Configuration: {JsonConvert.SerializeObject(config)}");
+
+            return JsonConvert.SerializeObject(config);
         }
-
-
 
 
 

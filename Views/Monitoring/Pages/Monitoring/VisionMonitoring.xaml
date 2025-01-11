@@ -345,7 +345,6 @@
                         <RowDefinition Height="*"/>
                         <!-- 차트 -->
                     </Grid.RowDefinitions>
-                    <vision:VisionNg Grid.Row="1" Grid.ColumnSpan="2"/>
                 </Grid>
             </Border>
         </Grid>
