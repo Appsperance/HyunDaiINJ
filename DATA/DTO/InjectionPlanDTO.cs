@@ -14,7 +14,5 @@ namespace HyunDaiINJ.DATA.DTO
         public int? DailyQuan {  get; set; }
         public string? Days { get; set; }
         public int? WeekQuan { get; set; }
-
-        public Dictionary<string, int> PartIdData { get; set; } = new Dictionary<string, int>();
     }
 }

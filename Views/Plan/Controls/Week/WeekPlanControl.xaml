@@ -221,9 +221,11 @@
                         </DataGridTemplateColumn.HeaderTemplate>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding PartId}" 
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Center" />
+                                <TextBox Text="{Binding WeekQuan, 
+                                            Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -251,7 +253,7 @@
 
             <!-- 각 열에 총합 표시 -->
             <TextBlock Grid.Column="0" Text="계획 총합" FontSize="16" FontWeight="Bold" Foreground="#002E6B" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="1" Text="{Binding TotalPlanQuantity}" FontSize="16" FontWeight="Bold" Foreground="#002E6B" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="1" Text="{Binding TotalWeekQuan}" FontSize="16" FontWeight="Bold" Foreground="#002E6B" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
     </Grid>
 </UserControl>
