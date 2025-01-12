@@ -65,8 +65,57 @@
                             FontWeight="Bold"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"/>
-                <Button Grid.Column="2" Margin="3" Content="저장"/>
-                <Button Grid.Column="3" Margin="3" Content="수정"/>
+                <!-- 저장 버튼-->
+                <Button Content="저장"
+                        Width="90" 
+                        Height="35"
+                        Margin="5"
+                        Grid.Row="1" 
+                        Grid.RowSpan="2" 
+                        Grid.Column="2"
+                        Background="#3670c4" 
+                        Foreground="White" 
+                        FontWeight="Bold" 
+                        FontSize="20" 
+                        Command="{Binding SendAllInsertCommand}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    CornerRadius="5">
+                                <ContentPresenter HorizontalAlignment="Center" 
+                              VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+
+                <!-- 수정 버튼-->
+                <Button Content="수정" 
+                        Width="90"
+                        Height="35"
+                        Margin="5" 
+                        Grid.Row="1" 
+                        Grid.RowSpan="2" 
+                        Grid.Column="3"
+                        Background="#cbbf4b"
+                        Foreground="White"
+                        FontWeight="Bold" FontSize="20" 
+                        Command="{Binding SendAllUpdateCommand}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    CornerRadius="5">
+                                <ContentPresenter HorizontalAlignment="Center" 
+                      VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </Grid>
             
         </Grid>
