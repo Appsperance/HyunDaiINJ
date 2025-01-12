@@ -28,5 +28,7 @@ namespace HyunDaiINJ.DATA.Queries
             FROM vision_ng
             GROUP BY year_number, week_number, ng_label
             ORDER BY year_number, week_number, ng_label;";
+
+
     }
 }

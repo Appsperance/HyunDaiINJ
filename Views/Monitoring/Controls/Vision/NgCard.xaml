@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vision="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Vision"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -22,19 +23,18 @@
 
         <!-- 이미지 리스트 영역 -->
         <ListView Grid.Row="1" x:Name="ImageListView" Margin="10"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                  SelectionChanged="ImageListView_SelectionChanged">
+          ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListView.ItemsPanel>
-                <!-- WrapPanel을 사용하여 이미지를 가로로 나열 -->
                 <ItemsPanelTemplate>
                     <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
-                <!-- 개별 이미지 항목을 Border로 감쌈 -->
                 <DataTemplate>
                     <Border BorderBrush="#AAAAAA" BorderThickness="1" CornerRadius="5" Margin="5">
-                        <Image Source="{Binding}" Width="100" Height="100" Cursor="Hand" />
+                        <!-- 기존: <Image Source="{Binding}" Width="100" Height="100" ... /> -->
+                        <vision:LazyImageControl SourcePath="{Binding}"
+                                         Width="100" Height="100" Cursor="Hand"/>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>

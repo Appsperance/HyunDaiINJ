@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="HyunDaiINJ.Views.Monitoring.Controls.Vision.LazyImageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Vision"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid x:Name="RootGrid"
+          IsVisibleChanged="RootGrid_IsVisibleChanged">
+        <!-- 아직 이미지를 로드하지 않았을 때는 빈 상태 -->
+        <Image x:Name="LazyImage"
+               Stretch="Uniform"
+               Visibility="Collapsed"/>
+    </Grid>
+</UserControl>
