@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HyunDaiINJ.Views.Plan.Controls.Daily"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="#F0F0F0">
@@ -54,7 +55,11 @@
                     <ColumnDefinition Width="*"/>
 
                 </Grid.ColumnDefinitions>
-                <DatePicker Grid.ColumnSpan="2" Height="40" 
+                <DatePicker Grid.ColumnSpan="2" 
+                            SelectedDate="{Binding SelectedDate, 
+                                           Mode=TwoWay, 
+                                           UpdateSourceTrigger=PropertyChanged}"
+                            Height="40" 
                             Width="200"
                             FontSize="28"
                             FontWeight="Bold"
@@ -66,13 +71,22 @@
             
         </Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="4" Grid.ColumnSpan="7" Grid.RowSpan="2">
-            <DataGrid ItemsSource="{Binding WeekPlans}" AutoGenerateColumns="False" Margin="10">
+            <DataGrid ItemsSource="{Binding DailyRows}" AutoGenerateColumns="False" Margin="10">
                 <DataGrid.Columns>
-                    <!-- 빈칸 -->
-                    <DataGridTemplateColumn Header="" Width="80" IsReadOnly="True">
+                    
+                    <!-- 주차 컬럼 -->
+                    <DataGridTemplateColumn Header="" Width="100" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding PartIdWithTotal}"
+                                           VerticalAlignment="Center" 
+                                           HorizontalAlignment="Center" />
 
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
+                    
                     <!-- 요일 컬럼 -->
                     <DataGridTemplateColumn Width="100" IsReadOnly="True">
                         <DataGridTemplateColumn.HeaderTemplate>
@@ -82,6 +96,13 @@
                                      RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding MonQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                              VerticalAlignment="Stretch"
+                                              HorizontalAlignment="Stretch" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
                     <DataGridTemplateColumn Header="화(날짜만 바인딩 할 수 잇게)" Width="100" IsReadOnly="True">
@@ -92,6 +113,13 @@
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding TueQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
                     <DataGridTemplateColumn Header="수(날짜만 바인딩 할 수 잇게)" Width="100" IsReadOnly="True">
@@ -102,6 +130,13 @@
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding WedQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                   VerticalAlignment="Stretch"
+                                                   HorizontalAlignment="Stretch" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
 
@@ -113,6 +148,13 @@
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding ThuQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                  VerticalAlignment="Stretch"
+                                                  HorizontalAlignment="Stretch" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
 
@@ -124,6 +166,13 @@
                                              RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding FriQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                              VerticalAlignment="Stretch"
+                                              HorizontalAlignment="Stretch" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
 
@@ -135,6 +184,13 @@
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding SatQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                  VerticalAlignment="Stretch"
+                                                  HorizontalAlignment="Stretch" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
                     <DataGridTemplateColumn Header="일(날짜만 바인딩 할 수 잇게)" Width="100" IsReadOnly="True">
@@ -145,10 +201,14 @@
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding SunQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                  VerticalAlignment="Stretch"
+                                                  HorizontalAlignment="Stretch" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-
-
-                    
                 </DataGrid.Columns>
             </DataGrid>
         </ScrollViewer>

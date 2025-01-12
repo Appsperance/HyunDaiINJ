@@ -10,6 +10,6 @@
       Title="DailyPlan">
 
     <Grid>
-        <controls:DailyPlanControl/>
+        <controls:DailyPlanControl DataContext="{Binding}"/>
     </Grid>
 </Page>

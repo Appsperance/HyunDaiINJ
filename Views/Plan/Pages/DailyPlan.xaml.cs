@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HyunDaiINJ.ViewModels.Main;
 using HyunDaiINJ.ViewModels.Plan;
 
 namespace HyunDaiINJ.Views.Plan.Pages
@@ -24,6 +25,18 @@ namespace HyunDaiINJ.Views.Plan.Pages
         public DailyPlan()
         {
             InitializeComponent();
+
+            var mainWin = Application.Current.MainWindow as MainView;
+            if (mainWin != null)
+            {
+                var mainVM = mainWin.DataContext as MainViewModel;
+                if (mainVM != null)
+                {
+                    // Page's DC = mainVM.WeekPlanVM
+                    this.DataContext = mainVM.DailyPlanVM;
+                    Console.WriteLine("WeekPlan Page DC => " + this.DataContext);
+                }
+            }
         }
     }
 }

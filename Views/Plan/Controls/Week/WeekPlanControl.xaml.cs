@@ -15,15 +15,10 @@ namespace HyunDaiINJ.Views.Plan.Controls.Week
         public WeekPlanControl()
         {
             InitializeComponent();
-
-            // 디버깅용 출력
-            Console.WriteLine(DataContext?.GetType().Name);
-
-            // DataContext 설정
-            DataContext = new InjectionPlanViewModel();
-
-            // DataContext 확인
-            Console.WriteLine($"DataContext: {DataContext?.GetType().Name}");
+            Loaded += (s, e) =>
+            {
+                Console.WriteLine($"WeekPlanControl Loaded. DC: {DataContext?.GetType().Name}");
+            };
         }
     }
 }

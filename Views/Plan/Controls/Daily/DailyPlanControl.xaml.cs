@@ -24,8 +24,11 @@ namespace HyunDaiINJ.Views.Plan.Controls.Daily
         public DailyPlanControl()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+                Console.WriteLine($"DailyControl Loaded. DC: {DataContext?.GetType().Name}");
+            };
 
-            this.DataContext = new InjectionPlanViewModel();
         }
     }
 }

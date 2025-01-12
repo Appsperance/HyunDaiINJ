@@ -3,6 +3,9 @@ using System.Windows.Input;
 
 namespace HyunDaiINJ.ViewModels.Main
 {
+    /// <summary>
+    /// 매개변수 없는 동기 액션용 커맨드
+    /// </summary>
     internal class RelayCommand : ICommand
     {
         private readonly Action _execute;
@@ -16,13 +19,19 @@ namespace HyunDaiINJ.ViewModels.Main
 
         public event EventHandler? CanExecuteChanged;
 
-        public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
+        public bool CanExecute(object? parameter)
+            => _canExecute?.Invoke() ?? true;
 
-        public void Execute(object? parameter) => _execute();
+        public void Execute(object? parameter)
+            => _execute();
 
-        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        public void RaiseCanExecuteChanged()
+            => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// 매개변수 있는 동기 액션용 커맨드
+    /// </summary>
     public class RelayCommand<T> : ICommand
     {
         private readonly Action<T> _execute;
@@ -38,38 +47,29 @@ namespace HyunDaiINJ.ViewModels.Main
 
         public bool CanExecute(object? parameter)
         {
-            // Null 체크와 타입 캐스팅
-            if (parameter is null)
-            {
-                return false;
-            }
-
             if (parameter is T value)
-            {
                 return _canExecute?.Invoke(value) ?? true;
-            }
 
-            throw new ArgumentException($"Invalid parameter type. Expected: {typeof(T)}, Actual: {parameter?.GetType()}");
+            // 인자가 null인데 T가 값 형식인 경우 등 처리
+            if (parameter == null && default(T) == null)
+                return _canExecute?.Invoke(default!) ?? true;
+
+            return false;
         }
 
         public void Execute(object? parameter)
         {
-            if (parameter is null)
-            {
-                throw new ArgumentNullException(nameof(parameter), "Parameter cannot be null.");
-            }
-
             if (parameter is T value)
             {
-                Console.WriteLine($"RelayCommand Execute 호출: {parameter}"); // 디버깅 로그
                 _execute(value);
             }
-            else
+            else if (parameter == null && default(T) == null)
             {
-                throw new ArgumentException($"Invalid parameter type. Expected: {typeof(T)}, Actual: {parameter?.GetType()}");
+                _execute(default!);
             }
         }
 
-        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        public void RaiseCanExecuteChanged()
+            => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

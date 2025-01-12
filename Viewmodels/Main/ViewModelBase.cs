@@ -13,11 +13,8 @@ namespace HyunDaiINJ.ViewModels.Main
         public event PropertyChangedEventHandler? PropertyChanged;
         public static event PropertyChangedEventHandler? StaticPropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            Console.WriteLine($"Property changed: {propertyName}");
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        protected virtual void OnPropertyChanged(string propName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 
         public static void OnStaticPropertyChanged(string propertyName)
         {

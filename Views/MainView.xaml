@@ -6,35 +6,44 @@
         xmlns:local="clr-namespace:HyunDaiINJ.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:con="clr-namespace:HyunDaiINJ.Views.Controls"
+        xmlns:vm="clr-namespace:HyunDaiINJ.ViewModels.Main"
         mc:Ignorable="d"
-        Style="{StaticResource MaterialDesignWindow}"
+        Title="MainView" Height="800" Width="1520"
         WindowStartupLocation="CenterScreen"
-        Title="MainView" Height="800" Width="1520">
+        Style="{StaticResource MaterialDesignWindow}">
+
+    <!-- (1) Window.DataContext = MainViewModel -->
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
     <Grid>
-        <!-- Row Definitions -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MinHeight="100"/>
-            <!-- 헤더 영역 -->
+            <!-- 헤더 -->
+            <RowDefinition Height="Auto" MinHeight="100" />
+            <!-- 컨텐츠 영역 -->
             <RowDefinition Height="*" />
-            <!-- 데이터 영역 -->
         </Grid.RowDefinitions>
 
-        <!-- Header UserControl -->
+        <!-- 예시: 헤더 UserControl (생략 가능) -->
         <con:Header Grid.Row="0" />
 
-        <!-- Data Section -->
+        <!-- 메인 콘텐츠 -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="193" />
-                <ColumnDefinition Width="967" />
-                <ColumnDefinition Width="191*"/>
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Side Tab -->
-            <con:SideTab Grid.Column="0" DataContext="{Binding}" Grid.ColumnSpan="2" Margin="0,0,967,0" Background="#F0F0F0"/>
+            <!-- (2) 왼쪽 SideTab -->
+            <con:SideTab Grid.Column="0"
+                         Background="#F0F0F0" />
 
-            <!-- Page Content -->
-            <Frame Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding SelectedTab.CustomContent}" NavigationUIVisibility="Visible" Background="#F0F0F0 "/>
+            <!-- (3) 오른쪽 Frame -->
+            <Frame Grid.Column="1"
+                   Content="{Binding SelectedTab.CustomContent}"
+                   NavigationUIVisibility="Hidden"
+                   Background="#F0F0F0" />
         </Grid>
     </Grid>
 </Window>

@@ -14,6 +14,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <!-- WeekPlan UserControl -->
-        <controls:WeekPlanControl x:Name="WeekPlanView" Grid.Row="1" />
+        <!--<controls:WeekPlanControl  DataContext="{Binding DataContext.WeekPlanVM, 
+                                  RelativeSource={RelativeSource AncestorType=Window}}"/>-->
+        <controls:WeekPlanControl  DataContext="{Binding}"/>
     </Grid>
 </Page>

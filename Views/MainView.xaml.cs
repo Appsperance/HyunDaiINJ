@@ -24,7 +24,7 @@ namespace HyunDaiINJ.Views
         public MainView()
         {
             InitializeComponent();
-            this.DataContext = new MainViewModel();
+            //this.DataContext = new MainViewModel();
         }
     }
 }

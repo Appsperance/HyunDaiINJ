@@ -4,16 +4,25 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using HyunDaiINJ.DATA.DTO;
+using HyunDaiINJ.ViewModels.Plan;
 using HyunDaiINJ.Views;
 using HyunDaiINJ.Views.Controls;
 using HyunDaiINJ.Views.Monitoring;
+using MyApp.ViewModels.Plan;
 
 namespace HyunDaiINJ.ViewModels.Main
 {
     public class MainViewModel : ViewModelBase
     {
         public ObservableCollection<CustomTab> CustomTabs { get; } = new();
+        //public Injecti InjectionVM { get; }
+        // 예: 주간 계획 VM
+        public WeekPlanViewModel WeekPlanVM { get; }
+        public DailyPlanViewModel DailyPlanVM { get; }
+        //// 일간 계획 VM
+        //public InjectionPlanViewModel DailyPlanVM { get; }
 
+        // 현재 선택된 탭
         private CustomTab? _selectedTab;
         public CustomTab? SelectedTab
         {
@@ -23,18 +32,42 @@ namespace HyunDaiINJ.ViewModels.Main
                 if (_selectedTab != value)
                 {
                     _selectedTab = value;
-                    Console.WriteLine($"SelectedTab changed: {_selectedTab?.CustomHeader}");
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SelectedTab));
                 }
             }
         }
 
+        // 탭 전환 시 표시할 Content(= Page, UserControl 등)
+        private object _currentPage;
+        public object CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                if (_currentPage != value)
+                {
+                    _currentPage = value;
+                    OnPropertyChanged(nameof(CurrentPage));
+                }
+            }
+        }
+
+        // 명령: 탭 추가/닫기
         public ICommand AddTabCommand { get; }
         public ICommand CloseTabCommand { get; }
 
+        // 생성자
         public MainViewModel()
         {
-            // 명령 초기화
+            // (1) 주간 계획 VM 한 번만 생성
+            WeekPlanVM = new WeekPlanViewModel();
+            Console.WriteLine($"WeekPlanVM : {WeekPlanVM}");
+           
+            DailyPlanVM = new DailyPlanViewModel();
+
+            //InjectionVM = new InjectionPlanViewModel();
+            //Console.WriteLine($"WeekPlanVM : {InjectionVM}");
+            // 커맨드 생성
             AddTabCommand = new RelayCommand<string>(AddTab);
             CloseTabCommand = new RelayCommand<CustomTab>(CloseTab);
         }
@@ -43,16 +76,16 @@ namespace HyunDaiINJ.ViewModels.Main
         {
             Console.WriteLine($"Adding tab: {tabHeader}");
 
-            // 이미 존재하는 탭인지 확인
-            var existingTab = CustomTabs.FirstOrDefault(tab => tab.CustomHeader == tabHeader);
-            if (existingTab != null)
+            // 이미 동일 이름 탭이 있다면 재선택만
+            var existing = CustomTabs.FirstOrDefault(t => t.CustomHeader == tabHeader);
+            if (existing != null)
             {
-                SelectedTab = existingTab;
+                SelectedTab = existing;
                 return;
             }
 
             // 새로운 탭 콘텐츠 생성
-            object? controlContent = tabHeader switch
+            object? newContent = tabHeader switch
             {
                 "품질 모니터링" => new Views.Monitoring.Pages.Monitoring.VisionMonitoring(), // Monitoring Page
                 "품질 통계" => new Views.Monitoring.Pages.Monitoring.VisionStat(), // Monitoring Page
@@ -62,15 +95,14 @@ namespace HyunDaiINJ.ViewModels.Main
                 _ => null
             };
 
-            if (controlContent != null)
+            if (newContent != null)
             {
                 var newTab = new CustomTab
                 {
                     CustomHeader = tabHeader,
-                    CustomContent = controlContent,
+                    CustomContent = newContent,
                     CloseCommand = CloseTabCommand
                 };
-
                 CustomTabs.Add(newTab);
                 SelectedTab = newTab;
             }
@@ -78,16 +110,9 @@ namespace HyunDaiINJ.ViewModels.Main
 
         private void CloseTab(CustomTab tab)
         {
-            if (CustomTabs.Contains(tab))
-            {
-                CustomTabs.Remove(tab);
-
-                // 닫힌 탭이 현재 선택된 탭이면 다른 탭 선택
-                if (SelectedTab == tab)
-                {
-                    SelectedTab = CustomTabs.FirstOrDefault();
-                }
-            }
+            CustomTabs.Remove(tab);
+            if (SelectedTab == tab)
+                SelectedTab = CustomTabs.FirstOrDefault();
         }
     }
 }
