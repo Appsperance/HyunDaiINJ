@@ -12,11 +12,9 @@
         <!-- 전체 레이아웃 그리드 -->
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="35"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
 
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -35,12 +33,22 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
+
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- 헤더 -->
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5" Grid.ColumnSpan="3">
             <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
-            <TextBlock Text="공정 상태 1"
+            <TextBlock Text="공정 상태"
                 FontSize="18" 
                 FontWeight="Bold" 
                 Foreground="#002E6B" 
@@ -49,7 +57,7 @@
         </StackPanel>
 
         <!-- 첫 번째 Border -->
-        <Border Grid.Column="0" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+        <Border Grid.Column="0" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="5">
             <Grid>
                 <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="10">
@@ -99,7 +107,7 @@
         </Border>
 
         <!-- 두 번째 Border -->
-        <Border Grid.Column="3" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+        <Border Grid.Column="9" Grid.ColumnSpan="5" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
             <Grid>
                 <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="10">
@@ -137,7 +145,7 @@
         </Border>
 
         <!-- 세 번째 Border -->
-        <Border Grid.Column="6" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+        <Border Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="2" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
             <Grid>
                 <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="10">
@@ -175,7 +183,7 @@
         </Border>
 
         <!-- 네 번째 Border -->
-        <Border Grid.Column="9" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+        <Border Grid.Column="9" Grid.ColumnSpan="5" Grid.Row="2" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
             <Grid>
                 <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="10">
@@ -213,7 +221,7 @@
         </Border>
 
         <!-- 다섯 번째 Border -->
-        <Border Grid.Column="12" Grid.Row="1" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" Grid.ColumnSpan="3">
+        <Border Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
             <Grid>
                 <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="10">
@@ -250,19 +258,10 @@
             </Grid>
         </Border>
         
-        <!-- 헤더 -->
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="5" Grid.ColumnSpan="3">
-            <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
-            <TextBlock Text="품질 사진"
-                       FontSize="18" 
-                       FontWeight="Bold" 
-                       Foreground="#002E6B" 
-                       Margin="10,0"
-                       VerticalAlignment="Center"/>
-        </StackPanel>
+        
         
         <!-- 품질 사진 1 -->
-        <Border Grid.Column="0" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" Grid.ColumnSpan="3" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
+        <Border Grid.Column="5" Grid.ColumnSpan="4"  Grid.Row="1"   BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5"  MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
                 <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="UniformToFill" Grid.Row="1"/>
@@ -270,7 +269,7 @@
         </Border>
 
         <!-- 품질 사진 2 -->
-        <Border Grid.Column="3" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" Grid.ColumnSpan="3" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
+        <Border Grid.Column="14" Grid.ColumnSpan="4" Grid.Row="1"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5"  MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
                 <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
@@ -278,7 +277,7 @@
         </Border>
 
         <!-- 품질 사진 3 -->
-        <Border Grid.Column="6" Grid.ColumnSpan="3" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
+        <Border Grid.Column="5" Grid.ColumnSpan="4" Grid.Row="2"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
                 <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
@@ -286,7 +285,7 @@
         </Border>
         
         <!-- 품질 사진 4 -->
-        <Border Grid.Column="9" Grid.ColumnSpan="3" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
+        <Border Grid.Column="14" Grid.ColumnSpan="4" Grid.Row="2"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
                 <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
@@ -294,7 +293,7 @@
         </Border>
 
         <!-- 품질 사진 5 -->
-        <Border Grid.Column="12" Grid.ColumnSpan="3" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
+        <Border Grid.Column="5" Grid.ColumnSpan="4" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
                 <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
@@ -302,7 +301,7 @@
         </Border>
         
         <!-- 그래프 -->
-        <Grid Grid.Row="5" Grid.Column="11" Grid.ColumnSpan="4">
+        <Grid Grid.Row="1" Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <!-- 연속 그래프 -->
                 <ColumnDefinition Width="*"/>

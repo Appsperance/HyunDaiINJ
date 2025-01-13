@@ -3,7 +3,8 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:First="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.FirstSection"
+      xmlns:process="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Process"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="1350"
       Title="ProcessMonitoring">
@@ -16,6 +17,11 @@
                 <RowDefinition Height="120" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+
+                <RowDefinition Height="*" />
 
             </Grid.RowDefinitions>
 
@@ -24,86 +30,181 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <!-- 현재 총 생산량 -->
-            <Border Grid.Row="0" Grid.Column="0"  Margin="10" Background="#002E6B" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+           
+            <!-- 예: 두 번째 그리드에 바인딩 -->
+            <Border Grid.Row="0" Grid.Column="0" Margin="10"
+                    BorderBrush="#444" BorderThickness="1" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="품목 총 생산 수량" 
+                    <TextBlock Text="현재 총 생산 수량"
                                FontSize="20" 
                                FontWeight="Bold" 
-                               Foreground="White" 
+                               Foreground="Black" 
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
-
-                    <TextBlock Text="10000개"
-                               Grid.Row="1" 
+                    <!-- 예시) D2를 표시해보자 -->
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding D2}"  
                                FontWeight="Bold" 
-                               Foreground="White"
+                               Foreground="Black"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"
                                FontSize="28"/>
                 </Grid>
             </Border>
 
-            <!-- 두 번째 그리드 -->
-            <Border Grid.Row="0" Grid.Column="1"  Margin="10" Background="#002E6B" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+            <!-- "공정 1 상태" Border 예시 -->
+            <Border Grid.Row="0" Grid.Column="1" 
+                    Margin="10" 
+                    BorderBrush="#444" BorderThickness="1" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="품목 총 생산 수량" 
+
+                    <!-- 상단 타이틀 -->
+                    <TextBlock Text="공정 1 상태"
                                FontSize="20" 
                                FontWeight="Bold" 
-                               Foreground="White" 
+                               Foreground="Black" 
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
 
-                    <TextBlock Text="10000개"
-                               Grid.Row="1" 
-                               FontWeight="Bold" 
-                               Foreground="White"
-                               VerticalAlignment="Center"
+                    <!-- 상태 표시 TextBlock -->
+                    <TextBlock Grid.Row="1"
                                HorizontalAlignment="Center"
-                               FontSize="28"/>
+                               VerticalAlignment="Center"
+                               FontSize="28">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <!-- 기본값(둘 다 0)일 때 대기 / 회색 -->
+                                <Setter Property="Text" Value="대기" />
+                                <Setter Property="Foreground" Value="Gray" />
+
+                                <Style.Triggers>
+                                    <!-- X20이 "1"이면 '운전'(초록색) -->
+                                    <DataTrigger Binding="{Binding X20}" Value="1">
+                                        <Setter Property="Text" Value="운전" />
+                                        <Setter Property="Foreground" Value="Green" />
+                                    </DataTrigger>
+
+                                    <!-- X21이 "1"이면 '정지'(빨간색) -->
+                                    <DataTrigger Binding="{Binding X21}" Value="1">
+                                        <Setter Property="Text" Value="정지" />
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </Grid>
             </Border>
 
-            <!-- 세 번째 그리드 -->
-            <Border Grid.Row="0" Grid.Column="2"  Margin="10" Background="#002E6B" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+
+            <!-- "공정 1 상태" Border 예시 -->
+            <Border Grid.Row="0" Grid.Column="2" Margin="10" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="품목 총 생산 수량" 
+
+                    <!-- 상단 타이틀 -->
+                    <TextBlock Text="공정 2 상태"
                                FontSize="20" 
                                FontWeight="Bold" 
-                               Foreground="White" 
+                               Foreground="Black" 
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
 
-                    <TextBlock Text="10000개"
-                               Grid.Row="1" 
-                               FontWeight="Bold" 
-                               Foreground="White"
-                               VerticalAlignment="Center"
+                    <!-- 상태 표시 TextBlock -->
+                    <TextBlock Grid.Row="1"
                                HorizontalAlignment="Center"
-                               FontSize="28"/>
+                               VerticalAlignment="Center"
+                               FontSize="28">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <!-- 기본값(둘 다 0)일 때 대기 / 회색 -->
+                                <Setter Property="Text" Value="대기" />
+                                <Setter Property="Foreground" Value="Gray" />
+
+                                <Style.Triggers>
+                                    <!-- X20이 "1"이면 '운전'(초록색) -->
+                                    <DataTrigger Binding="{Binding X20}" Value="1">
+                                        <Setter Property="Text" Value="운전" />
+                                        <Setter Property="Foreground" Value="Green" />
+                                    </DataTrigger>
+
+                                    <!-- X21이 "1"이면 '정지'(빨간색) -->
+                                    <DataTrigger Binding="{Binding X21}" Value="1">
+                                        <Setter Property="Text" Value="정지" />
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </Grid>
             </Border>
 
-            <!-- 네 번째 그리드 -->
-            
-            <Grid Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0">
+
+            <!-- "공정 1 상태" Border 예시 -->
+            <Border Grid.Row="0" Grid.Column="3" Margin="10" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 상단 타이틀 -->
+                    <TextBlock Text="공정 3 상태"
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               Foreground="Black" 
+                               Margin="0,5,0,0"
+                               HorizontalAlignment="Center" />
+
+                    <!-- 상태 표시 TextBlock -->
+                    <TextBlock Grid.Row="1"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="28">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <!-- 기본값(둘 다 0)일 때 대기 / 회색 -->
+                                <Setter Property="Text" Value="대기" />
+                                <Setter Property="Foreground" Value="Gray" />
+
+                                <Style.Triggers>
+                                    <!-- X20이 "1"이면 '운전'(초록색) -->
+                                    <DataTrigger Binding="{Binding X20}" Value="1">
+                                        <Setter Property="Text" Value="운전" />
+                                        <Setter Property="Foreground" Value="Green" />
+                                    </DataTrigger>
+
+                                    <!-- X21이 "1"이면 '정지'(빨간색) -->
+                                    <DataTrigger Binding="{Binding X21}" Value="1">
+                                        <Setter Property="Text" Value="정지" />
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="0">
                 <!-- 현재 시간 -->
-                <Border Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Margin="10" Background="#002E6B" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+                <Border Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Margin="10" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="32"/>
@@ -112,20 +213,65 @@
                         <TextBlock Text="현재시간" 
                                    FontSize="20" 
                                    FontWeight="Bold" 
-                                   Foreground="White" 
+                                   Foreground="Black" 
                                    Margin="0,5,0,0"
                                    HorizontalAlignment="Center" />
 
-                        <TextBlock Text="2024-12-29 일요일 21시52분"
+                        <TextBlock x:Name="TxtCurrentTime"
                                    Grid.Row="1" 
                                    FontWeight="Bold" 
-                                   Foreground="White"
+                                   Foreground="Black"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
-                                   FontSize="28"/>
+                                   FontSize="25"/>
                     </Grid>
                 </Border>
             </Grid>
+
+
+            <!-- 첫 번째 Border -->
+            <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
+                <Grid>
+                    <!-- 내부 콘텐츠 -->
+                    <Grid Grid.Row="1" Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <!-- stageVal 나오는 곳-->
+                        <process:ProcessProducer Grid.Row="0"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- 첫 번째 Border -->
+            <Border Grid.Column="3" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
+                <Grid>
+                    <!-- 내부 콘텐츠 -->
+                    <Grid Grid.Row="1" Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <!-- stageVal 나오는 곳-->
+                        <process:ProcessProducer Grid.Row="0"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- 첫 번째 Border -->
+            <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Grid.RowSpan="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
+                <Grid>
+                    <!-- 내부 콘텐츠 -->
+                    <Grid Grid.Row="1" Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <!-- stageVal 나오는 곳-->
+                        <process:ProcessProducer Grid.Row="0"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+
         </Grid>
     </Grid>
 </Page>

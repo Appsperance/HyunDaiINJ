@@ -207,7 +207,15 @@
         </Button>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="4" Grid.ColumnSpan="7" Grid.RowSpan="2">
-            <DataGrid ItemsSource="{Binding WeekPlanRows}" AutoGenerateColumns="False" Margin="10">
+
+            <DataGrid ItemsSource="{Binding WeekPlanRows}" AutoGenerateColumns="False" Margin="10" CanUserSortColumns="True">
+                <!-- 헤더 정렬 스타일 -->
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
                 <DataGrid.Columns>
                     <!-- 주차 컬럼 -->
                     <DataGridTemplateColumn Header="주차" Width="100" IsReadOnly="True">
@@ -301,13 +309,13 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <!-- 주차 -->
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="220"/>
                 <!-- AAA -->
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="180"/>
                 <!-- BBB -->
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="220"/>
                 <!-- CCC -->
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="180"/>
                 <!-- DDD -->
                 <ColumnDefinition Width="Auto"/>
                 <!-- 여유 공간 -->

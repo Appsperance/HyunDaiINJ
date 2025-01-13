@@ -32,22 +32,19 @@
             </Expander>
 
             <!-- 생산관리 그룹 -->
-            <Expander Header="생산관리" IsExpanded="False" Margin="4">
+            <Expander Header="일정지시" IsExpanded="False" Margin="4">
                 <StackPanel Orientation="Vertical" Background="#F0F0F0">
                     <RadioButton Content="생산계획/지시"
                                  Margin="4"
-                                 Command="{Binding AddTabCommand}"
-                                 CommandParameter="생산계획/지시"
+                                 Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                                 Style="{StaticResource MaterialDesignTabRadioButtonRight}"
                                  />
                     <RadioButton Content="일일계획/지시"
                                  Margin="4"
-                                 Command="{Binding AddTabCommand}"
-                                 CommandParameter="일일계획/지시"
-                                 />
-                    <RadioButton Content="생산실적"
-                                 Margin="4"
-                                 Command="{Binding AddTabCommand}"
-                                 CommandParameter="생산실적"
+                                 Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                                 Style="{StaticResource MaterialDesignTabRadioButtonRight}"
                                  />
                 </StackPanel>
             </Expander>

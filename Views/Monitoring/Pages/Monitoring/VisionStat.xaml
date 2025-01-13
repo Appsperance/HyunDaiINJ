@@ -149,7 +149,8 @@
                             <RowDefinition Height="*"/>
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
-                        <vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <!--<vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>-->
+                        <vision:VisionWeek Grid.Row="1" Grid.ColumnSpan="2"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -187,7 +188,8 @@
                             <RowDefinition Height="*"/>
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
-                        <vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <vision:VisionWeek Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <!--<vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>-->
                     </Grid>
                 </Border>
             </Grid>
