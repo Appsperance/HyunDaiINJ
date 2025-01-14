@@ -7,11 +7,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using HyunDaiINJ.Models.Monitoring.ThirdSection;
 using HyunDaiINJ.DATA.DTO;
-using System.Windows.Threading;
+using HyunDaiINJ.Models.Monitoring.Vision;
 
-namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
+namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
 
     public class VisionWeekViewModel : INotifyPropertyChanged
@@ -178,7 +177,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
                     responsive = true,
                     plugins = new
                     {
-                        
+
                     },
                     scales = new
                     {

@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace HyunDaiINJ.ViewModels.Monitoring.FirstSection
+namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
-    public class TimeViewModel :INotifyPropertyChanged
+    public class TimeViewModel : INotifyPropertyChanged
     {
         private DispatcherTimer _timer;
         private string _currentTime;
@@ -47,3 +47,5 @@ namespace HyunDaiINJ.ViewModels.Monitoring.FirstSection
         }
     }
 }
+
+

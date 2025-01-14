@@ -1,15 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using Npgsql;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Npgsql;
 
 namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {
-    public partial class NgCard : UserControl
+    /// <summary>
+    /// NgCard.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class NgCard : Window
     {
-        private const int pageSize = 2;   // 한 번에 가져올 개수
+        private const int pageSize = 10;   // 한 번에 가져올 개수
         private int currentOffset = 0;     // 현재까지 불러온 개수(=OFFSET)
         private bool hasMoreData = true;   // 더 가져올 데이터가 있는지 여부
 
@@ -20,6 +32,28 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
             InitializeComponent();
             // 초기에 첫 페이지 로드
             LoadNextPage();
+            InitializeNgCard(); // <-- 공통 초기화
+
+            this.SizeChanged += NgCard_SizeChanged;
+        }
+
+        private void NgCard_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double newWidth = e.NewSize.Width;
+            double newHeight = e.NewSize.Height;
+            Console.WriteLine($"[SizeChanged] New Width={newWidth}, New Height={newHeight}");
+        }
+        private void InitializeNgCard()
+        {
+            LoadNextPage();
+            this.SizeChanged += NgCard_SizeChanged;
+        }
+        // 새로 만든 생성자: 외부에서 이미지 넘겨받기
+        public NgCard(ImageSource imageSource)
+        {
+            InitializeComponent();
+            InitializeNgCard(); // <-- 공통 초기화
+            SelectedImage.Source = imageSource;
         }
 
         // (1) 다음 페이지 로드

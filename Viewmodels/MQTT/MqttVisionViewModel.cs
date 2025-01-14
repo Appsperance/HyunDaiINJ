@@ -13,7 +13,7 @@ using WpfApp1;
 
 namespace HyunDaiINJ.ViewModels.MQTT
 {
-    public class MqttViewModel : INotifyPropertyChanged
+    public class MqttVisionViewModel : INotifyPropertyChanged
     {
         private readonly MQTTModel MqttModel; // Model 인스턴스 (의존성 주입)
         // MQTT 연결 상태
@@ -98,11 +98,11 @@ namespace HyunDaiINJ.ViewModels.MQTT
         }
 
         // 기본 생성자
-        public MqttViewModel() : this(new MQTTModel())
+        public MqttVisionViewModel() : this(new MQTTModel())
         {
         }
 
-        public MqttViewModel(MQTTModel mqttModel)
+        public MqttVisionViewModel(MQTTModel mqttModel)
         {
             MqttModel = mqttModel ?? throw new ArgumentNullException(nameof(mqttModel));
 
@@ -151,7 +151,6 @@ namespace HyunDaiINJ.ViewModels.MQTT
                 {
                     var image = ConvertImage(message.NgImg); // 이미지 변환 및 설정
                     CurrentImage = image;
-                    Console.WriteLine("이미지 데이터 처리 완료");
 
                     // 품질 사진에 이미지 추가
                     QualityImages.Add(image);

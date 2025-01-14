@@ -8,8 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <!-- 품질 이미지 -->
-        <Image Source="{Binding StageValImage}" 
-               
-               Stretch="Uniform" />
+        <Image Source="{Binding StageValImage}"            
+               Stretch="Fill" />
     </Grid>
 </UserControl>

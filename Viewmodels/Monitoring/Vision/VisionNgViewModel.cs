@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using HyunDaiINJ.Models.Monitoring.ThirdSection;
 using HyunDaiINJ.DATA.DTO;
+using HyunDaiINJ.Models.Monitoring.Vision;
 
-namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
+namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
     public class VisionNgViewModel
     {
@@ -41,6 +40,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
                 throw;
             }
         }
-
     }
 }
+
+

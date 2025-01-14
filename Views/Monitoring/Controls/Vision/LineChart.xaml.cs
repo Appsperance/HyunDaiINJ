@@ -1,4 +1,4 @@
-﻿using HyunDaiINJ.ViewModels.Monitoring.ThirdSection;
+﻿using HyunDaiINJ.ViewModels.Monitoring.vision;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;

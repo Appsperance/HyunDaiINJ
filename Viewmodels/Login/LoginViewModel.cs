@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using HyunDaiINJ.Services;
 using HyunDaiINJ.ViewModels.Main;
@@ -20,9 +22,6 @@ namespace HyunDaiINJ.ViewModels.Login
             LoginCommand = new RelayCommand(async () => await OnLoginAsync());
         }
 
-        /// <summary>
-        /// 사용자 입력: 아이디
-        /// </summary>
         public string Username
         {
             get => _username;
@@ -36,9 +35,6 @@ namespace HyunDaiINJ.ViewModels.Login
             }
         }
 
-        /// <summary>
-        /// 사용자 입력: 비밀번호
-        /// </summary>
         public string Password
         {
             get => _password;
@@ -53,28 +49,40 @@ namespace HyunDaiINJ.ViewModels.Login
         }
 
         /// <summary>
+        /// 로그인 성공 시 View에 알려줄 이벤트
+        /// </summary>
+        public event Action LoginSuccess;
+
+        /// <summary>
         /// 로그인 버튼을 클릭했을 때 실행할 명령
         /// </summary>
         public ICommand LoginCommand { get; }
 
-        /// <summary>
-        /// 실제 로그인 로직 (API 호출)
-        /// </summary>
         private async Task OnLoginAsync()
         {
-            // API 호출
-            bool result = await _api.LoginAsync(Username, Password);
+            // 로그인 API 호출
+            bool isLoginSuccess = await _api.LoginAsync(Username, Password);
 
-            if (result)
+            if (isLoginSuccess)
             {
-                // 로그인 성공
-                // Console에 성공 메시지 출력은 이미 MSDApi 내에서 처리 중
-                // 추가로, 윈도우 전환/화면 이동 등 수행 가능
+                // role 추출
+                var role = JwtParser.ExtractRoleFromJwt(MSDApi.JwtToken);
+
+                if (role == "systemAdmin" || Regex.IsMatch(role, @"^admin\d*$", RegexOptions.IgnoreCase))
+                {
+                    // LoginSuccess 이벤트 발생
+                    LoginSuccess?.Invoke();
+                }
+                else
+                {
+                    // 권한이 맞지 않을 때
+                    System.Windows.MessageBox.Show("권한 부족", "오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             else
             {
                 // 로그인 실패
-                // 실패 원인은 이미 Console 출력
+                System.Windows.MessageBox.Show("로그인 실패", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

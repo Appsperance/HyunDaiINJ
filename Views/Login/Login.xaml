@@ -94,9 +94,8 @@
                         FontSize="16"
                         FontWeight="Bold"
                         Height="45"
-                        HorizontalAlignment="Stretch"
                         Margin="0,10,0,0"
-                        Click="Button_Click"/>
+                        Click="Button_Click" VerticalAlignment="Top"/>
             </Grid>
         </Border>
     </Grid>

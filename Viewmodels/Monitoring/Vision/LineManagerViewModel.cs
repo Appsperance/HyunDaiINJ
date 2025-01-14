@@ -2,7 +2,7 @@
 using HyunDaiINJ.DATA.DAO;
 using HyunDaiINJ.DATA.DTO;
 
-namespace HyunDaiINJ.ViewModels.Monitoring.FirstSection
+namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
     public class LineManagerViewModel
     {
@@ -21,3 +21,5 @@ namespace HyunDaiINJ.ViewModels.Monitoring.FirstSection
             System.ComponentModel.DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject());
     }
 }
+
+

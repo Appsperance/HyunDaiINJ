@@ -15,14 +15,14 @@
             <Grid.RowDefinitions>
                 <!-- Header Rows -->
                 <RowDefinition Height="120" />
+                <RowDefinition Height="35" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="35" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
-
                 <RowDefinition Height="*" />
-
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -34,7 +34,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-           
+
             <!-- 예: 두 번째 그리드에 바인딩 -->
             <Border Grid.Row="0" Grid.Column="0" Margin="10"
                     BorderBrush="#444" BorderThickness="1" CornerRadius="5">
@@ -59,6 +59,7 @@
                                FontSize="28"/>
                 </Grid>
             </Border>
+
 
             <!-- "공정 1 상태" Border 예시 -->
             <Border Grid.Row="0" Grid.Column="1" 
@@ -228,49 +229,74 @@
                 </Border>
             </Grid>
 
+            <!-- 헤더 -->
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5" Grid.ColumnSpan="3">
+                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
+                <TextBlock Text="공정 1"
+                           FontSize="18" 
+                           FontWeight="Bold" 
+                           Foreground="#002E6B"
+                           Margin="10,0"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- 헤더 -->
+            <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1" Margin="5" Grid.ColumnSpan="3">
+                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
+                <TextBlock Text="공정 3"
+                           FontSize="18" 
+                           FontWeight="Bold" 
+                           Foreground="#002E6B" 
+                           Margin="10,0"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- 헤더 -->
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5" Margin="5" Grid.ColumnSpan="3">
+                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
+                <TextBlock Text="공정 3"
+                           FontSize="18" 
+                           FontWeight="Bold" 
+                           Foreground="#002E6B" 
+                           Margin="10,0"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
 
             <!-- 첫 번째 Border -->
-            <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
-                <Grid>
-                    <!-- 내부 콘텐츠 -->
-                    <Grid Grid.Row="1" Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="3*"/>
-                        </Grid.RowDefinitions>
-                        <!-- stageVal 나오는 곳-->
-                        <process:ProcessProducer Grid.Row="0"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
-                    </Grid>
+            <!--<Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Grid.RowSpan="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >-->
+            <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3">
+                <!-- 내부 콘텐츠 -->
+                <Grid Grid.Row="1" Margin="12,2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="공정 1" FontSize="15" Grid.Row="0" Margin="3"/>
+                    <!-- stageVal 나오는 곳-->
+                    <process:ProcessProducer Grid.Row="1"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
                 </Grid>
-            </Border>
+            </Grid>
+            <!--</Border>-->
 
             <!-- 첫 번째 Border -->
-            <Border Grid.Column="3" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
-                <Grid>
-                    <!-- 내부 콘텐츠 -->
-                    <Grid Grid.Row="1" Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="3*"/>
-                        </Grid.RowDefinitions>
-                        <!-- stageVal 나오는 곳-->
-                        <process:ProcessProducer Grid.Row="0"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
-                    </Grid>
+            <Grid Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3">
+                <!-- 내부 콘텐츠 -->
+                <Grid Grid.Row="1" Margin="12,2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+                    <!-- stageVal 나오는 곳-->
+                    <process:ProcessProducer Grid.Row="1"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
                 </Grid>
-            </Border>
+            </Grid>
 
             <!-- 첫 번째 Border -->
-            <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Grid.RowSpan="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >
-                <Grid>
-                    <!-- 내부 콘텐츠 -->
-                    <Grid Grid.Row="1" Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="3*"/>
-                        </Grid.RowDefinitions>
-                        <!-- stageVal 나오는 곳-->
-                        <process:ProcessProducer Grid.Row="0"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
-                    </Grid>
+            <Grid Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" Grid.RowSpan="3">
+                <!-- 내부 콘텐츠 -->
+                <Grid Grid.Row="1" Margin="12,2">
+                    <!-- stageVal 나오는 곳-->
+                    <process:ProcessProducer Grid.Row="1"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
                 </Grid>
-            </Border>
-
+            </Grid>
 
         </Grid>
     </Grid>

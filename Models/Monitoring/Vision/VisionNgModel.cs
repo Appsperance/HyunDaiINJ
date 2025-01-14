@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HyunDaiINJ.DATA.DAO;
 using HyunDaiINJ.DATA.DTO;
 
-namespace HyunDaiINJ.Models.Monitoring.ThirdSection
+namespace HyunDaiINJ.Models.Monitoring.Vision
 {
     public class VisionNgModel
     {
@@ -56,6 +56,21 @@ namespace HyunDaiINJ.Models.Monitoring.ThirdSection
         }
 
         public List<VisionNgDTO> GetVisionNgDataWeek()
+        {
+            try
+            {
+                var data = visionNgDAO.GetVisionNgDataWeek();
+                Console.WriteLine($"VisionNgModel : GetVisionNgDataWeek {data.Count}");
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving data from VisionNgDAO: {ex.Message}");
+                throw;
+            }
+        }
+
+        public List<VisionNgDTO> GetVisionNgDataDaily()
         {
             try
             {

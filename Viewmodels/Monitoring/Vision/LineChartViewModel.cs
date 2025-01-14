@@ -9,7 +9,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using HyunDaiINJ.DATA.DTO;
 
-namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
+namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
     public class LineChartViewModel : INotifyPropertyChanged
     {
@@ -33,13 +33,13 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
         public LineChartViewModel()
         {
             _colorPalette = new List<string>
-            {
-                "rgba(75, 192, 192, 1)",
-                "rgba(255, 99, 132, 1)",
-                "rgba(54, 162, 235, 1)",
-                "rgba(255, 206, 86, 1)",
-                "rgba(153, 102, 255, 1)"
-            };
+        {
+            "rgba(75, 192, 192, 1)",
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(153, 102, 255, 1)"
+        };
 
             ChartScript = GenerateEmptyChartScript();
         }
@@ -73,33 +73,33 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
 
                     completeData.Append(receivedData);
 
-                        var jsonData = completeData.ToString();
-                        Console.WriteLine($"[DEBUG] Complete JSON Data: {jsonData}");
+                    var jsonData = completeData.ToString();
+                    Console.WriteLine($"[DEBUG] Complete JSON Data: {jsonData}");
 
-                        completeData.Clear(); // Clear after processing JSON
+                    completeData.Clear(); // Clear after processing JSON
 
-                        try
+                    try
+                    {
+                        var data = JsonConvert.DeserializeObject<List<VisionCumDTO>>(jsonData);
+                        if (data != null && data.Any())
                         {
-                            var data = JsonConvert.DeserializeObject<List<VisionCumDTO>>(jsonData);
-                            if (data != null && data.Any())
+                            Console.WriteLine("[DEBUG] Deserialized Data:");
+                            foreach (var entry in data)
                             {
-                                Console.WriteLine("[DEBUG] Deserialized Data:");
-                                foreach (var entry in data)
-                                {
-                                    Console.WriteLine($"- Time: {entry.time}, LotId: {entry.lotId}, Total: {entry.total}");
-                                }
+                                Console.WriteLine($"- Time: {entry.time}, LotId: {entry.lotId}, Total: {entry.total}");
+                            }
 
-                                ChartScript = GenerateChartScript(data);
-                            }
-                            else
-                            {
-                                Console.WriteLine("[DEBUG] No valid data found in JSON.");
-                            }
+                            ChartScript = GenerateChartScript(data);
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Console.WriteLine($"[ERROR] Deserialization failed: {ex.Message}");
+                            Console.WriteLine("[DEBUG] No valid data found in JSON.");
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[ERROR] Deserialization failed: {ex.Message}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -227,4 +227,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.ThirdSection
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
 }
+

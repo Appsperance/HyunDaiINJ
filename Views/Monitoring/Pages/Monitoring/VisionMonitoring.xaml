@@ -27,12 +27,6 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
 
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -92,12 +86,12 @@
                         </Border>
 
                         <!-- 비전 -->
-                        <Border Style="{StaticResource VisionBlinkingStyle}" BorderBrush="Black" Width="60" Height="40" Margin="5">
+                        <Border Style="{StaticResource VisionBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
                             <TextBlock Text="비전" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
                         </Border>
 
                         <!-- 완료 -->
-                        <Border Style="{StaticResource CompleteBlinkingStyle}" BorderBrush="Black" Width="60" Height="40" Margin="5">
+                        <Border Style="{StaticResource CompleteBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
                             <TextBlock Text="완료" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
                         </Border>
                     </StackPanel>
@@ -135,10 +129,22 @@
                        FontWeight="Bold"/>
 
                     <!-- 버튼 영역 -->
+                    <!-- 버튼 영역 -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Content="투입" Width="60" Height="40" Margin="5"/>
-                        <Button Content="비전" Width="60" Height="40" Margin="5"/>
-                        <Button Content="완료" Width="60" Height="40" Margin="5"/>
+                        <!-- 투입 -->
+                        <Border Style="{StaticResource InputBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="투입" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold" />
+                        </Border>
+
+                        <!-- 비전 -->
+                        <Border Style="{StaticResource VisionBlinkingStyle}" BorderBrush="Black" BorderThickness="1" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="비전" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
+
+                        <!-- 완료 -->
+                        <Border Style="{StaticResource CompleteBlinkingStyle}" BorderBrush="Black" BorderThickness="1" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="완료" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -173,10 +179,22 @@
                                FontWeight="Bold"/>
 
                     <!-- 버튼 영역 -->
+                    <!-- 버튼 영역 -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Content="투입" Width="60" Height="40" Margin="5"/>
-                        <Button Content="비전" Width="60" Height="40" Margin="5"/>
-                        <Button Content="완료" Width="60" Height="40" Margin="5"/>
+                        <!-- 투입 -->
+                        <Border Style="{StaticResource InputBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="투입" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold" />
+                        </Border>
+
+                        <!-- 비전 -->
+                        <Border Style="{StaticResource VisionBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="비전" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
+
+                        <!-- 완료 -->
+                        <Border Style="{StaticResource CompleteBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="완료" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -211,10 +229,22 @@
                                FontWeight="Bold"/>
 
                     <!-- 버튼 영역 -->
+                    <!-- 버튼 영역 -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Content="투입" Width="60" Height="40" Margin="5"/>
-                        <Button Content="비전" Width="60" Height="40" Margin="5"/>
-                        <Button Content="완료" Width="60" Height="40" Margin="5"/>
+                        <!-- 투입 -->
+                        <Border Style="{StaticResource InputBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="투입" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold" />
+                        </Border>
+
+                        <!-- 비전 -->
+                        <Border Style="{StaticResource VisionBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="비전" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
+
+                        <!-- 완료 -->
+                        <Border Style="{StaticResource CompleteBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="완료" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -249,10 +279,22 @@
                                FontWeight="Bold"/>
 
                     <!-- 버튼 영역 -->
+                    <!-- 버튼 영역 -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Content="투입" Width="60" Height="40" Margin="5"/>
-                        <Button Content="비전" Width="60" Height="40" Margin="5"/>
-                        <Button Content="완료" Width="60" Height="40" Margin="5"/>
+                        <!-- 투입 -->
+                        <Border Style="{StaticResource InputBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="투입" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold" />
+                        </Border>
+
+                        <!-- 비전 -->
+                        <Border Style="{StaticResource VisionBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="비전" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
+
+                        <!-- 완료 -->
+                        <Border Style="{StaticResource CompleteBlinkingStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="60" Height="40" Margin="5">
+                            <TextBlock Text="완료" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -272,7 +314,7 @@
         <Border Grid.Column="14" Grid.ColumnSpan="4" Grid.Row="1"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5"  MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
-                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"   Stretch="UniformToFill" Grid.Row="1"/>
             </Grid>
         </Border>
 
@@ -280,7 +322,7 @@
         <Border Grid.Column="5" Grid.ColumnSpan="4" Grid.Row="2"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
-                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"   Stretch="UniformToFill" Grid.Row="1"/>
             </Grid>
         </Border>
         
@@ -288,7 +330,7 @@
         <Border Grid.Column="14" Grid.ColumnSpan="4" Grid.Row="2"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
-                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"   Stretch="UniformToFill" Grid.Row="1"/>
             </Grid>
         </Border>
 
@@ -296,28 +338,9 @@
         <Border Grid.Column="5" Grid.ColumnSpan="4" Grid.Row="3"  BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5,5" MouseLeftButtonDown="Border_MouseLeftButtonDown" Cursor="Hand">
             <Grid>
                 <!-- 품질 이미지 -->
-                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"  Stretch="Uniform" Grid.Row="1"/>
+                <Image Source="{Binding CurrentImage}"  HorizontalAlignment="Center" VerticalAlignment="Center"   Stretch="UniformToFill" Grid.Row="1"/>
             </Grid>
         </Border>
-        
-        <!-- 그래프 -->
-        <Grid Grid.Row="1" Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="2">
-            <Grid.ColumnDefinitions>
-                <!-- 연속 그래프 -->
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <!-- 불량 통계 -->
-            <Border Grid.Column="0" Grid.Row="0"  BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
-                <!-- 차트 자리 -->
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <!-- 차트 -->
-                    </Grid.RowDefinitions>
-                    <vision:NgCard x:Name="NgCard" Grid.Row="1" Grid.ColumnSpan="2"/>
-                </Grid>
-            </Border>
-        </Grid>
     </Grid>
 </Page>
 

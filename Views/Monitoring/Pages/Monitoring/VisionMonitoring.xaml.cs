@@ -28,22 +28,26 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 
             var mqttModel = new MQTTModel();
 
-            var mqttViewModel = new MqttViewModel(mqttModel);
+            var mqttViewModel = new MqttVisionViewModel(mqttModel);
 
-            DataContext = mqttViewModel;
+            this.DataContext = mqttViewModel;
 
-            NgCard.DataContext = mqttViewModel;
         }
 
+        // Border 클릭 시 발생
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border border && border.Child is Grid grid && grid.Children[0] is Image image && image.Source is BitmapImage bitmapImage)
+            if (sender is Border border
+                && border.Child is Grid grid
+                && grid.Children.Count > 0
+                && grid.Children[0] is Image image
+                && image.Source is BitmapImage bitmapImage)
             {
-                // NgCard의 SelectedImage를 설정
-                if (NgCard.FindName("SelectedImage") is Image selectedImage)
-                {
-                    selectedImage.Source = bitmapImage;
-                }
+                // (1) NgCard 창 만들기
+                var ngCardWindow = new NgCard(bitmapImage);
+
+                // (2) 창 보여주기
+                ngCardWindow.Show();
             }
         }
     }

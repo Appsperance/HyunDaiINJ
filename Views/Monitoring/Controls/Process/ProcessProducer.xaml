@@ -7,36 +7,49 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="#F0F0F0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+        <!-- 전체를 감싸는 Border -->
+        <Border BorderThickness="2" BorderBrush="#444" CornerRadius="10" Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <!-- 사진 영역 -->
+                    <RowDefinition Height="auto"/>
+                    <!-- 버튼 영역 -->
+                </Grid.RowDefinitions>
 
-        <Border BorderThickness="1" BorderBrush="#444" CornerRadius="5" Margin="10">
-            <Image Stretch="Fill" Grid.Row="0"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"
-                   Source="{Binding MyVM.CurrentImage}" />
+                <Border Grid.Row="0" BorderBrush="#444" BorderThickness="0,0,0,1" >
+                    <!-- 사진 영역 -->
+                    <Image Stretch="Fill"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           Source="{Binding MyVM.CurrentImage}" />
+                </Border>
+                
+
+                <!-- 버튼 영역 -->
+                <Grid Grid.Row="1" Margin="0,-5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 투입 버튼 -->
+                    <Border Grid.Column="0" Style="{StaticResource FirstIsInputType}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="10" Width="160" Height="40">
+                        <TextBlock Text="투입" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                    </Border>
+
+                    <!-- 가열 버튼 -->
+                    <Border Grid.Column="1" Style="{StaticResource SecondHeatingType}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="10" Width="160" Height="40">
+                        <TextBlock Text="가열" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                    </Border>
+
+                    <!-- 취출 버튼 -->
+                    <Border Grid.Column="2" Style="{StaticResource LastTakeOutStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="10" Width="160" Height="40">
+                        <TextBlock Text="취출" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                    </Border>
+                </Grid>
+            </Grid>
         </Border>
-
-        <!-- 버튼 영역 -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" DataContext="{Binding MyVM}">
-            <!-- 투입 -->
-            <Border Style="{StaticResource FirstIsInputType}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Width="160" Height="40" Margin="5">
-                <TextBlock Text="투입" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold" />
-            </Border>
-
-            <!-- 비전 -->
-            <Border Style="{StaticResource SecondHeatingType}" BorderBrush="Black" BorderThickness="1" Width="160" Height="40" Margin="5">
-                <TextBlock Text="가열" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
-            </Border>
-
-            <!-- 완료 -->
-            <Border Style="{StaticResource LastTakeOutStyle}" BorderBrush="Black" BorderThickness="1" Width="160" Height="40" Margin="5">
-                <TextBlock Text="취출" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
-            </Border>
-        </StackPanel>
-
-
     </Grid>
 </UserControl>

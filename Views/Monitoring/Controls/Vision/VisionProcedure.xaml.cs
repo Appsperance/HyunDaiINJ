@@ -24,7 +24,7 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         public VisionProcedure()
         {
             InitializeComponent();
-            DataContext = new MqttViewModel(); // ViewModel 설정
+            //DataContext = new MqttVisionViewModel(); // ViewModel 설정
         }
     }
 }

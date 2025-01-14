@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using HyunDaiINJ.ViewModels.Monitoring.ThirdSection;
+using HyunDaiINJ.ViewModels.Monitoring.vision;
 
 namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {

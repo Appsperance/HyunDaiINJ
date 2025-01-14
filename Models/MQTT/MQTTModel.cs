@@ -76,8 +76,6 @@ public class MQTTModel
             var topic = e.ApplicationMessage.Topic;
             var payload = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
 
-            Console.WriteLine("MQTT 메시지 저장 완료");
-
             try
             {
                 if (topic.StartsWith("Vision/ng"))
