@@ -32,9 +32,6 @@
     <Compile Update="Views\Monitoring\Controls\Vision\VisionProcedure.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Monitoring\Controls\Vision\LineChart.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>

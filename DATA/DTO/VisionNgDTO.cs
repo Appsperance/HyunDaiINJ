@@ -8,7 +8,7 @@ namespace HyunDaiINJ.DATA.DTO
         public string? LotId { get; set; } // varchar(20)
         public string? PartId { get; set; } // varchar(5)
         public string? LineId { get; set; } // varchar(10)
-        public DateTime DateTime { get; set; } // timestamptz
+        public string? DateTime { get; set; } // timestamptz
         public string? NgLabel { get; set; } // varchar(50)
         public int LabelCount { get; set; }
         public string? NgImgPath { get; set; } // text

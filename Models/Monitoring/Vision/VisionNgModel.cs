@@ -55,6 +55,21 @@ namespace HyunDaiINJ.Models.Monitoring.Vision
             }
         }
 
+        public List<VisionNgDTO> GetVisionNgDataDaily()
+        {
+            try
+            {
+                var data = visionNgDAO.GetVisionNgDataDaily();
+                Console.WriteLine($"VisionNgModel : GetVisionNgDataDaily {data.Count}");
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving data from VisionNgDAO: {ex.Message}");
+                throw;
+            }
+        }
+
         public List<VisionNgDTO> GetVisionNgDataWeek()
         {
             try
@@ -70,12 +85,12 @@ namespace HyunDaiINJ.Models.Monitoring.Vision
             }
         }
 
-        public List<VisionNgDTO> GetVisionNgDataDaily()
+        public List<VisionNgDTO> GetVisionNgDataYear()
         {
             try
             {
-                var data = visionNgDAO.GetVisionNgDataWeek();
-                Console.WriteLine($"VisionNgModel : GetVisionNgDataWeek {data.Count}");
+                var data = visionNgDAO.GetVisionNgDataYear();
+                Console.WriteLine($"VisionNgModel : GetVisionNgDataYear {data.Count}");
                 return data;
             }
             catch (Exception ex)

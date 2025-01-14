@@ -20,6 +20,9 @@ namespace HyunDaiINJ.ViewModels.Login
         {
             _api = new MSDApi();
             LoginCommand = new RelayCommand(async () => await OnLoginAsync());
+            // (1) 기본값 설정
+            Username = "string";
+            Password = "string";
         }
 
         public string Username

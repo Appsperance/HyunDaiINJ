@@ -21,12 +21,31 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
     /// </summary>
     public partial class VisionStat : Page
     {
+        private readonly VisionNgViewModel _viewModel;
         public VisionStat()
         {
             InitializeComponent();
 
-            // ViewModel을 DataContext로 설정
-            DataContext = new VisionNgViewModel();
+            // 1) 부모 ViewModel 생성 → 한꺼번에 로드
+            _viewModel = new VisionNgViewModel();
+
+            // 2) DataContext = _viewModel (DataGrid 등에서 쓰고 싶다면)
+            this.DataContext = _viewModel;
+
+            // 3) Loaded 이벤트에서 자식 차트에 데이터 전달
+            Loaded += VisionStat_Loaded;
+        }
+
+        private void VisionStat_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // VisionDaily, VisionWeek, VisionYear는 x:Name으로 참조 가능(예: XAML에 x:Name="DailyChart")
+
+            DailyChart.SetData(_viewModel.DailyData);
+            WeekChart.SetData(_viewModel.WeekData);
+            YearChart.SetData(_viewModel.YearData);
+
+            // 이제 세 개 차트가 거의 동시에 Render를 시작하게 되어
+            // 뒤죽박죽 순서가 아니라, 한꺼번에 표시됨
         }
     }
 }

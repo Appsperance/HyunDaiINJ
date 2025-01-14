@@ -114,21 +114,77 @@
                            VerticalAlignment="Center"/>
             </StackPanel>
 
-            <DataGrid Grid.Row="3" Grid.ColumnSpan="5" Grid.RowSpan="7"
+            <DataGrid Grid.Row="3" Grid.ColumnSpan="5" 
+                      Grid.RowSpan="7"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
                       AutoGenerateColumns="False"
                       CanUserAddRows="False"
                       HeadersVisibility="All"
                       ItemsSource="{Binding NgDetailedData}"
                       IsReadOnly="True">
+                <DataGrid.Resources>
+
+                    <!-- (1) DataGridColumnHeader 스타일: 헤더 텍스트 가운데 정렬 -->
+                    <Style TargetType="DataGridColumnHeader" 
+                           BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+
+                    <!-- (2) DataGridCell 스타일: 셀 텍스트 가운데 정렬 -->
+                    <Style TargetType="DataGridCell" 
+                           BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+
+                </DataGrid.Resources>
+                
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Id}" Header="ID" Width="50" />
-                    <DataGridTextColumn Binding="{Binding LotId}" Header="Lot ID" Width="100" />
-                    <DataGridTextColumn Binding="{Binding PartId}" Header="Part ID" Width="100" />
-                    <DataGridTextColumn Binding="{Binding LineId}" Header="Line ID" Width="100" />
-                    <DataGridTextColumn Binding="{Binding DateTime}" Header="Date/Time" Width="150" />
-                    <DataGridTextColumn Binding="{Binding NgLabel}" Header="NG Label" Width="100" />
-                    <DataGridTextColumn Binding="{Binding LabelCount}" Header="Label Count" Width="100" />
-                    <DataGridTextColumn Binding="{Binding NgImgPath}" Header="Image Path" Width="200" />
+                    <DataGridTextColumn Binding="{Binding Id}" Header="ID" Width="*" >
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn Binding="{Binding PartId}" Header="제품명" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTextColumn Binding="{Binding LineId}" Header="라인명" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding DateTime}" Header="생성날짜" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding NgLabel}" Header="불량 종류" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -150,7 +206,7 @@
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
                         <!--<vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>-->
-                        <vision:VisionWeek Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <vision:VisionDaily x:Name="DailyChart" Grid.Row="1" Grid.ColumnSpan="2"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -169,7 +225,7 @@
                             <RowDefinition Height="*"/>
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
-                        <vision:VisionWeek Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <vision:VisionWeek x:Name="WeekChart" Grid.Row="1" Grid.ColumnSpan="2"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -188,7 +244,7 @@
                             <RowDefinition Height="*"/>
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
-                        <vision:VisionWeek Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <vision:VisionYear x:Name="YearChart" Grid.Row="1" Grid.ColumnSpan="2"/>
                         <!--<vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>-->
                     </Grid>
                 </Border>
