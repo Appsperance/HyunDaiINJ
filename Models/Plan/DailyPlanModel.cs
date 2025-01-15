@@ -8,8 +8,8 @@ namespace HyunDaiINJ.Models.Plan
     public class DailyPlanModel : INotifyPropertyChanged
     {
         private string _partId;
-        private int _week;
-        private int _weekQuan;
+        private int _isoWeek;
+        private int _qtyWeekly;
 
         // 요일별 수량 (원하는 만큼 추가)
         private int _monQuan;
@@ -19,6 +19,10 @@ namespace HyunDaiINJ.Models.Plan
         private int _friQuan;
         private int _satQuan;
         private int _sunQuan;
+
+        // (추가) 월~일 합계
+        public int DailyTotal
+            => MonQuan + TueQuan + WedQuan + ThuQuan + FriQuan + SatQuan + SunQuan;
 
         public string PartId
         {
@@ -33,28 +37,28 @@ namespace HyunDaiINJ.Models.Plan
                 }
             }
         }
-        public int WeekQuan
+        public int QtyWeekly
         {
-            get => _weekQuan;
+            get => _qtyWeekly;
             set
             {
-                if (_weekQuan != value)
+                if (_qtyWeekly != value)
                 {
-                    _weekQuan = value;
-                    OnPropertyChanged(nameof(WeekQuan));
+                    _qtyWeekly = value;
+                    OnPropertyChanged(nameof(QtyWeekly));
                     OnPropertyChanged(nameof(PartIdWithTotal));
                 }
             }
         }
-        public int Week
+        public int IsoWeek
         {
-            get => _week;
+            get => _isoWeek;
             set
             {
-                if (_week != value)
+                if (_isoWeek != value)
                 {
-                    _week = value;
-                    OnPropertyChanged(nameof(Week));
+                    _isoWeek = value;
+                    OnPropertyChanged(nameof(IsoWeek));
                 }
             }
         }
@@ -69,7 +73,7 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     _monQuan = value;
                     OnPropertyChanged(nameof(MonQuan));
-                    OnPropertyChanged(nameof(PartIdWithTotal)); // 합계갱신
+                    OnPropertyChanged(nameof(DailyTotal)); // 합계갱신
                 }
             }
         }
@@ -83,7 +87,7 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     _tueQuan = value;
                     OnPropertyChanged(nameof(TueQuan));
-                    OnPropertyChanged(nameof(PartIdWithTotal));
+                    OnPropertyChanged(nameof(DailyTotal));
                 }
             }
         }
@@ -97,7 +101,7 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     _wedQuan = value;
                     OnPropertyChanged(nameof(WedQuan));
-                    OnPropertyChanged(nameof(PartIdWithTotal));
+                    OnPropertyChanged(nameof(DailyTotal));
                 }
             }
         }
@@ -111,7 +115,7 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     _thuQuan = value;
                     OnPropertyChanged(nameof(ThuQuan));
-                    OnPropertyChanged(nameof(PartIdWithTotal));
+                    OnPropertyChanged(nameof(DailyTotal));
                 }
             }
         }
@@ -125,7 +129,7 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     _friQuan = value;
                     OnPropertyChanged(nameof(FriQuan));
-                    OnPropertyChanged(nameof(PartIdWithTotal));
+                    OnPropertyChanged(nameof(DailyTotal));
                 }
             }
         }
@@ -139,7 +143,7 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     _satQuan = value;
                     OnPropertyChanged(nameof(SatQuan));
-                    OnPropertyChanged(nameof(PartIdWithTotal));
+                    OnPropertyChanged(nameof(DailyTotal));
                 }
             }
         }
@@ -153,7 +157,7 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     _sunQuan = value;
                     OnPropertyChanged(nameof(SunQuan));
-                    OnPropertyChanged(nameof(PartIdWithTotal));
+                    OnPropertyChanged(nameof(DailyTotal));
                 }
             }
         }
@@ -163,7 +167,7 @@ namespace HyunDaiINJ.Models.Plan
         /// (월~일 합계를 자동 계산)
         /// </summary>
         public string PartIdWithTotal
-            => $"{PartId}({WeekQuan})";
+            => $"{PartId}({_qtyWeekly})";
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propName)

@@ -8,14 +8,11 @@ namespace HyunDaiINJ.DATA.Queries
 {
     public static class InjectionPlanQueries
     {
-        public const string SaveInjectionPlanAsync = @"
-                INSERT INTO injection_plan (part_id, week, week_quan)
-                VALUES (@PartId, @Week, @WeekQuan)";
-
+        // iso_week를 받아서 해당 주차 데이터 조회
         public const string SelectInjectionPlanWeekData = @"
-                SELECT part_id, week, week_quan
-                  FROM injection_plan
-                 WHERE week = @Week
-                 ORDER BY part_id";
+                SELECT part_id, date, qty_daily, qty_weekly
+                FROM injection_plan
+                WHERE iso_week = @iso_week
+                ORDER BY part_id";
     }
 }

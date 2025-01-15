@@ -9,10 +9,10 @@ namespace HyunDaiINJ.DATA.DTO
     public class InjectionPlanDTO
     {
         public string? PartId {  get; set; }
-        public int Week {  get; set; }
         public DateTime? Date { get; set; }
-        public int? DailyQuan {  get; set; }
-        public string? Days { get; set; }
-        public int? WeekQuan { get; set; }
+        public int? QtyDaily {  get; set; }
+        public int? IsoWeek {  get; set; }
+        public int? QtyWeekly { get; set; }
+        public string? Day { get; set; }
     }
 }

@@ -69,7 +69,7 @@ namespace HyunDaiINJ.Views.Plan.Controls.Week
             var weekColumn = new DataGridTextColumn
             {
                 Header = "주차",
-                Binding = new Binding("Week"),
+                Binding = new Binding("WeekDisplay"),
                 Width = 60,
                 IsReadOnly = true
             };

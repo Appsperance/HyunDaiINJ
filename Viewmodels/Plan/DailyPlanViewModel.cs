@@ -17,7 +17,7 @@ namespace HyunDaiINJ.ViewModels.Plan
         {
             _dao = new InjectionPlanDAO();
 
-            // 1) 주차 계산
+            // 1) 오늘 날짜 → ISO 주차
             int isoWeek = IsoWeekCalculator.GetIso8601WeekOfYear(DateTime.Today);
             CurrentWeekNumber = isoWeek;
 
@@ -46,13 +46,11 @@ namespace HyunDaiINJ.ViewModels.Plan
             get => _dailyRows;
             set
             {
-                if (_dailyRows != value)
-                {
-                    _dailyRows = value;
-                    OnPropertyChanged(nameof(DailyRows));
-                }
+                _dailyRows = value;
+                OnPropertyChanged(nameof(DailyRows));
             }
         }
+
 
         // (B) 현재 주차
         private int _currentWeekNumber;
@@ -69,16 +67,6 @@ namespace HyunDaiINJ.ViewModels.Plan
             }
         }
 
-        // (C) 월~일 헤더
-        public string MondayHeader { get; set; }
-        public string TuesdayHeader { get; set; }
-        public string WednesdayHeader { get; set; }
-        public string ThursdayHeader { get; set; }
-        public string FridayHeader { get; set; }
-        public string SaturdayHeader { get; set; }
-        public string SundayHeader { get; set; }
-
-        // (D) DatePicker와 바인딩할 속성
         private DateTime? _selectedDate;
         public DateTime? SelectedDate
         {
@@ -89,18 +77,26 @@ namespace HyunDaiINJ.ViewModels.Plan
                 {
                     _selectedDate = value;
                     OnPropertyChanged(nameof(SelectedDate));
-                    // 날짜가 바뀌면 → 해당 날짜의 ISO 주차 계산 → DB 조회
                     if (_selectedDate.HasValue)
                     {
                         int newWeek = IsoWeekCalculator.GetIso8601WeekOfYear(_selectedDate.Value);
                         CurrentWeekNumber = newWeek;
-
-                        // DB 다시 조회
                         _ = LoadWeekDataAsync(newWeek);
                     }
                 }
             }
         }
+
+        // (C) 월~일 헤더
+        public string MondayHeader { get; set; }
+        public string TuesdayHeader { get; set; }
+        public string WednesdayHeader { get; set; }
+        public string ThursdayHeader { get; set; }
+        public string FridayHeader { get; set; }
+        public string SaturdayHeader { get; set; }
+        public string SundayHeader { get; set; }
+
+
 
         /// <summary>
         /// DB에서 해당 주차의 데이터를 가져와서 DailyRows에 세팅
@@ -109,12 +105,10 @@ namespace HyunDaiINJ.ViewModels.Plan
         {
             try
             {
-                Console.WriteLine($"[VM] LoadWeekDataAsync => week={isoWeek}");
                 var list = await _dao.GetPlansByWeekAsync(isoWeek);
 
+                // DailyRows 업데이트
                 DailyRows = new ObservableCollection<DailyPlanModel>(list);
-
-                Console.WriteLine($"[VM] DB 로드 완료. 건수={list.Count}");
             }
             catch (Exception ex)
             {
@@ -123,7 +117,7 @@ namespace HyunDaiINJ.ViewModels.Plan
         }
 
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         #endregion

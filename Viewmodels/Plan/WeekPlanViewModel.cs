@@ -7,20 +7,20 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using HyunDaiINJ.Models.Plan;
 using HyunDaiINJ.ViewModels.Main;
+using HyunDaiINJ.DATA.DAO;
+using System.Threading.Tasks;
+using System.Globalization;
 
 namespace HyunDaiINJ.ViewModels.Plan
 {
     public class WeekPlanViewModel : INotifyPropertyChanged
     {
-        // (A) 동적 제품 목록: PartInfo 객체들
         public ObservableCollection<PartInfo> PartInfoList { get; }
             = new ObservableCollection<PartInfo>();
 
-        // 52주 Row
         public ObservableCollection<WeekRow> WeekPlanRows { get; }
             = new ObservableCollection<WeekRow>();
 
-        // (B) 파트별 총합(1~52주) 저장 딕셔너리 (Key: PartName, Value: 합계)
         private Dictionary<string, int> _sumDict = new Dictionary<string, int>();
         public Dictionary<string, int> SumDict
         {
@@ -32,39 +32,78 @@ namespace HyunDaiINJ.ViewModels.Plan
             }
         }
 
-        // 커맨드들
         public ICommand PlusLineCommand { get; }
         public ICommand MinusLineCommand { get; }
         public ICommand SaveAllInsertCommand { get; }
 
+        private readonly InjectionPlanDAO _planDao;
+
         public WeekPlanViewModel()
         {
-            // 1) 초기 데이터
+            _planDao = new InjectionPlanDAO();
+
             PartInfoList.CollectionChanged += OnPartInfoListChanged;
 
-            // 예: 처음에 2개 정도 기본 제품
-            var p1 = new PartInfo { Name = "Part-A" };
-            var p2 = new PartInfo { Name = "Part-B" };
-            PartInfoList.Add(p1);
-            PartInfoList.Add(p2);
-
-            // 2) WeekRow 52개 생성
+            int currentYear = DateTime.Now.Year;
             for (int w = 1; w <= 52; w++)
             {
-                var row = new WeekRow(w);
+                var row = new WeekRow(currentYear, w);
                 WeekPlanRows.Add(row);
             }
 
-            // 3) 커맨드
             PlusLineCommand = new RelayCommand<object>(ExecutePlusLine);
             MinusLineCommand = new RelayCommand<object>(ExecuteMinusLine);
-            SaveAllInsertCommand = new RelayCommand<object>(obj =>
+
+            // 저장 커맨드: 멀티-VALUES 방식
+            SaveAllInsertCommand = new RelayCommand<object>(async obj =>
             {
-                // 여기에 저장 로직 배치
+                await SaveAllPlansAtOnceAsync();
             });
 
-            // 4) 초기 합계 계산
             RecalcSum();
+        }
+
+        private async Task SaveAllPlansAtOnceAsync()
+        {
+            try
+            {
+                // (A) List<(int partId, DateTime dateVal, int isoWeek, int qtyWeekly, string dayVal)>
+                var dataList = new List<(string name, DateTime dateVal, int isoWeek, int qtyWeekly, string dayVal)>();
+
+                // (B) WeekPlanRows x PartInfoList
+                foreach (var row in WeekPlanRows)
+                {
+                    foreach (var part in PartInfoList)
+                    {
+                        if (row.QuanDict.TryGetValue(part.PartId, out int qty))
+                        {
+                            // 여기서 주차 시작일, 주차번호, qty, day 문자열 등을 만든다
+                            DateTime dateVal = row.WeekStartDate; // 실제 날짜
+                            int isoWeek = row.Week;               // 주차번호
+                            int qtyWeekly = qty;                  // 계획 수량
+                            // 예: "01-02" 식으로 표시하거나, 그냥 dayVal = dateVal.Day.ToString()
+                            string dayVal = dateVal.ToString("ddd", new CultureInfo("ko-KR"));
+
+                            dataList.Add((part.Name, dateVal, isoWeek, qtyWeekly, dayVal));
+                        }
+                    }
+                }
+
+                if (dataList.Count == 0)
+                {
+                    Console.WriteLine("[VM] 저장할 데이터가 없음");
+                    return;
+                }
+
+                // (C) DAO 호출
+                await _planDao.InsertAllPlansAtOnceAsync(dataList);
+
+                Console.WriteLine($"[VM] 전체 Insert 성공! rowCount={dataList.Count}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[VM] SaveAllPlansAtOnceAsync 에러: {ex.Message}");
+            }
         }
 
         private void OnPartInfoListChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -75,7 +114,6 @@ namespace HyunDaiINJ.ViewModels.Plan
                 {
                     if (newItem is PartInfo newPart)
                     {
-                        // 각 WeekRow에 QuanDict[newPart.PartId] = 0 추가
                         foreach (var row in WeekPlanRows)
                         {
                             if (!row.QuanDict.ContainsKey(newPart.PartId))
@@ -92,7 +130,6 @@ namespace HyunDaiINJ.ViewModels.Plan
                 {
                     if (oldItem is PartInfo oldPart)
                     {
-                        // WeekRow QuanDict에서 제거
                         foreach (var row in WeekPlanRows)
                         {
                             if (row.QuanDict.ContainsKey(oldPart.PartId))
@@ -104,21 +141,15 @@ namespace HyunDaiINJ.ViewModels.Plan
                 }
             }
 
-            // PartInfoList 변경 시 합계 다시 계산
             RecalcSum();
         }
 
-        // (C) 합계를 재계산하는 메서드
         public void RecalcSum()
         {
             var newSum = new Dictionary<string, int>();
-
-            // 1) PartInfoList 내 모든 파트명(PartId) 대해
             foreach (var part in PartInfoList)
             {
                 int total = 0;
-
-                // 2) 52주 Row(WeekPlanRows)를 순회하면서 해당 파트ID의 수량을 더함
                 foreach (var row in WeekPlanRows)
                 {
                     if (row.QuanDict.TryGetValue(part.PartId, out int val))
@@ -126,28 +157,19 @@ namespace HyunDaiINJ.ViewModels.Plan
                         total += val;
                     }
                 }
-
-                // 3) 합계 결과를 "PartName -> total" 형태로
                 newSum[part.Name] = total;
             }
-
-            // 4) 최종 딕셔너리를 SumDict에 대입
             SumDict = newSum;
         }
 
-        // 열추가
         private void ExecutePlusLine(object obj)
         {
-            // 임의로 새 PartInfo
             string partName = $"Part-{PartInfoList.Count + 1}";
             var newPartInfo = new PartInfo { Name = partName };
             PartInfoList.Add(newPartInfo);
-
-            // 파트 추가 후 합계 재계산
             RecalcSum();
         }
 
-        // 열삭제
         private void ExecuteMinusLine(object obj)
         {
             if (PartInfoList.Count > 0)
