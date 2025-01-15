@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using HyunDaiINJ.DATA.DTO;
@@ -8,7 +9,6 @@ using HyunDaiINJ.ViewModels.Plan;
 using HyunDaiINJ.Views;
 using HyunDaiINJ.Views.Controls;
 using HyunDaiINJ.Views.Monitoring;
-using MyApp.ViewModels.Plan;
 
 namespace HyunDaiINJ.ViewModels.Main
 {
@@ -98,6 +98,24 @@ namespace HyunDaiINJ.ViewModels.Main
 
             if (newContent != null)
             {
+                if (newContent is FrameworkElement fe)
+                {
+                    // 탭 이름이 "생산계획/지시"일 때만 WeekPlanVM 주입
+                    if (tabHeader == "생산계획/지시")
+                    {
+                        fe.DataContext = this.WeekPlanVM;
+                    }
+                    else if (tabHeader == "일일계획/지시")
+                    {
+                        fe.DataContext = this.DailyPlanVM;
+                    }
+                    else
+                    {
+                        // 그 외에는 전체 MainViewModel을 주입하거나, 필요 없다면 생략
+                        //fe.DataContext = this;
+                    }
+                }
+
                 var newTab = new CustomTab
                 {
                     CustomHeader = tabHeader,

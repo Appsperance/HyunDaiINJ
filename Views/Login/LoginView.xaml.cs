@@ -1,4 +1,6 @@
 ﻿using HyunDaiINJ.ViewModels.Login;
+using HyunDaiINJ.ViewModels.Main;
+using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -41,8 +43,13 @@ namespace HyunDaiINJ.Views.Login
         {
             // MainView 열기
             var mainView = new MainView();
+            // (2) MainViewModel 생성 후 할당
+            mainView.DataContext = new MainViewModel();
+            
+
             mainView.Show();
 
+            Console.WriteLine($"mainViewVMVMVMVMVM : {mainView.DataContext}");
             // 현재(LoginView) 창 닫기
             this.Close();
         }

@@ -8,18 +8,14 @@
              d:DesignHeight="750" d:DesignWidth="1350">
 
     <Grid Background="#F0F0F0">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="35" />
             <RowDefinition Height="40" />
             <RowDefinition Height="20" />
             <RowDefinition Height="35" />
             <RowDefinition Height="3*" />
-            <!-- 헤더 -->
             <RowDefinition Height="*" />
-            <!-- 스크롤 가능한 데이터 그리드 -->
             <RowDefinition Height="50" />
-            <!-- 고정된 계획 총합 -->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -32,32 +28,38 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <!-- 상단 "총 계획" 헤더 -->
         <Grid Grid.Row="0" Margin="5" Grid.ColumnSpan="3">
-            <!-- 헤더 -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                 <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
                 <TextBlock Text="총 계획"
-               FontSize="18" 
-               FontWeight="Bold" 
-               Foreground="#002E6B" 
-               VerticalAlignment="Center"/>
+                           FontSize="18" 
+                           FontWeight="Bold" 
+                           Foreground="#002E6B" 
+                           VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
+
         <!-- 밑줄 -->
         <Border Grid.ColumnSpan="7" Background="#002E6B" Height="1" VerticalAlignment="Bottom" Margin="0,0,0,3" />
 
-        <!-- 헤더 -->
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <!-- 상단 "제품명" 레이블 -->
+        <StackPanel Orientation="Horizontal" 
+                    Grid.Row="1" 
+                    Margin="5" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center">
             <TextBlock Text="제품명"
-                   FontSize="20" 
-                   FontWeight="Bold" 
-                   Foreground="#002E6B" 
-                   VerticalAlignment="Center"/>
+                       FontSize="20" 
+                       FontWeight="Bold" 
+                       Foreground="#002E6B" 
+                       VerticalAlignment="Center"/>
         </StackPanel>
 
-       
-        <!-- 헤더 -->
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="5">
+        <!-- "주 계획" 레이블 -->
+        <StackPanel Orientation="Horizontal" 
+                    Grid.Row="3" 
+                    Margin="5">
             <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
             <TextBlock Text="주 계획"
                        FontSize="16" 
@@ -66,216 +68,129 @@
                        VerticalAlignment="Center"/>
         </StackPanel>
 
-        <!-- 1번제품 입력-->
-        <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
-            <Border Margin="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Background="Transparent">
-                <TextBox Text="{Binding PartIdFirst, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                     Foreground="Black" 
-                     VerticalAlignment="Stretch" 
-                     HorizontalAlignment="Stretch" 
-                     FontWeight="Bold" 
-                     FontSize="13" 
-                     IsReadOnly="False" 
-                     IsEnabled="True"/>
-            </Border>
-        </Grid>
+        <!-- 제품 입력(ItemsControl) -->
+        <ItemsControl Grid.Row="1"
+                      Grid.RowSpan="2"
+                      Grid.Column="1" 
+                      Grid.ColumnSpan="4"
+                      Margin="5"
+                      ItemsSource="{Binding PartInfoList}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="3"
+                            BorderBrush="#444"
+                            BorderThickness="1"
+                            CornerRadius="5" 
+                            Background="Transparent">
+                        <!-- PartName 텍스트박스 -->
+                        <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="120"
+                                 FontSize="13" 
+                                 Foreground="Black" 
+                                 FontWeight="Bold"/>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-        
+        <!-- 열추가 버튼 -->
+        <Button Grid.Column="5"
+                Margin="3,2,3,5"
+                Content="열추가"
+                Background="#3670c4"
+                Foreground="White"
+                FontWeight="Bold"
+                Width="150"
+                Height="26"
+                Command="{Binding PlusLineCommand}"/>
 
-        <!-- 2번제품 입력-->
-        <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">
-            <Border Margin="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Background="Transparent">
-                <TextBox Text="{Binding PartIdSecond, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                     Foreground="Black" 
-                     VerticalAlignment="Stretch" 
-                     HorizontalAlignment="Stretch" 
-                     FontWeight="Bold" 
-                     FontSize="13" 
-                     IsReadOnly="False" 
-                     IsEnabled="True"/>
-            </Border>
-        </Grid>
+        <!-- 열삭제 버튼 -->
+        <Button Grid.Column="6"
+                Margin="3,2,3,5"
+                Content="열삭제"
+                Background="#e75151"
+                Foreground="White"
+                FontWeight="Bold"
+                Width="150"
+                Height="26"
+                BorderBrush="#eb7a7a"
+                Command="{Binding MinusLineCommand}"/>
 
-        <!-- 3번 제품 입력 -->
-        <Grid Grid.Column="3" Grid.Row="1" Grid.RowSpan="2">
-            <Border Margin="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Background="Transparent">
-                <TextBox Text="{Binding PartIdThird, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                     Foreground="Black" 
-                     VerticalAlignment="Stretch" 
-                     HorizontalAlignment="Stretch" 
-                     FontWeight="Bold" 
-                     FontSize="13" 
-                     IsReadOnly="False" 
-                     IsEnabled="True"/>
-            </Border>
-        </Grid>
-
-
-    
-
-        <!-- 4번 제품 입력 -->
-        <Grid Grid.Column="4" Grid.Row="1" Grid.RowSpan="2">
-            <Border Margin="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Background="Transparent">
-                <TextBox Text="{Binding PartIdFourth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                     Foreground="Black" 
-                     VerticalAlignment="Stretch" 
-                     HorizontalAlignment="Stretch" 
-                     FontWeight="Bold" 
-                     FontSize="13" 
-                     IsReadOnly="False" 
-                     IsEnabled="True"/>
-            </Border>
-        </Grid>
-
-       
-
-        <!-- 저장 버튼-->
+        <!-- 저장 버튼 -->
         <Button Content="저장"
-                Width="100" 
+                Width="100"
                 Margin="5"
                 Height="50"
-                Grid.Row="1" 
-                Grid.RowSpan="2" 
+                Grid.Row="1"
+                Grid.RowSpan="2"
                 Grid.Column="5"
-                Background="#3670c4" 
-                Foreground="White" 
-                FontWeight="Bold" 
-                FontSize="20" 
-                Command="{Binding SendAllInsertCommand}">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" 
-                        BorderBrush="{TemplateBinding BorderBrush}" 
-                        BorderThickness="{TemplateBinding BorderThickness}" 
-                        CornerRadius="5">
-                        <ContentPresenter HorizontalAlignment="Center" 
-                                      VerticalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="4" Grid.ColumnSpan="7" Grid.RowSpan="2">
+                Background="#3670c4"
+                Foreground="White"
+                FontWeight="Bold"
+                FontSize="20"
+                Command="{Binding SaveAllInsertCommand}" />
 
-            <DataGrid ItemsSource="{Binding WeekPlanRows}" AutoGenerateColumns="False" Margin="10" CanUserSortColumns="True">
-                <!-- 헤더 정렬 스타일 -->
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
-                <DataGrid.Columns>
-                    <!-- 주차 컬럼 -->
-                    <DataGridTemplateColumn Header="주차" Width="100" IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Week, StringFormat={}{0}주차}" 
-                               VerticalAlignment="Center" 
-                               HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <!-- 1번 PartId 컬럼 -->
-                    <DataGridTemplateColumn Width="200">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.PartIdFirst, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding QuanPart1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <!-- 2번 PartId 컬럼 -->
-                    <DataGridTemplateColumn Width="200">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.PartIdSecond, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding QuanPart2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         VerticalAlignment="Center"
-                                         HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <!-- 3번 PartId 컬럼 -->
-                    <DataGridTemplateColumn Width="200">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.PartIdThird, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding QuanPart3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         VerticalAlignment="Center"
-                                         HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <!-- 4번 PartId 컬럼 -->
-                    <DataGridTemplateColumn Width="200">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.PartIdFourth, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding QuanPart4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         VerticalAlignment="Center"
-                                         HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+        <!-- DataGrid (Row=4,5) -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Grid.Row="4"
+                      Grid.ColumnSpan="7"
+                      Grid.RowSpan="2">
+            <DataGrid x:Name="WeekDataGrid"
+                      ItemsSource="{Binding WeekPlanRows}"
+                      AutoGenerateColumns="False"
+                      Margin="10"
+                      CanUserSortColumns="True"
+                      CellEditEnding="WeekDataGrid_CellEditEnding" />
         </ScrollViewer>
 
-
-        <!-- 고정된 계획 총합 -->
+        <!-- 하단 합계 영역 (Row=6) -->
         <Grid Grid.Row="6" Background="#E0E0E0" Grid.ColumnSpan="7">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <!-- 주차 -->
-                <ColumnDefinition Width="220"/>
-                <!-- AAA -->
-                <ColumnDefinition Width="180"/>
-                <!-- BBB -->
-                <ColumnDefinition Width="220"/>
-                <!-- CCC -->
-                <ColumnDefinition Width="180"/>
-                <!-- DDD -->
                 <ColumnDefinition Width="Auto"/>
-                <!-- 여유 공간 -->
+                <!-- "계획 총합" 라벨 -->
+                <ColumnDefinition Width="*"   />
+                <!-- 합계 Values -->
             </Grid.ColumnDefinitions>
 
-            <!-- 각 열에 총합 표시 -->
-            <TextBlock Grid.Column="0" Text="계획 총합" FontSize="16" FontWeight="Bold" Foreground="#002E6B" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="1" Text="{Binding SumPart1}" FontSize="16" FontWeight="Bold" Foreground="#002E6B" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="2" Text="{Binding SumPart2}" FontSize="16" FontWeight="Bold" Foreground="#002E6B" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="3" Text="{Binding SumPart3}" FontSize="16" FontWeight="Bold" Foreground="#002E6B" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="4" Text="{Binding SumPart4}" FontSize="16" FontWeight="Bold" Foreground="#002E6B" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <!-- 왼쪽 라벨: "계획 총합" -->
+            <TextBlock Text="계획 총합"
+               FontWeight="Bold"
+               Foreground="Navy"
+               Margin="10"
+               VerticalAlignment="Center"/>
+
+            <!-- 오른쪽: 합계를 나열 (ItemsControl) -->
+            <ItemsControl Grid.Column="1"
+                  ItemsSource="{Binding SumDict}"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <!-- 옆으로 나란히 표시 -->
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Key: PartName, Value: 합계 -->
+                        <StackPanel Orientation="Horizontal">
+                            <!-- 파트 이름이 필요하면 아래처럼도 표시 가능:
+                    <TextBlock Text="{Binding Key}" Margin="5,0,0,0" Foreground="Navy"/>
+                    -->
+                            <TextBlock Text="{Binding Value}"
+                               Margin="20,0,0,0"
+                               Foreground="Navy"
+                               FontWeight="Bold"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </UserControl>
