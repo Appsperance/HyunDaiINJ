@@ -77,5 +77,26 @@ namespace HyunDaiINJ.Services
             if (offset < 0) offset += 7;
             return jan1.AddDays(offset);
         }
+
+        public static int GetIso8601Year(DateTime date)
+        {
+            // 이미 GetIso8601WeekOfYear(date)는 있으므로, 여기서 활용
+            int week = GetIso8601WeekOfYear(date);
+
+            // 1월인데 week가 52나 53이면 → 전년도
+            if (date.Month == 1 && week >= 52)
+            {
+                return date.Year - 1;
+            }
+            // 12월인데 week가 1이면 → 다음년도
+            else if (date.Month == 12 && week == 1)
+            {
+                return date.Year + 1;
+            }
+            else
+            {
+                return date.Year;
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using HyunDaiINJ.ViewModels.Plan;
 using HyunDaiINJ.Models.Plan;
+using HyunDaiINJ.ViewModels;
 
 namespace HyunDaiINJ.Views.Plan.Controls.Week
 {

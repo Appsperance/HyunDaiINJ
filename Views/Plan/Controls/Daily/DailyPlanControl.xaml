@@ -14,57 +14,50 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-
-            <ColumnDefinition Width="*"/>
-
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0">
-            <!-- ISO 주차 번호를 표시: "3" -->
-            <!-- 주차라는 글자를 붙이려면 StringFormat 사용 -->
-            <TextBlock Text="{Binding DataContext.CurrentWeekNumber,
-                              RelativeSource={RelativeSource AncestorType=UserControl}}"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               Foreground="#0C4C9D"
-                               FontSize="40"/>
-        </StackPanel>
+        <Grid Grid.ColumnSpan="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="45"/>
+                <ColumnDefinition Width="330"/>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <!-- ISO 주차 번호를 표시: "3" -->
+                <!-- 주차라는 글자를 붙이려면 StringFormat 사용 -->
+                <TextBlock Text="{Binding DataContext.CurrentWeekNumber,
+                      RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Foreground="#0C4C9D"
+                       FontSize="40"/>
+            </StackPanel>
 
-        <StackPanel Grid.Column="1" Grid.ColumnSpan="4">
-            <TextBlock Text="주차 생산계획"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Foreground="#0C4C9D"
-                            FontSize="40"/>
-        </StackPanel>
+            <StackPanel Grid.Column="1" Grid.ColumnSpan="1">
+                <TextBlock Text="주차 생산계획"
+               Margin="-70,0,0,0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Foreground="#0C4C9D"
+                    FontSize="40"/>
+            </StackPanel>
 
-        <DatePicker Grid.Column="6"
-                        Grid.ColumnSpan="2" 
-                        SelectedDate="{Binding SelectedDate, 
-                                           Mode=TwoWay, 
-                                           UpdateSourceTrigger=PropertyChanged}"
+            <DatePicker Grid.Column="2"
+                        SelectedDate="{Binding SelectedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Height="40" 
                         Width="200"
                         FontSize="28"
                         FontWeight="Bold"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"/>
+        </Grid>
 
         <!-- 저장 버튼-->
         <Button Content="저장"
-                Width="90" 
+                Width="70" 
                 Height="35"
                 Margin="5"
                 Grid.Column="11"
@@ -87,9 +80,14 @@
             </Button.Template>
         </Button>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="4" Grid.ColumnSpan="11" Grid.RowSpan="2">
-            <DataGrid ItemsSource="{Binding DailyRows}" AutoGenerateColumns="False" Margin="10">
-                <DataGrid.Columns>
+            <DataGrid ItemsSource="{Binding DailyRows}" AutoGenerateColumns="False" Margin="10" Grid.Row="1" Grid.ColumnSpan="2">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
 
                     <!-- 주차 컬럼 -->
                     <DataGridTemplateColumn Header="" Width="*" IsReadOnly="True">
@@ -116,8 +114,9 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding MonQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                              VerticalAlignment="Stretch"
-                                              HorizontalAlignment="Stretch" />
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch" 
+                                         TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -134,7 +133,8 @@
                             <DataTemplate>
                                 <TextBox Text="{Binding TueQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                           VerticalAlignment="Stretch"
-                                          HorizontalAlignment="Stretch" />
+                                          HorizontalAlignment="Stretch"
+                                         TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -150,8 +150,9 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding WedQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                   VerticalAlignment="Stretch"
-                                                   HorizontalAlignment="Stretch" />
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -168,8 +169,9 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding ThuQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                  VerticalAlignment="Stretch"
-                                                  HorizontalAlignment="Stretch" />
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -186,8 +188,9 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding FriQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                              VerticalAlignment="Stretch"
-                                              HorizontalAlignment="Stretch" />
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -204,8 +207,9 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding SatQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                  VerticalAlignment="Stretch"
-                                                  HorizontalAlignment="Stretch" />
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -221,35 +225,43 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding SunQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                  VerticalAlignment="Stretch"
-                                                  HorizontalAlignment="Stretch" />
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         TextAlignment="Center" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <!--<DataGridTemplateColumn Header="계획 총합" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn Header="계획 총합" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="#3670c4"/>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
+                    <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding DailyTotal, Mode=OneWay}"
-                              VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch" />
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch" 
+                                         TextAlignment="Center"
+                                        FontWeight="Bold"
+                                         Foreground="White"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>-->
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-        </ScrollViewer>
 
-        <!-- 하단 합계 영역 (Row=6) -->
-        <Grid Grid.Column="11" Grid.Row="1" Background="#E0E0E0" Grid.ColumnSpan="7">
+        <!-- 하단 합계 영역 (Row=6) --><!--
+        <Grid Grid.Column="1" Grid.Row="1" Background="#E0E0E0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="48"/>
-                <!-- "계획 총합" 라벨 -->
-                <RowDefinition Height="*"/>
-                <!-- 합계 Values -->
+                --><!-- "계획 총합" 라벨 --><!--
+                <RowDefinition Height="auto"/>
+                --><!-- 합계 Values --><!--
             </Grid.RowDefinitions>
 
-            <!-- 위쪽 라벨: "계획 총합" -->
+            --><!-- 위쪽 라벨: "계획 총합" --><!--
             <TextBlock Text="계획 총합"
                        FontWeight="Bold"
                        Grid.Row="0"
@@ -258,9 +270,10 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"/>
 
-            <ItemsControl Grid.Row="1"
+            <ItemsControl 
+                          Grid.Row="1"
                           ItemsSource="{Binding DailyRows}"  
-                          HorizontalAlignment="Left"
+                          HorizontalAlignment="Center"
                           VerticalAlignment="Center">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -270,19 +283,20 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <!-- 여기서, 한 행(DailyPlanModel)에 대한 템플릿 -->
+                        --><!-- 여기서, 한 행(DailyPlanModel)에 대한 템플릿 --><!--
                         <StackPanel Orientation="Horizontal">
-                            <!-- 행의 월~일 합계 (DailyTotal) -->
-                            <TextBlock Text="{Binding DailyTotal}"
-                                       Margin="20,0,0,0"
+                            --><!-- 행의 월~일 합계 (DailyTotal) --><!--
+                            <TextBlock Text="asdfasfsdf"
+                                       
+                                       Margin="0,0,0,0"
                                        Foreground="Navy"
                                        FontWeight="Bold"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            </ItemsControl>-->
 
-        </Grid>
+        <!--</Grid>-->
 
     </Grid>
 </UserControl>

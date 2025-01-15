@@ -9,11 +9,14 @@ using HyunDaiINJ.ViewModels.Plan;
 using HyunDaiINJ.Views;
 using HyunDaiINJ.Views.Controls;
 using HyunDaiINJ.Views.Monitoring;
+using Prism.Events;
 
 namespace HyunDaiINJ.ViewModels.Main
 {
     public class MainViewModel : ViewModelBase
     {
+        // 예: MainViewModel도 IEventAggregator를 받음
+        private readonly IEventAggregator _eventAggregator;
         public ObservableCollection<CustomTab> CustomTabs { get; } = new();
         //public Injecti InjectionVM { get; }
         // 예: 주간 계획 VM
@@ -57,13 +60,14 @@ namespace HyunDaiINJ.ViewModels.Main
         public ICommand CloseTabCommand { get; }
 
         // 생성자
-        public MainViewModel()
+        public MainViewModel(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             // (1) 주간 계획 VM 한 번만 생성
-            WeekPlanVM = new WeekPlanViewModel();
+            WeekPlanVM = new WeekPlanViewModel(_eventAggregator);
             Console.WriteLine($"WeekPlanVM : {WeekPlanVM}");
            
-            DailyPlanVM = new DailyPlanViewModel();
+            DailyPlanVM = new DailyPlanViewModel(_eventAggregator);
 
             //InjectionVM = new InjectionPlanViewModel();
             //Console.WriteLine($"WeekPlanVM : {InjectionVM}");

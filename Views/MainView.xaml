@@ -13,9 +13,9 @@
         Style="{StaticResource MaterialDesignWindow}">
 
     <!-- (1) Window.DataContext = MainViewModel -->
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <vm:MainViewModel />
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <Grid>
         <Grid.RowDefinitions>

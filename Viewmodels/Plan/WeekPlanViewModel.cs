@@ -1,49 +1,56 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Input;
-using System.Collections.Generic;
-using HyunDaiINJ.Models.Plan;
-using HyunDaiINJ.ViewModels.Main;
-using HyunDaiINJ.DATA.DAO;
-using System.Threading.Tasks;
 using System.Globalization;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Prism.Mvvm;
+using Prism.Events;
+using Prism.Commands;
+using HyunDaiINJ.DATA.DAO;     // InjectionPlanDAO
+using HyunDaiINJ.Models.Plan;
+using HyunDaiINJ.Services;  // PartInfo, WeekRow 등
 
-namespace HyunDaiINJ.ViewModels.Plan
+namespace HyunDaiINJ.ViewModels
 {
-    public class WeekPlanViewModel : INotifyPropertyChanged
+    public class WeekPlanViewModel : BindableBase
     {
+        private readonly IEventAggregator _eventAggregator;
+        private readonly InjectionPlanDAO _planDao;
+
+        // 1) PartInfoList (제품 목록)
         public ObservableCollection<PartInfo> PartInfoList { get; }
             = new ObservableCollection<PartInfo>();
 
+        // 2) 주차별 WeekPlanRows
         public ObservableCollection<WeekRow> WeekPlanRows { get; }
             = new ObservableCollection<WeekRow>();
 
+        // 3) 합계 (Dictionary: Key=PartName, Value=총합)
         private Dictionary<string, int> _sumDict = new Dictionary<string, int>();
         public Dictionary<string, int> SumDict
         {
             get => _sumDict;
-            set
-            {
-                _sumDict = value;
-                OnPropertyChanged(nameof(SumDict));
-            }
+            set => SetProperty(ref _sumDict, value);
         }
 
+        // 4) 명령들
         public ICommand PlusLineCommand { get; }
         public ICommand MinusLineCommand { get; }
         public ICommand SaveAllInsertCommand { get; }
 
-        private readonly InjectionPlanDAO _planDao;
-
-        public WeekPlanViewModel()
+        // 생성자
+        public WeekPlanViewModel(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             _planDao = new InjectionPlanDAO();
 
+            // (A) PartInfoList 변경 시 콜백
             PartInfoList.CollectionChanged += OnPartInfoListChanged;
 
+            // (B) WeekPlanRows 초기화 (1~52주 생성 예시)
             int currentYear = DateTime.Now.Year;
             for (int w = 1; w <= 52; w++)
             {
@@ -51,69 +58,27 @@ namespace HyunDaiINJ.ViewModels.Plan
                 WeekPlanRows.Add(row);
             }
 
-            PlusLineCommand = new RelayCommand<object>(ExecutePlusLine);
-            MinusLineCommand = new RelayCommand<object>(ExecuteMinusLine);
+            // (C) 명령 초기화
+            PlusLineCommand = new DelegateCommand(OnExecutePlusLine);
+            MinusLineCommand = new DelegateCommand(OnExecuteMinusLine);
+            SaveAllInsertCommand = new DelegateCommand(async () => await SaveAllPlansAtOnceAsync());
 
-            // 저장 커맨드: 멀티-VALUES 방식
-            SaveAllInsertCommand = new RelayCommand<object>(async obj =>
-            {
-                await SaveAllPlansAtOnceAsync();
-            });
-
+            // (D) 합계 초기 계산
             RecalcSum();
         }
 
-        private async Task SaveAllPlansAtOnceAsync()
-        {
-            try
-            {
-                // (A) List<(int partId, DateTime dateVal, int isoWeek, int qtyWeekly, string dayVal)>
-                var dataList = new List<(string name, DateTime dateVal, int isoWeek, int qtyWeekly, string dayVal)>();
-
-                // (B) WeekPlanRows x PartInfoList
-                foreach (var row in WeekPlanRows)
-                {
-                    foreach (var part in PartInfoList)
-                    {
-                        if (row.QuanDict.TryGetValue(part.PartId, out int qty))
-                        {
-                            // 여기서 주차 시작일, 주차번호, qty, day 문자열 등을 만든다
-                            DateTime dateVal = row.WeekStartDate; // 실제 날짜
-                            int isoWeek = row.Week;               // 주차번호
-                            int qtyWeekly = qty;                  // 계획 수량
-                            // 예: "01-02" 식으로 표시하거나, 그냥 dayVal = dateVal.Day.ToString()
-                            string dayVal = dateVal.ToString("ddd", new CultureInfo("ko-KR"));
-
-                            dataList.Add((part.Name, dateVal, isoWeek, qtyWeekly, dayVal));
-                        }
-                    }
-                }
-
-                if (dataList.Count == 0)
-                {
-                    Console.WriteLine("[VM] 저장할 데이터가 없음");
-                    return;
-                }
-
-                // (C) DAO 호출
-                await _planDao.InsertAllPlansAtOnceAsync(dataList);
-
-                Console.WriteLine($"[VM] 전체 Insert 성공! rowCount={dataList.Count}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[VM] SaveAllPlansAtOnceAsync 에러: {ex.Message}");
-            }
-        }
-
+        /// <summary>
+        /// PartInfoList가 변경될 때마다 각 WeekRow.QuanDict에 Key를 추가/삭제
+        /// </summary>
         private void OnPartInfoListChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
             {
                 foreach (var newItem in e.NewItems)
                 {
                     if (newItem is PartInfo newPart)
                     {
+                        // 모든 WeekRow에 대해, 해당 PartId 키가 없으면 0으로 추가
                         foreach (var row in WeekPlanRows)
                         {
                             if (!row.QuanDict.ContainsKey(newPart.PartId))
@@ -124,12 +89,13 @@ namespace HyunDaiINJ.ViewModels.Plan
                     }
                 }
             }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
             {
                 foreach (var oldItem in e.OldItems)
                 {
                     if (oldItem is PartInfo oldPart)
                     {
+                        // 모든 WeekRow에서 해당 PartId 키 제거
                         foreach (var row in WeekPlanRows)
                         {
                             if (row.QuanDict.ContainsKey(oldPart.PartId))
@@ -141,12 +107,89 @@ namespace HyunDaiINJ.ViewModels.Plan
                 }
             }
 
+            // 변경 후 합계 재계산
             RecalcSum();
         }
 
+        /// <summary>
+        /// "열 추가" = PartInfoList에 Part 하나 더 넣기
+        /// </summary>
+        private void OnExecutePlusLine()
+        {
+            string partName = $"Part-{PartInfoList.Count + 1}";
+            var newPartInfo = new PartInfo { Name = partName };
+            PartInfoList.Add(newPartInfo);
+            RecalcSum();
+        }
+
+        /// <summary>
+        /// "열 삭제" = PartInfoList에서 마지막 항목 제거
+        /// </summary>
+        private void OnExecuteMinusLine()
+        {
+            if (PartInfoList.Count > 0)
+            {
+                PartInfoList.RemoveAt(PartInfoList.Count - 1);
+                RecalcSum();
+            }
+        }
+
+        /// <summary>
+        /// DAO를 이용해 일괄 Insert
+        /// </summary>
+        private async Task SaveAllPlansAtOnceAsync()
+        {
+            try
+            {
+                // (1) Insert할 데이터 목록
+                var dataList = new List<(string name, DateTime dateVal, int isoWeek, int qtyWeekly, string dayVal)>();
+
+                // (2) WeekPlanRows x PartInfoList 전체 순회
+                foreach (var row in WeekPlanRows)
+                {
+                    foreach (var part in PartInfoList)
+                    {
+                        if (row.QuanDict.TryGetValue(part.PartId, out int qty))
+                        {
+                            // 주차정보, 날짜 등 계산
+                            DateTime dateVal = row.WeekStartDate;
+                            int isoWeek = row.Week;   // ex) 1~52
+                            int qtyWeekly = qty;
+                            string dayVal = dateVal.ToString("ddd", new CultureInfo("ko-KR"));
+
+                            dataList.Add((part.Name, dateVal, isoWeek, qtyWeekly, dayVal));
+                        }
+                    }
+                }
+
+                if (dataList.Count == 0)
+                {
+                    Console.WriteLine("[WeekPlanVM] 저장할 데이터 없음.");
+                    return;
+                }
+
+                // (3) 실제 Insert
+                await _planDao.InsertAllPlansAtOnceAsync(dataList);
+
+                Console.WriteLine($"[WeekPlanVM] 전체 Insert 완료! rowCount={dataList.Count}");
+
+                // (4) EventAggregator: "데이터 삽입됨" 이벤트를 발행
+                //     주차 번호가 필요 없으면 그냥 parameter 없이 발행
+                _eventAggregator.GetEvent<DataInsertedEvent>().Publish();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[WeekPlanVM] Insert 실패: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// PartInfoList / WeekPlanRows의 값들을 합산
+        /// </summary>
         public void RecalcSum()
         {
             var newSum = new Dictionary<string, int>();
+
             foreach (var part in PartInfoList)
             {
                 int total = 0;
@@ -157,30 +200,12 @@ namespace HyunDaiINJ.ViewModels.Plan
                         total += val;
                     }
                 }
+                // Key=part.Name, Value=총합
                 newSum[part.Name] = total;
             }
+
+            // Prism에서는 SetProperty(ref _sumDict, newSum)도 가능
             SumDict = newSum;
         }
-
-        private void ExecutePlusLine(object obj)
-        {
-            string partName = $"Part-{PartInfoList.Count + 1}";
-            var newPartInfo = new PartInfo { Name = partName };
-            PartInfoList.Add(newPartInfo);
-            RecalcSum();
-        }
-
-        private void ExecuteMinusLine(object obj)
-        {
-            if (PartInfoList.Count > 0)
-            {
-                PartInfoList.RemoveAt(PartInfoList.Count - 1);
-                RecalcSum();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using HyunDaiINJ.ViewModels.Login;
 using HyunDaiINJ.ViewModels.Main;
+using Prism.Events;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -41,10 +42,13 @@ namespace HyunDaiINJ.Views.Login
         /// </summary>
         private void OnLoginSuccess()
         {
+            // 1) EventAggregator를 새로 하나 생성
+            var eventAggregator = new EventAggregator();
+
             // MainView 열기
             var mainView = new MainView();
             // (2) MainViewModel 생성 후 할당
-            mainView.DataContext = new MainViewModel();
+            mainView.DataContext = new MainViewModel(eventAggregator);
             
 
             mainView.Show();
