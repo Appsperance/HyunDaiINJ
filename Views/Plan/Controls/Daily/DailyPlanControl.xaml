@@ -80,7 +80,7 @@
             </Button.Template>
         </Button>
 
-            <DataGrid ItemsSource="{Binding DailyRows}" AutoGenerateColumns="False" Margin="10" Grid.Row="1" Grid.ColumnSpan="2">
+        <DataGrid ItemsSource="{Binding DailyRows}" AutoGenerateColumns="False" Margin="10" Grid.Row="1" Grid.ColumnSpan="2">
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -89,179 +89,186 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
 
-                    <!-- 주차 컬럼 -->
-                    <DataGridTemplateColumn Header="" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding PartIdWithTotal}"
+                <!-- 주차 컬럼 -->
+                <DataGridTemplateColumn Header="" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding PartIdWithTotal}"
                                            VerticalAlignment="Center" 
                                            HorizontalAlignment="Center" />
 
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
 
-                    <!-- 요일 컬럼 -->
-                    <DataGridTemplateColumn Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
-                                <TextBlock Text="{Binding DataContext.MondayHeader, 
+                <!-- 요일 컬럼 -->
+                <DataGridTemplateColumn Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
+                            <TextBlock Text="{Binding DataContext.MondayHeader, 
                                      RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding MonQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding MonQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch" 
                                          TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="화(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
-                                <TextBlock Text="{Binding DataContext.TuesdayHeader, 
+                <DataGridTemplateColumn Header="화(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
+                            <TextBlock Text="{Binding DataContext.TuesdayHeader, 
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding TueQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding TueQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                           VerticalAlignment="Stretch"
                                           HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="수(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
-                                <TextBlock Text="{Binding DataContext.WednesdayHeader, 
+                <DataGridTemplateColumn Header="수(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
+                            <TextBlock Text="{Binding DataContext.WednesdayHeader, 
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding WedQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding WedQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
 
-                    <DataGridTemplateColumn Header="목(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
-                                <TextBlock Text="{Binding DataContext.ThursdayHeader, 
+                <DataGridTemplateColumn Header="목(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
+                            <TextBlock Text="{Binding DataContext.ThursdayHeader, 
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding ThuQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding ThuQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
 
-                    <DataGridTemplateColumn Header="금(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
-                                <TextBlock Text="{Binding DataContext.FridayHeader, 
+                <DataGridTemplateColumn Header="금(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
+                            <TextBlock Text="{Binding DataContext.FridayHeader, 
                                              RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding FriQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding FriQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
 
-                    <DataGridTemplateColumn Header="토(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
-                                <TextBlock Text="{Binding DataContext.SaturdayHeader, 
+                <DataGridTemplateColumn Header="토(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
+                            <TextBlock Text="{Binding DataContext.SaturdayHeader, 
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding SatQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding SatQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="일(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
-                                <TextBlock Text="{Binding DataContext.SundayHeader, 
+                <DataGridTemplateColumn Header="일(날짜만 바인딩 할 수 잇게)" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
+                            <TextBlock Text="{Binding DataContext.SundayHeader, 
                                             RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.HeaderTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding SunQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding SunQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="계획 총합" Width="*" IsReadOnly="True">
+                <DataGridTemplateColumn Header="계획 총합" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="#3670c4"/>
                         </Style>
                     </DataGridTemplateColumn.CellStyle>
                     <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding DailyTotal, Mode=OneWay}"
+                        <DataTemplate>
+                            <TextBox Text="{Binding DailyTotal, Mode=OneWay}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch" 
                                          TextAlignment="Center"
                                         FontWeight="Bold"
                                          Foreground="White"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
 
-        <!-- 하단 합계 영역 (Row=6) --><!--
+        <!-- 하단 합계 영역 (Row=6) -->
+        <!--
         <Grid Grid.Column="1" Grid.Row="1" Background="#E0E0E0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="48"/>
-                --><!-- "계획 총합" 라벨 --><!--
+                -->
+        <!-- "계획 총합" 라벨 -->
+        <!--
                 <RowDefinition Height="auto"/>
-                --><!-- 합계 Values --><!--
+                -->
+        <!-- 합계 Values -->
+        <!--
             </Grid.RowDefinitions>
 
-            --><!-- 위쪽 라벨: "계획 총합" --><!--
+            -->
+        <!-- 위쪽 라벨: "계획 총합" -->
+        <!--
             <TextBlock Text="계획 총합"
                        FontWeight="Bold"
                        Grid.Row="0"
@@ -283,9 +290,13 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        --><!-- 여기서, 한 행(DailyPlanModel)에 대한 템플릿 --><!--
+                        -->
+        <!-- 여기서, 한 행(DailyPlanModel)에 대한 템플릿 -->
+        <!--
                         <StackPanel Orientation="Horizontal">
-                            --><!-- 행의 월~일 합계 (DailyTotal) --><!--
+                            -->
+        <!-- 행의 월~일 합계 (DailyTotal) -->
+        <!--
                             <TextBlock Text="asdfasfsdf"
                                        
                                        Margin="0,0,0,0"
