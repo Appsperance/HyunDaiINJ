@@ -8,8 +8,9 @@ namespace HyunDaiINJ.Models.Plan
     public class WeekRow : INotifyPropertyChanged
     {
         public int Week { get; }
-        public int Year { get; } // 예: 2023
+        public int Year { get; }
 
+        // ★ Dictionary의 Key = part.Name (string), Value = 수량(int)
         private Dictionary<int, int> _quanDict = new Dictionary<int, int>();
         public Dictionary<int, int> QuanDict
         {
@@ -21,21 +22,16 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
-        // "1주차(01-02)" 처럼 표시
+        // "3주차(2023-01-16)" 같은 식으로 표시
         public string WeekDisplay
         {
             get
             {
-                // 1) iso 주차의 월요일 날짜
                 DateTime firstDay = IsoWeekCalculator.FirstDayOfIsoWeek(Year, Week);
-
-                // 2) "1주차(01-02)" 포맷
-                //    (원하시면 "YYYY-MM-dd" 등 다른 형식도 가능)
                 return $"{Week}주차({firstDay:yyyy-MM-dd})";
             }
         }
 
-        // ★ 추가: 주차 시작일 (DateTime)
         private DateTime _weekStartDate;
         public DateTime WeekStartDate
         {

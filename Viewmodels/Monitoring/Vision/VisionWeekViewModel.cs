@@ -1,26 +1,25 @@
-﻿// VisionWeekViewModel.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using HyunDaiINJ.DATA.DTO;
 using HyunDaiINJ.Models.Monitoring.Vision;
 
 namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
-
     public class VisionWeekViewModel : INotifyPropertyChanged
     {
         private readonly VisionNgModel _visionNgModel;
         private readonly List<string> _colorPalette;
         private string _chartScript;
 
-        public event Action ChartScriptUpdated; // 이벤트 추가
+        public event Action ChartScriptUpdated;
         public event PropertyChangedEventHandler PropertyChanged;
+
+        // (옵션) 주간 DTO 리스트를 보관하려면 추가
+        // public List<VisionNgDTO> WeekDataList { get; set; }
 
         public string ChartScript
         {
@@ -29,7 +28,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             {
                 _chartScript = value;
                 OnPropertyChanged();
-                ChartScriptUpdated?.Invoke(); // 이벤트 호출
+                ChartScriptUpdated?.Invoke(); // 차트 스크립트 변경 시점 알림
             }
         }
 
@@ -37,48 +36,24 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
         {
             _visionNgModel = new VisionNgModel();
 
-            // 색상 팔레트 초기화
+            // 파스텔톤 색상 팔레트 (차트에 사용)
             _colorPalette = new List<string>
             {
-                "rgba(75, 192, 192, 1)",  // 청록색
-                "rgba(255, 99, 132, 1)",  // 빨강
-                "rgba(54, 162, 235, 1)",  // 파랑
-                "rgba(255, 206, 86, 1)",  // 노랑
-                "rgba(153, 102, 255, 1)"  // 보라
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)"
             };
         }
 
-        // 서버에서 데이터를 수신하고 UI를 업데이트하는 메서드
-        public async Task ListenToServerAsync()
-        {
-            try
-            {
-                using var client = new TcpClient("127.0.0.1", 51900);
-                using var stream = client.GetStream();
-                byte[] buffer = new byte[4096];
-
-                while (true)
-                {
-                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                    if (bytesRead == 0) break;
-
-                    string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-
-                    await LoadVisionNgDataWeekAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($" 서버 연결 에러: {ex.Message}");
-            }
-        }
-
-
-        // 데이터 가져오기 및 Chart.js 스크립트 생성
+        // (1) 주간 데이터 로드
         public async Task LoadVisionNgDataWeekAsync()
         {
             try
             {
+                // 예: DAO -> (WeekNumber, NgLabel, LabelCount) 리스트
                 var visionNgDataWeek = await Task.Run(() => _visionNgModel.GetVisionNgDataWeek());
 
                 if (visionNgDataWeek == null || visionNgDataWeek.Count == 0)
@@ -87,7 +62,10 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                     return;
                 }
 
+                // (2) Chart.js config JSON 생성
                 ChartScript = GenerateChartScript(visionNgDataWeek);
+
+                // (옵션) WeekDataList = visionNgDataWeek;
             }
             catch (Exception ex)
             {
@@ -95,90 +73,80 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-
+        // (2) ChartScript 생성: GroupBy(ngLabel, weekNumber) -> Sum(labelCount)
         private string GenerateChartScript(List<VisionNgDTO> visionNgDataWeek)
         {
-            var datasets = new List<object>();
-            var labels = new List<string>();
+            // groupedData: key=ng_label, val=(Dictionary<week -> sum(labelCount)>)
             var groupedData = new Dictionary<string, Dictionary<int, int>>();
+            var weekLabels = new HashSet<int>();
 
-            if (visionNgDataWeek == null || visionNgDataWeek.Count == 0)
+            // Grouping
+            foreach (var data in visionNgDataWeek)
             {
-                return GenerateEmptyChartScript(); // 빈 차트 스크립트 생성
-            }
-
-            try
-            {
-                // Group data
-                foreach (var data in visionNgDataWeek)
+                if (!groupedData.ContainsKey(data.NgLabel))
                 {
-                    if (!groupedData.ContainsKey(data.NgLabel))
-                    {
-                        groupedData[data.NgLabel] = new Dictionary<int, int>();
-                    }
-
-                    if (!groupedData[data.NgLabel].ContainsKey(data.WeekNumber))
-                    {
-                        groupedData[data.NgLabel][data.WeekNumber] = 0;
-                    }
-                    if (visionNgDataWeek == null || visionNgDataWeek.Count == 0)
-                    {
-                        return string.Empty;
-                    }
-
-                    groupedData[data.NgLabel][data.WeekNumber] += data.LabelCount;
-
-                    var weekLabel = $"Week {data.WeekNumber}";
-                    if (!labels.Contains(weekLabel))
-                    {
-                        labels.Add(weekLabel);
-                    }
+                    groupedData[data.NgLabel] = new Dictionary<int, int>();
                 }
 
-                int colorIndex = 0;
-                foreach (var group in groupedData)
+                if (!groupedData[data.NgLabel].ContainsKey(data.WeekNumber))
                 {
-                    var dataPoints = new List<int>();
-
-                    foreach (var label in labels)
-                    {
-                        var weekNumber = int.Parse(label.Replace("Week ", ""));
-                        var value = group.Value.ContainsKey(weekNumber) ? group.Value[weekNumber] : 0;
-                        dataPoints.Add(value);
-                    }
-
-                    datasets.Add(new
-                    {
-                        label = group.Key,
-                        data = dataPoints,
-                        backgroundColor = _colorPalette[colorIndex % _colorPalette.Count].Replace("1)", "0.6)")
-                    });
-
-                    colorIndex++;
+                    groupedData[data.NgLabel][data.WeekNumber] = 0;
                 }
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[DEBUG] Error processing data: {ex.Message}");
-                throw;
+                groupedData[data.NgLabel][data.WeekNumber] += data.LabelCount;
+                weekLabels.Add(data.WeekNumber);
             }
 
+            // week 정렬
+            var sortedWeeks = new List<int>(weekLabels);
+            sortedWeeks.Sort();
+
+            // dataset
+            var datasets = new List<object>();
+            int colorIndex = 0;
+
+            foreach (var kvp in groupedData)
+            {
+                string label = kvp.Key; // ngLabel
+                var weekMap = kvp.Value; // Dictionary< weekNumber -> totalCount >
+                var dataPoints = new List<int>();
+
+                foreach (var w in sortedWeeks)
+                {
+                    dataPoints.Add(weekMap.ContainsKey(w) ? weekMap[w] : 0);
+                }
+
+                // 배경색
+                string color = _colorPalette[colorIndex % _colorPalette.Count].Replace("1)", "0.6)");
+                datasets.Add(new
+                {
+                    label,
+                    data = dataPoints,
+                    backgroundColor = color
+                });
+                colorIndex++;
+            }
+
+            // X축: "Week 3", "Week 4" 등
+            var weekLabelsStr = new List<string>();
+            foreach (var w in sortedWeeks)
+            {
+                weekLabelsStr.Add($"Week {w}");
+            }
+
+            // Chart.js config 객체
             var config = new
             {
                 type = "bar",
                 data = new
                 {
-                    labels = labels,
+                    labels = weekLabelsStr,
                     datasets = datasets
                 },
                 options = new
                 {
                     responsive = true,
-                    plugins = new
-                    {
-
-                    },
+                    plugins = new { },
                     scales = new
                     {
                         x = new { stacked = true },
@@ -187,6 +155,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                 }
             };
 
+            // 직렬화 -> JSON
             var json = JsonSerializer.Serialize(config);
             return json;
         }
@@ -198,15 +167,15 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                 type = "bar",
                 data = new
                 {
-                    labels = new string[] { "No Data" },
+                    labels = new[] { "No Data" },
                     datasets = new object[]
                     {
-                new
-                {
-                    label = "Empty Dataset",
-                    data = new int[] { 0 },
-                    backgroundColor = "rgba(200, 200, 200, 0.5)"
-                }
+                        new
+                        {
+                            label = "Empty",
+                            data = new[] {0},
+                            backgroundColor = "rgba(200,200,200,0.5)"
+                        }
                     }
                 },
                 options = new
@@ -214,20 +183,10 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                     responsive = true,
                     plugins = new
                     {
-                        title = new
-                        {
-                            display = true,
-                            text = "No Data Available"
-                        }
-                    },
-                    scales = new
-                    {
-                        x = new { stacked = true },
-                        y = new { stacked = true }
+                        title = new { display = true, text = "No Data" }
                     }
                 }
             };
-
             return JsonSerializer.Serialize(config);
         }
 
@@ -235,6 +194,5 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 }

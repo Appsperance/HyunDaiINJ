@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using HyunDaiINJ.DATA.DTO;
 using Microsoft.Web.WebView2.Core;
-using System.Collections.Generic;
+using HyunDaiINJ.DATA.DTO;
 
 namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {
@@ -14,8 +13,6 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         public VisionDaily()
         {
             InitializeComponent();
-
-            // 디자인 타임 분기
             if (DesignerProperties.GetIsInDesignMode(this))
             {
                 return;
@@ -23,37 +20,34 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         }
 
         /// <summary>
-        /// 부모(VisionStat)에서 일간 데이터를 주입하면,
-        /// 즉시 차트를 렌더하는 메서드
+        /// 외부에서 List<VisionNgDTO>를 받아 -> x축 1개(오늘), ng_label별 dataset -> 차트 표시
         /// </summary>
         public async void SetData(List<VisionNgDTO> dailyDataList)
         {
-            // (1) WebView2 초기화가 안 되어 있으면 대기 or 별도 처리
+            if (dailyDataList == null || dailyDataList.Count == 0)
+            {
+                Console.WriteLine("[VisionDaily.SetData] no daily data");
+                return;
+            }
+
             if (WebView.CoreWebView2 == null)
             {
-                // EnsureCoreWebView2Async()
                 await WebView.EnsureCoreWebView2Async();
             }
 
-            // (2) Chart.js config 생성
             var chartConfig = CreateChartConfig(dailyDataList);
-
-            // (3) 직렬화
             string configJson = JsonSerializer.Serialize(chartConfig);
 
-            // (4) HTML 생성 → NavigateToString
+            Console.WriteLine("[VisionDaily.SetData] configJson=" + configJson);
+
             string html = GenerateHtmlContent(configJson);
             WebView.NavigateToString(html);
         }
 
-        // Chart config 예시 (기존)
         private object CreateChartConfig(List<VisionNgDTO> dailyDataList)
         {
-            // "오늘" x축 1개, ng_label별 dataset
-            // or 여러 bar: ...
-            // 아래는 기존과 동일
-            // ...
-            var xLabels = new[] { DateTime.Today.ToShortDateString() };
+            // 오늘 날짜 1칸
+            var xLabels = new[] { DateTime.Today.ToString("yyyy-MM-dd") };
             var datasets = new List<object>();
 
             var colorPalette = new List<string>
@@ -95,7 +89,19 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                         title = new
                         {
                             display = true,
-                            text = "오늘 불량"
+                            text = "오늘 불량 (일간)"
+                        }
+                    },
+                    scales = new
+                    {
+                        y = new
+                        {
+                            beginAtZero = true,
+                            title = new
+                            {
+                                display = true,
+                                text = "건수"
+                            }
                         }
                     }
                 }
@@ -106,47 +112,32 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         private string GenerateHtmlContent(string script)
         {
             return $@"
-                    <!DOCTYPE html>
-                    <html lang='en'>
-                    <head>
-                        <meta charset='UTF-8'>
-                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                        <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
-                        <style>
-                            html, body {{
-                                margin: 0; padding: 0;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                width: 100vw; height: 100vh;
-                                background-color: #F4F7FB;
-                            }}
-                            canvas {{
-                                display: block;
-                                width: 90vw;
-                                height: 80vh;
-                            }}
-                        </style>
-                    </head>
-                    <body>
-                        <canvas id='stackedBarChart'></canvas>
-                        <script>
-                            let myChart;
-                            function updateChartData(config) {{
-                                if (myChart) {{
-                                    myChart.data = config.data;
-                                    myChart.update('none');
-                                }} else {{
-                                    const ctx = document.getElementById('stackedBarChart').getContext('2d');
-                                    myChart = new Chart(ctx, config);
-                                }}
-                            }}
-                            // 초기 로드
-                            {(string.IsNullOrEmpty(script) ? "console.log('No data');"
-                               : $"updateChartData({script});")}
-                        </script>
-                    </body>
-                    </html>";
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+</head>
+<body style='margin:0;padding:0;display:flex;align-items:center;justify-content:center;height:100vh;'>
+    <canvas id='stackedBarChart' style='width:90vw;height:80vh;'></canvas>
+    <script>
+        let myChart;
+        function updateChartData(config) {{
+            console.log('[VisionDaily] config:', config);
+            if(myChart) {{
+                myChart.data = config.data;
+                myChart.update('none');
+            }} else {{
+                const ctx = document.getElementById('stackedBarChart').getContext('2d');
+                myChart = new Chart(ctx, config);
+            }}
+        }}
+        {(string.IsNullOrEmpty(script)
+            ? "console.log('No data');"
+            : $"updateChartData({script});")}
+    </script>
+</body>
+</html>";
         }
     }
 }

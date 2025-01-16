@@ -166,29 +166,22 @@ namespace HyunDaiINJ.ViewModels
         {
             try
             {
-                // 1) DAO에서 DTO 목록
                 var dtoList = await _dao.GetPlansByWeekAsync(isoWeek); // returns List<InjectionPlanDTO>
 
-                // 2) part_id별 그룹
                 var grouped = dtoList.GroupBy(r => r.PartId);
-
                 var pivotList = new List<DailyPlanModel>();
 
                 foreach (var grp in grouped)
                 {
-                    // grp.Key = part_id
                     var pivot = new DailyPlanModel
                     {
                         PartId = grp.Key ?? "",
                         IsoWeek = isoWeek,
-                        // DB 값 활용: grp.FirstOrDefault()?.QtyWeekly ?? 999
                         QtyWeekly = grp.FirstOrDefault()?.QtyWeekly ?? 999
                     };
 
-                    // grp: 이 part_id의 여러 day/date 레코드
                     foreach (var row in grp)
                     {
-                        // row.Day = "월","화","수","목","금","토","일"
                         switch (row.Day)
                         {
                             case "월":
@@ -219,7 +212,6 @@ namespace HyunDaiINJ.ViewModels
                 }
 
                 DailyRows = new ObservableCollection<DailyPlanModel>(pivotList);
-
                 Console.WriteLine($"[DailyPlanVM] isoWeek={isoWeek}, pivot row count={pivotList.Count}");
             }
             catch (Exception ex)
@@ -229,7 +221,7 @@ namespace HyunDaiINJ.ViewModels
         }
 
         /// <summary>
-        /// "저장" → DailyRows pivot 반영 → Upsert
+        /// "저장" → DailyRows pivot 반영 → Insert (QtyWeekly 없이)
         /// </summary>
         private async Task SaveAllPlansAsync()
         {
@@ -238,47 +230,40 @@ namespace HyunDaiINJ.ViewModels
                 int isoYear = GetIso8601Year(DateTime.Today);
                 DateTime monday = IsoWeekCalculator.FirstDayOfIsoWeek(isoYear, CurrentWeekNumber);
 
-                var dataList = new List<(string partId, DateTime dateVal, int isoWeek, int qtyDaily, int qtyWeekly, string dayVal)>();
+                // qtyWeekly 없이 qtyDaily만 담는 튜플
+                var dataList = new List<(string partId, DateTime dateVal, int isoWeek, int qtyDaily, string dayVal)>();
 
-                // 각 row(DailyPlanModel) → (월,화... = qtyDaily)로 펼치기
                 foreach (var row in DailyRows)
                 {
                     if (row.MonQuan != 0)
                     {
-                        var dt = monday;
-                        dataList.Add((row.PartId, dt, row.IsoWeek, row.MonQuan, row.QtyWeekly, "월"));
+                        dataList.Add((row.PartId, monday, row.IsoWeek, row.MonQuan, "월"));
                     }
                     if (row.TueQuan != 0)
                     {
-                        var dt = monday.AddDays(1);
-                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                        dataList.Add((row.PartId, monday.AddDays(1), row.IsoWeek, row.TueQuan, "화"));
                     }
+                    // 나머지 요일도 동일한 방식으로 추가
                     if (row.WedQuan != 0)
                     {
-                        var dt = monday.AddDays(2);
-                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                        dataList.Add((row.PartId, monday.AddDays(2), row.IsoWeek, row.WedQuan, "수"));
                     }
-                    if (row.TueQuan != 0)
+                    if (row.ThuQuan != 0)
                     {
-                        var dt = monday.AddDays(1);
-                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                        dataList.Add((row.PartId, monday.AddDays(3), row.IsoWeek, row.ThuQuan, "목"));
                     }
-                    if (row.TueQuan != 0)
+                    if (row.FriQuan != 0)
                     {
-                        var dt = monday.AddDays(1);
-                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                        dataList.Add((row.PartId, monday.AddDays(4), row.IsoWeek, row.FriQuan, "금"));
                     }
-                    if (row.TueQuan != 0)
+                    if (row.SatQuan != 0)
                     {
-                        var dt = monday.AddDays(1);
-                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                        dataList.Add((row.PartId, monday.AddDays(5), row.IsoWeek, row.SatQuan, "토"));
                     }
-                    if (row.TueQuan != 0)
+                    if (row.SunQuan != 0)
                     {
-                        var dt = monday.AddDays(1);
-                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                        dataList.Add((row.PartId, monday.AddDays(6), row.IsoWeek, row.SunQuan, "일"));
                     }
-                    // 수 ~ 일 동일 ...
                 }
 
                 if (dataList.Count == 0)
@@ -287,7 +272,9 @@ namespace HyunDaiINJ.ViewModels
                     return;
                 }
 
-                await _dao.UpsertAllPlansAtOnceAsync(dataList);
+                // Upsert 대신 InsertDailyPlansAtOnceAsync 호출
+                await _dao.InsertDailyPlansAtOnceAsync(dataList);
+
                 Console.WriteLine($"[DailyPlanVM] SaveAllPlansAsync 완료 - {dataList.Count}건");
             }
             catch (Exception ex)

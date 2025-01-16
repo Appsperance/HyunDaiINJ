@@ -24,6 +24,8 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
     {
         private readonly VisionNgViewModel _viewModel;
         private readonly VisionYearViewModel _yearViewModel;
+        private readonly VisionDailyViewModel _dailyViewModel;
+        private readonly VisionWeekViewModel _weekViewModel;
         public VisionStat()
         {
             InitializeComponent();
@@ -34,7 +36,8 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
             // 2) DataContext = _viewModel (DataGrid 등에서 쓰고 싶다면)
             this.DataContext = _viewModel;
             _yearViewModel = new VisionYearViewModel(); // ← 추가
-
+            _dailyViewModel = new VisionDailyViewModel(); // ← 추가
+            _weekViewModel = new VisionWeekViewModel(); // ← 추가
             // 3) Loaded 이벤트에서 자식 차트에 데이터 전달
             Loaded += VisionStat_Loaded;
         }
@@ -45,14 +48,19 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 
             //DailyChart.SetData(_viewModel.DailyData);
             //WeekChart.SetData(_viewModel.WeekData);
-            //YearChart.SetData(_viewModel.YearData);
             // 윈도우가 로드될 때, 서버에서 데이터 가져옴
             await _viewModel.LoadDataFromServerAsync();
+            await _yearViewModel.LoadVisionNgDataYearAsync();
+            await _dailyViewModel.LoadVisionNgDataDailyAsync();
+            await _weekViewModel.LoadVisionNgDataWeekAsync();
+
             // 이제 세 개 차트가 거의 동시에 Render를 시작하게 되어
             // 뒤죽박죽 순서가 아니라, 한꺼번에 표시됨
             YearChart.SetData(_viewModel.NgDetailedData);
-            await _yearViewModel.LoadVisionNgDataYearAsync();
+            DailyChart.SetData(_dailyViewModel.DailyDataList);
             YearChart.SetData(_yearViewModel.YearLabelSummaries);
+            WeekChart.SetData(_weekViewModel.ChartScript);
+            DailyChart.SetData(_dailyViewModel.DailyDataList);
         }
     }
 }

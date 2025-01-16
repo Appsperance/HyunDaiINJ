@@ -124,4 +124,36 @@ public class MSDApi
             return ngList;
         }
     }
+    public async Task<bool> SendWeekPlanAsync(string partId, int weekNumber, int qtyWeekly)
+    {
+        if (string.IsNullOrEmpty(JwtToken))
+            throw new InvalidOperationException("로그인이 필요합니다. JWT 토큰이 없습니다.");
+
+        // 전송할 JSON 바디
+        var bodyObj = new
+        {
+            partId = partId,
+            weekNumber = weekNumber,
+            qtyWeekly = qtyWeekly
+        };
+
+        string jsonBody = JsonConvert.SerializeObject(bodyObj);
+
+        // 예) POST http://13.125.114.64:5282/api/Plan/week
+        using var request = new HttpRequestMessage(HttpMethod.Post, "http://13.125.114.64:5282/api/Plan/week");
+        request.Headers.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtToken); // JWT 토큰 헤더
+        request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+        var response = await _client.SendAsync(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            string errorMsg = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"[SendWeekPlanAsync] 실패: {response.StatusCode}, {errorMsg}");
+            return false;
+        }
+
+        return true;
+    }
+
 }

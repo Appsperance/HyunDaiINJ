@@ -1,21 +1,31 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Text.Json; // 또는 Newtonsoft.Json
-using HyunDaiINJ.Models.Monitoring.Vision;
 using System.Collections.Generic;
-using HyunDaiINJ.DATA.DTO;
-using HyunDaiINJ.ViewModels.Main;
+using System.Text.Json; // 또는 Newtonsoft.Json
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using HyunDaiINJ.DATA.DTO;
+using HyunDaiINJ.Models.Monitoring.Vision;
 
 namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
-    public class VisionDailyViewModel : INotifyPropertyChanged // BaseViewModel은 INotifyPropertyChanged 구현 가정
+    public class VisionDailyViewModel : INotifyPropertyChanged
     {
         private readonly VisionNgModel _visionNgModel;
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        // WebView2에 주입할 차트 스크립트 (JSON 형태)
+        // 일간 데이터를 담을 컬렉션 (옵션)
+        private List<VisionNgDTO> _dailyDataList;
+        public List<VisionNgDTO> DailyDataList
+        {
+            get => _dailyDataList;
+            set
+            {
+                _dailyDataList = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // 차트에 넣을 JS config(JSON) 스크립트
         private string _chartScript;
         public string ChartScript
         {
@@ -27,37 +37,55 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        // 이벤트: 차트 스크립트 업데이트 시 통지 → UserControl에서 UpdateChart() 호출
+        // 차트가 업데이트되었음을 알리는 이벤트 (UserControl 등에서 구독 가능)
         public event Action ChartScriptUpdated;
-        private void OnChartScriptUpdated()
+        private void OnChartScriptUpdated() => ChartScriptUpdated?.Invoke();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string prop = null)
         {
-            ChartScriptUpdated?.Invoke();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
         public VisionDailyViewModel()
         {
             _visionNgModel = new VisionNgModel();
+            DailyDataList = new List<VisionNgDTO>();
         }
 
-        // 일간 데이터 로드 후 ChartScript 생성
+        /// <summary>
+        /// DB나 서버에서 "오늘 날짜" 기준 데이터를 불러와, 라벨별로 표시
+        /// </summary>
         public async Task LoadVisionNgDataDailyAsync()
         {
             try
             {
-                // (1) DAO 통해 DB에서 일간 데이터 조회
-                var dailyDataList = _visionNgModel.GetVisionNgDataDaily();
-                // dailyDataList = List<VisionNgDTO>, 여기서 ng_label, label_count 등을 포함
+                // (1) DB/서버에서 일간 데이터 조회
+                //     예: VisionNgModel.GetVisionNgDataDaily();
+                //     여기서는 Model(DAO) 호출로 List<VisionNgDTO> 가져온다고 가정
+                var dailyData = _visionNgModel.GetVisionNgDataDaily();
+                // dailyData가 각각 (NgLabel, LabelCount) 등을 포함한다고 가정
+
+                if (dailyData == null || dailyData.Count == 0)
+                {
+                    Console.WriteLine("[LoadVisionNgDataDailyAsync] no daily data");
+                    return;
+                }
+
+                DailyDataList = dailyData; // 바인딩 등에서 쓸 수 있음
 
                 // (2) Chart.js config 생성
-                var chartConfig = CreateChartConfig(dailyDataList);
+                var chartConfig = CreateChartConfig(dailyData);
 
-                // (3) C# 객체 → JSON (Chart.js에서 해석할 config)
-                // Newtonsoft나 System.Text.Json 중 편한 걸 쓰면 됨
+                // (3) JSON 직렬화
                 string configJson = JsonSerializer.Serialize(chartConfig);
 
-                // (4) ChartScript에 저장 후 이벤트
+                // (4) ChartScript에 저장 → 이벤트
                 ChartScript = configJson;
                 OnChartScriptUpdated();
+
+                // Debug
+                Console.WriteLine("[LoadVisionNgDataDailyAsync] ChartScript updated");
             }
             catch (Exception ex)
             {
@@ -65,46 +93,41 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        // 차트 구성을 만드는 예시 (Bar 차트)
+        /// <summary>
+        /// 일간 데이터(dailyDataList)를 x축 하나(예: 오늘), 여러 개 ng_label로 dataset 구성
+        /// </summary>
         private object CreateChartConfig(List<VisionNgDTO> dailyDataList)
         {
-            // 1) X축에 표시할 항목 (일간이므로 "오늘" 1개만)
-            //    날짜를 문자열로 넣어도 됩니다. 예: DateTime.Today.ToShortDateString()
-            var xLabels = new[] { DateTime.Today.ToShortDateString() };
+            // X축은 "오늘" 1칸만
+            var xLabels = new[] { DateTime.Today.ToString("yyyy-MM-dd") };
 
-            // 2) 여러 dataset(각 ng_label별로 1개)을 담을 리스트
+            // dataset: 라벨별로 1개씩
             var datasets = new List<object>();
 
-            // 3) 색상 팔레트 준비 (필요한만큼 늘리거나, 무작위 생성 가능)
             var colorPalette = new List<string>
-    {
-        "rgba(75, 192, 192, 0.7)",  // 청록
-        "rgba(255, 99, 132, 0.7)",  // 빨강
-        "rgba(54, 162, 235, 0.7)",  // 파랑
-        "rgba(255, 206, 86, 0.7)",  // 노랑
-        "rgba(153, 102, 255, 0.7)", // 보라
-        "rgba(255, 159, 64, 0.7)",  // 주황
-        // 필요하면 더 추가
-    };
+            {
+                "rgba(75, 192, 192, 0.7)",
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(153, 102, 255, 0.7)",
+                "rgba(255, 159, 64, 0.7)"
+            };
 
-            // 4) dailyDataList를 돌면서,
-            //    ng_label마다 dataset을 하나씩 만든다.
             int colorIndex = 0;
             foreach (var item in dailyDataList)
             {
-                var dataset = new
+                // 예: 라벨=item.NgLabel, data={ item.LabelCount }
+                datasets.Add(new
                 {
-                    label = item.NgLabel,                  // 예: "cd", "cdh", ...
-                    data = new[] { item.LabelCount },      // 이 라벨의 값은 단 하나
+                    label = item.NgLabel,
+                    data = new[] { item.LabelCount },
                     backgroundColor = colorPalette[colorIndex % colorPalette.Count]
-                };
-                datasets.Add(dataset);
+                });
                 colorIndex++;
             }
 
-            // 5) Chart.js config 생성:
-            //    X축 labels = { "오늘" }
-            //    datasets = 라벨별로 구성된 여러개의 dataset
+            // Chart.js config
             var chartConfig = new
             {
                 type = "bar",
@@ -122,31 +145,25 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                         title = new
                         {
                             display = true,
-                            text = "오늘 불량" // 차트 제목
+                            text = "오늘 불량 (일간)"
                         }
                     },
                     scales = new
                     {
-                        x = new { stacked = false },
-                        y = new { stacked = false }
+                        y = new
+                        {
+                            beginAtZero = true,
+                            title = new
+                            {
+                                display = true,
+                                text = "건수"
+                            }
+                        }
                     }
                 }
             };
 
             return chartConfig;
-        }
-
-
-        // 서버 통신 / 실시간 업데이트 등 필요시 이 안에서 처리
-        public async Task ListenToServerAsync()
-        {
-            // 예: MQTT / Socket 구독 등을 통해 실시간 데이터 받고,
-            //     ChartScript 재생성, OnChartScriptUpdated() 호출
-        }
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

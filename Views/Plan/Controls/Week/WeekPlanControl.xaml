@@ -33,9 +33,9 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                 <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
                 <TextBlock Text="총 계획"
-                           FontSize="18" 
-                           FontWeight="Bold" 
-                           Foreground="#002E6B" 
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#002E6B"
                            VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
@@ -44,34 +44,34 @@
         <Border Grid.ColumnSpan="7" Background="#002E6B" Height="1" VerticalAlignment="Bottom" Margin="0,0,0,3" />
 
         <!-- 상단 "제품명" 레이블 -->
-        <StackPanel Orientation="Horizontal" 
-                    Grid.Row="1" 
-                    Margin="5" 
-                    VerticalAlignment="Center" 
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1"
+                    Margin="5"
+                    VerticalAlignment="Center"
                     HorizontalAlignment="Center">
             <TextBlock Text="제품명"
-                       FontSize="20" 
-                       FontWeight="Bold" 
-                       Foreground="#002E6B" 
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Foreground="#002E6B"
                        VerticalAlignment="Center"/>
         </StackPanel>
 
         <!-- "주 계획" 레이블 -->
-        <StackPanel Orientation="Horizontal" 
-                    Grid.Row="3" 
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="3"
                     Margin="5">
             <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
             <TextBlock Text="주 계획"
-                       FontSize="16" 
-                       FontWeight="Bold" 
-                       Foreground="#002E6B" 
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Foreground="#002E6B"
                        VerticalAlignment="Center"/>
         </StackPanel>
 
         <!-- 제품 입력(ItemsControl) -->
         <ItemsControl Grid.Row="1"
                       Grid.RowSpan="2"
-                      Grid.Column="1" 
+                      Grid.Column="1"
                       Grid.ColumnSpan="4"
                       Margin="5"
                       ItemsSource="{Binding PartInfoList}">
@@ -85,13 +85,13 @@
                     <Border Margin="3"
                             BorderBrush="#444"
                             BorderThickness="1"
-                            CornerRadius="5" 
+                            CornerRadius="5"
                             Background="Transparent">
                         <!-- PartName 텍스트박스 -->
                         <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  Width="120"
-                                 FontSize="13" 
-                                 Foreground="Black" 
+                                 FontSize="13"
+                                 Foreground="Black"
                                  FontWeight="Bold"/>
                     </Border>
                 </DataTemplate>
@@ -145,7 +145,7 @@
                       AutoGenerateColumns="False"
                       Margin="10"
                       CanUserSortColumns="True"
-                      CellEditEnding="WeekDataGrid_CellEditEnding" />
+                      CellEditEnding="WeekDataGrid_CellEditEnding"/>
         </ScrollViewer>
 
         <!-- 하단 합계 영역 (Row=6) -->
@@ -153,40 +153,35 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <!-- "계획 총합" 라벨 -->
-                <ColumnDefinition Width="*"   />
+                <ColumnDefinition Width="*"/>
                 <!-- 합계 Values -->
             </Grid.ColumnDefinitions>
 
             <!-- 왼쪽 라벨: "계획 총합" -->
             <TextBlock Text="계획 총합"
-               FontWeight="Bold"
-               Foreground="Navy"
-               Margin="10"
-               VerticalAlignment="Center"/>
+                       FontWeight="Bold"
+                       Foreground="Navy"
+                       Margin="10"
+                       VerticalAlignment="Center"/>
 
             <!-- 오른쪽: 합계를 나열 (ItemsControl) -->
             <ItemsControl Grid.Column="1"
-                  ItemsSource="{Binding SumDict}"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center">
+                          ItemsSource="{Binding SumDict}"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <!-- 옆으로 나란히 표시 -->
                         <StackPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <!-- Key: PartName, Value: 합계 -->
                         <StackPanel Orientation="Horizontal">
-                            <!-- 파트 이름이 필요하면 아래처럼도 표시 가능:
-                    <TextBlock Text="{Binding Key}" Margin="5,0,0,0" Foreground="Navy"/>
-                    -->
+                            <!-- Key: PartName, Value: 합계 -->
                             <TextBlock Text="{Binding Value}"
-                               Margin="20,0,0,0"
-                               Foreground="Navy"
-                               FontWeight="Bold"/>
+                                       Margin="20,0,0,0"
+                                       Foreground="Navy"
+                                       FontWeight="Bold"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
