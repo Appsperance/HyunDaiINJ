@@ -169,7 +169,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding DateTime}" Header="생성날짜" Width="*">
+                    <DataGridTextColumn Binding="{Binding DisplayDateTime}" Header="생성날짜" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="TextAlignment" Value="Center"/>
@@ -177,7 +177,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding NgLabel}" Header="불량 종류" Width="*">
+                    <DataGridTextColumn Binding="{Binding DisplayNgLabel}" Header="불량 종류" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="TextAlignment" Value="Center"/>

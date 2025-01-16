@@ -36,14 +36,15 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
             Loaded += VisionStat_Loaded;
         }
 
-        private void VisionStat_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private async void VisionStat_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             // VisionDaily, VisionWeek, VisionYear는 x:Name으로 참조 가능(예: XAML에 x:Name="DailyChart")
 
-            DailyChart.SetData(_viewModel.DailyData);
-            WeekChart.SetData(_viewModel.WeekData);
-            YearChart.SetData(_viewModel.YearData);
-
+            //DailyChart.SetData(_viewModel.DailyData);
+            //WeekChart.SetData(_viewModel.WeekData);
+            //YearChart.SetData(_viewModel.YearData);
+            // 윈도우가 로드될 때, 서버에서 데이터 가져옴
+            await _viewModel.LoadDataFromServerAsync();
             // 이제 세 개 차트가 거의 동시에 Render를 시작하게 되어
             // 뒤죽박죽 순서가 아니라, 한꺼번에 표시됨
         }

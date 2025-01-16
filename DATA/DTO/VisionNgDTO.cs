@@ -21,6 +21,25 @@ namespace HyunDaiINJ.DATA.DTO
         public int WeekNumber { get; set; } // 주 번호
         public DateTime WeekStartDate { get; set; } // 주 시작 날짜
         public DateTime WeekEndDate { get; set; } // 주 끝 날짜
-       
+
+        // (1) NotClassified → Good 치환
+        public string DisplayNgLabel
+        {
+            get => (NgLabel == "NotClassified") ? "Good" : NgLabel;
+        }
+
+        // (2) 날짜를 yyyy-MM-dd HH:mm:ss 형식으로 잘라서 보여주기
+        //     (초까지만)
+        public string DisplayDateTime
+        {
+            get
+            {
+                if (System.DateTime.TryParse(DateTime, out var dt))
+                {
+                    return dt.ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                return DateTime; // 파싱 실패 시 원본 유지
+            }
+        }
     }
 }
