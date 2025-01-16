@@ -133,62 +133,64 @@ namespace HyunDaiINJ.ViewModels
         {
             try
             {
-                // (1) Insert할 데이터 목록 (DB 저장용)
                 var dataList = new List<(string name, DateTime dateVal, int isoWeek, int qtyWeekly, string dayVal)>();
 
                 foreach (var row in WeekPlanRows)
                 {
                     foreach (var part in PartInfoList)
                     {
-                        // Dictionary 키는 part.PartId
-                        if (row.QuanDict.TryGetValue(part.PartId, out int qty))
+                        // Only process if QuanDict has a value AND it's non-zero
+                        if (row.QuanDict.TryGetValue(part.PartId, out int qty) && qty != 0)
                         {
                             DateTime dateVal = row.WeekStartDate;
                             int isoWeek = row.Week;
-                            int qtyWeekly = qty;
                             string dayVal = dateVal.ToString("ddd", new CultureInfo("ko-KR"));
 
-                            dataList.Add((part.Name, dateVal, isoWeek, qtyWeekly, dayVal));
+                            dataList.Add((part.Name, dateVal, isoWeek, qty, dayVal));
                         }
                     }
                 }
 
                 if (dataList.Count == 0)
                 {
-                    Console.WriteLine("[WeekPlanVM] 저장할 데이터 없음.");
+                    Console.WriteLine("[WeekPlanVM] No data to save/send.");
                     return;
                 }
 
-                // (3) 서버 전송 (예시)
-                //     Dictionary 키(PartId)로 qty를 찾지만, 전송 시엔 part.Name
+                // 1) Optionally insert to local DB first...
+                // await _planDao.InsertAllPlansAtOnceAsync(dataList);
+
+                // 2) Then send only non-zero items to server
                 int sendCount = 0;
                 foreach (var row in WeekPlanRows)
                 {
                     foreach (var part in PartInfoList)
                     {
-                        if (row.QuanDict.TryGetValue(part.PartId, out int qtyWeekly))
+                        if (row.QuanDict.TryGetValue(part.PartId, out int qtyWeekly) && qtyWeekly != 0)
                         {
-                            // API 전송 시 partId = part.Name
+                            // Send only if qtyWeekly != 0
                             bool success = await _msdApi.SendWeekPlanAsync(
-                                part.Name,   // 헤더 입력된 이름으로 전송
+                                part.Name,
                                 row.Week,
                                 qtyWeekly
                             );
-                            if (success) sendCount++;
+                            if (success)
+                                sendCount++;
                         }
                     }
                 }
 
-                Console.WriteLine($"[WeekPlanVM] 서버 전송 완료! total={sendCount}건");
+                Console.WriteLine($"[WeekPlanVM] Sent {sendCount} items to server (non-zero only).");
 
-                // (4) Event 발행
+                // Fire event
                 _eventAggregator.GetEvent<DataInsertedEvent>().Publish();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[WeekPlanVM] Insert 실패: {ex.Message}");
+                Console.WriteLine($"[WeekPlanVM] Error in SaveAllPlansAtOnceAsync: {ex.Message}");
             }
         }
+
 
         public void RecalcSum()
         {

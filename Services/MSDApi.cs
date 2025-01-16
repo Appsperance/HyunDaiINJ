@@ -156,4 +156,73 @@ public class MSDApi
         return true;
     }
 
+    public async Task<int> GetWeekNumberAsync(DateTime date)
+    {
+        // JWT 토큰 필요 시, Login 후 발급받아 저장해두어야 함.
+        // 만약 해당 API가 JWT 인증이 필요 없다면, 굳이 토큰 체크가 없어도 됨.
+        // if (string.IsNullOrEmpty(JwtToken))
+        //     throw new InvalidOperationException("로그인이 필요합니다. JWT 토큰이 없습니다.");
+
+        try
+        {
+            using HttpClient client = new HttpClient();
+
+            // 서버에서 요구하는 날짜 형식 (예: yyyy-MM-dd)
+            string formattedDate = date.ToString("yyyy-MM-dd");
+            string requestUrl = $"http://13.125.114.64:5282/api/calendar/week-number/{formattedDate}";
+            Console.WriteLine($"[GetWeekNumberInfoAsync] 요청 날짜: {formattedDate}");
+            
+
+            // GET 요청
+            HttpResponseMessage response = await client.GetAsync(requestUrl);
+            response.EnsureSuccessStatusCode();
+
+            // 응답을 문자열로
+            string jsonString = await response.Content.ReadAsStringAsync();
+            // 주차 번호가 정수라고 가정
+            int receivedWeekNumber = int.Parse(jsonString);
+
+            return receivedWeekNumber;
+        }
+        catch (Exception ex)
+        {
+            // 상황에 맞게 예외 처리
+            Console.WriteLine($"[GetWeekNumberAsync] 에러: {ex.Message}");
+            return -1; // 오류 시, 특정 값을 리턴
+        }
+
+    }
+
+    public async Task<WeekNumberInfo> GetWeekNumberInfoAsync(DateTime date)
+    {
+        try
+        {
+            string formattedDate = date.ToString("yyyy-MM-dd");
+            // 서버 URL: 예시로 작성. 실제 값에 맞춰 수정
+            string requestUrl = $"http://13.125.114.64:5282/api/calendar/week-number/{formattedDate}";
+
+            using (var client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(requestUrl);
+                response.EnsureSuccessStatusCode();
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+
+                // {"weekNumber":3, "dates":["2025-01-13T00:00:00", ...]} 구조
+                var info = JsonConvert.DeserializeObject<WeekNumberInfo>(jsonString);
+                Console.WriteLine($"[GetWeekNumberInfoAsync] 서버 응답: {jsonString}");
+                return info;
+
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MSDApi] GetWeekNumberInfoAsync 에러: {ex.Message}");
+            return null;
+        }
+    }
+
+
 }

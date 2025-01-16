@@ -33,17 +33,26 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="193" />
                 <ColumnDefinition Width="*" />
+
             </Grid.ColumnDefinitions>
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+
             <!-- (2) 왼쪽 SideTab -->
-            <con:SideTab Grid.Column="0"
+            <con:SideTab Grid.Column="0" Grid.RowSpan="2"
                          Background="#F0F0F0" />
 
+            <con:PageTabForm Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"/>
+            
             <!-- (3) 오른쪽 Frame -->
-            <Frame Grid.Column="1"
+            <Frame Grid.Column="1" Grid.Row="1"
                    Content="{Binding SelectedTab.CustomContent}"
                    NavigationUIVisibility="Hidden"
-                   Background="#F0F0F0" />
+                   />
         </Grid>
     </Grid>
 </Window>
