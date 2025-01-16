@@ -6,7 +6,9 @@
         xmlns:vision="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Vision"
         xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Vision"
         mc:Ignorable="d"
-        Title="자세히보기" Height="541" Width="533">
+        Title="자세히보기" Height="541" Width="533"
+        Loaded="NgCard_Loaded">
+    
     <Grid Background="#F0F0F0" Margin="10">
         <!-- Grid 레이아웃 -->
         <Grid.RowDefinitions>
@@ -22,7 +24,7 @@
         </Border>
 
         <!-- 이미지 리스트 영역 -->
-        <ListView Grid.Row="1" x:Name="ImageListView" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <ListView Grid.Row="1" x:Name="ImageListView" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="ImageListView_SelectionChanged">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel IsItemsHost="True" Orientation="Horizontal" />

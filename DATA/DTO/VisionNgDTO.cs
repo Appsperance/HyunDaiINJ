@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HyunDaiINJ.DATA.DTO
 {
@@ -13,10 +14,13 @@ namespace HyunDaiINJ.DATA.DTO
         public int LabelCount { get; set; }
         public string? NgImgPath { get; set; } // text
 
+        public string NgImgBase64 { get; set; }
+
         // 주별 데이터 속성 추가
         public int YearNumber { get; set; } // 주별 연도
         public int WeekNumber { get; set; } // 주 번호
         public DateTime WeekStartDate { get; set; } // 주 시작 날짜
         public DateTime WeekEndDate { get; set; } // 주 끝 날짜
+       
     }
 }

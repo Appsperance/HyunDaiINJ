@@ -1,40 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Npgsql;
+using HyunDaiINJ.DATA.DTO;
+using HyunDaiINJ.Services;
 
 namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {
-    /// <summary>
-    /// NgCard.xaml에 대한 상호 작용 논리
-    /// </summary>
     public partial class NgCard : Window
     {
-        private const int pageSize = 10;   // 한 번에 가져올 개수
-        private int currentOffset = 0;     // 현재까지 불러온 개수(=OFFSET)
-        private bool hasMoreData = true;   // 더 가져올 데이터가 있는지 여부
-
-        private List<string> imagePaths = new List<string>();
+        private MSDApi _api;
+        private List<VisionNgDTO> _cachedList;  // 전체 목록 캐싱
 
         public NgCard()
         {
             InitializeComponent();
-            // 초기에 첫 페이지 로드
-            LoadNextPage();
-            InitializeNgCard(); // <-- 공통 초기화
-
+            InitializeNgCard();
+            _api = new MSDApi();
             this.SizeChanged += NgCard_SizeChanged;
+
+            MessageBox.Show("[생성자 호출됨] NgCard 생성자를 실행했습니다.");
         }
 
         private void NgCard_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -43,96 +31,105 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
             double newHeight = e.NewSize.Height;
             Console.WriteLine($"[SizeChanged] New Width={newWidth}, New Height={newHeight}");
         }
+
         private void InitializeNgCard()
         {
-            LoadNextPage();
             this.SizeChanged += NgCard_SizeChanged;
         }
-        // 새로 만든 생성자: 외부에서 이미지 넘겨받기
+
+        // 다른 생성자
         public NgCard(ImageSource imageSource)
         {
             InitializeComponent();
-            InitializeNgCard(); // <-- 공통 초기화
+            InitializeNgCard();
+            _api = new MSDApi();
             SelectedImage.Source = imageSource;
         }
 
-        // (1) 다음 페이지 로드
-        private void LoadNextPage()
+        // XAML에서 Loaded="NgCard_Loaded"
+        private async void NgCard_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!hasMoreData)
-            {
-                MessageBox.Show("더 이상 데이터가 없습니다.");
-                return;
-            }
+            MessageBox.Show("[NgCard_Loaded 호출됨] 윈도우가 실제로 로드되었습니다.");
 
-            string connectionString = "Host=localhost;Port=5432;Username=root;Password=vaporcloud;Database=msd_db";
             try
             {
-                using (var connection = new NpgsqlConnection(connectionString))
+                // 필요시 로그인
+                // bool loginOk = await _api.LoginAsync("사용자ID", "암호");
+                // if (!loginOk) { MessageBox.Show("로그인 실패"); return; }
+
+                var lineIds = new List<string> { "vp01" };
+                int offset = 2;
+                int count = 10;
+
+                Console.WriteLine($"[NgCard_Loaded] GetNgImagesAsync 호출: lineIds={string.Join(",", lineIds)}, offset={offset}, count={count}");
+
+                var ngImages = await _api.GetNgImagesAsync(lineIds, offset, count);
+                if (ngImages == null)
                 {
-                    connection.Open();
-                    string query = @"
-                        SELECT ng_img_path 
-                          FROM vision_ng
-                         ORDER BY id
-                         LIMIT @Limit OFFSET @Offset;
-                    ";
-
-                    using (var command = new NpgsqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("Limit", pageSize);
-                        command.Parameters.AddWithValue("Offset", currentOffset);
-
-                        using (var reader = command.ExecuteReader())
-                        {
-                            int rowCount = 0;
-                            while (reader.Read())
-                            {
-                                string path = reader["ng_img_path"].ToString();
-                                imagePaths.Add(path);
-                                rowCount++;
-                            }
-                            // 만약 rowCount < pageSize면 더 이상 불러올 데이터가 없음
-                            if (rowCount < pageSize)
-                            {
-                                hasMoreData = false;
-                            }
-                            // 다음번 OFFSET 업데이트
-                            currentOffset += rowCount;
-                        }
-                    }
+                    MessageBox.Show("NG 이미지 조회 실패");
+                    return;
                 }
 
-                // ListView에 바인딩 새로고침
-                ImageListView.ItemsSource = null; // or CollectionView.Refresh()
-                ImageListView.ItemsSource = imagePaths;
+                // 전체 목록을 캐싱
+                _cachedList = ngImages;
+
+                // ListView에 DTO 전체를 바인딩
+                // (Id, NgImgPath, etc.가 들어있는 VisionNgDTO)
+                ImageListView.ItemsSource = _cachedList;
+
+                // 디스플레이 편의를 위해 DisplayMemberPath나 DataTemplate 활용
+                // 여기선 XAML에서 DisplayMemberPath="Id" 등으로 설정했다고 가정
+                Console.WriteLine($"[NgCard_Loaded] 받아온 이미지 개수: {_cachedList.Count}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"DB에서 이미지를 불러오는 중 오류: {ex.Message}");
+                MessageBox.Show($"오류 발생: {ex.Message}");
             }
         }
 
-        // (2) ListView 항목 선택 시 -> 상단 영역에 이미지 표시
-        private void ImageListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        // ListView에서 항목 클릭 시 -> ID별로 상세조회 -> base64 로드
+        private async void ImageListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ImageListView.SelectedItem is string selectedImagePath)
+            MessageBox.Show("[ImageListView_SelectionChanged] 항목 클릭됨.");
+
+            // SelectedItem이 VisionNgDTO라 가정
+            if (ImageListView.SelectedItem is VisionNgDTO selectedDto)
             {
                 try
                 {
-                    SelectedImage.Source = new BitmapImage(new Uri(selectedImagePath));
+                    // (1) id만 뽑아서 재조회
+                    var detailList = await _api.GetNgImagesByIdsAsync(new List<int> { selectedDto.Id });
+                    if (detailList == null || detailList.Count == 0)
+                    {
+                        MessageBox.Show("상세 조회 결과 없음");
+                        return;
+                    }
+
+                    // 첫 번째 결과의 base64
+                    var detailDto = detailList[0];
+                    if (!string.IsNullOrEmpty(detailDto.NgImgBase64))
+                    {
+                        // (2) base64 -> BitmapImage
+                        var bmp = Base64ImageHelper.ConvertBase64ToBitmapImage(detailDto.NgImgBase64);
+                        if (bmp != null)
+                        {
+                            SelectedImage.Source = bmp;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Base64 디코딩 실패");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("ngImgBase64가 null입니다");
+                    }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"이미지 로드 오류: {ex.Message}");
                 }
             }
-        }
-
-        // (3) "더보기" 버튼 클릭 시 -> 다음 페이지 로드
-        private void BtnLoadMore_Click(object sender, RoutedEventArgs e)
-        {
-            LoadNextPage();
         }
     }
 }
