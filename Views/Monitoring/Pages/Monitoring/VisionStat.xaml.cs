@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HyunDaiINJ.ViewModels.Monitoring.vision;
+using HyunDaiINJ.ViewModels.Monitoring.Vision;
 
 namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 {
@@ -22,6 +23,7 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
     public partial class VisionStat : Page
     {
         private readonly VisionNgViewModel _viewModel;
+        private readonly VisionYearViewModel _yearViewModel;
         public VisionStat()
         {
             InitializeComponent();
@@ -31,6 +33,7 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 
             // 2) DataContext = _viewModel (DataGrid 등에서 쓰고 싶다면)
             this.DataContext = _viewModel;
+            _yearViewModel = new VisionYearViewModel(); // ← 추가
 
             // 3) Loaded 이벤트에서 자식 차트에 데이터 전달
             Loaded += VisionStat_Loaded;
@@ -47,6 +50,9 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
             await _viewModel.LoadDataFromServerAsync();
             // 이제 세 개 차트가 거의 동시에 Render를 시작하게 되어
             // 뒤죽박죽 순서가 아니라, 한꺼번에 표시됨
+            YearChart.SetData(_viewModel.NgDetailedData);
+            await _yearViewModel.LoadVisionNgDataYearAsync();
+            YearChart.SetData(_yearViewModel.YearLabelSummaries);
         }
     }
 }

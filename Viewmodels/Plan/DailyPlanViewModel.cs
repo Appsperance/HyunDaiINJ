@@ -253,6 +253,31 @@ namespace HyunDaiINJ.ViewModels
                         var dt = monday.AddDays(1);
                         dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
                     }
+                    if (row.WedQuan != 0)
+                    {
+                        var dt = monday.AddDays(2);
+                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                    }
+                    if (row.TueQuan != 0)
+                    {
+                        var dt = monday.AddDays(1);
+                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                    }
+                    if (row.TueQuan != 0)
+                    {
+                        var dt = monday.AddDays(1);
+                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                    }
+                    if (row.TueQuan != 0)
+                    {
+                        var dt = monday.AddDays(1);
+                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                    }
+                    if (row.TueQuan != 0)
+                    {
+                        var dt = monday.AddDays(1);
+                        dataList.Add((row.PartId, dt, row.IsoWeek, row.TueQuan, row.QtyWeekly, "화"));
+                    }
                     // 수 ~ 일 동일 ...
                 }
 
