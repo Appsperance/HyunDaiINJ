@@ -110,13 +110,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
                 })
                 .ToList();
 
-            // 로그
-            Console.WriteLine("[BuildYearLabelSummaries] grouped:");
-            foreach (var g in grouped)
-            {
-                Console.WriteLine($"  Year={g.YearNumber}, NgLabel={g.NgLabel}, Count={g.TotalCount}");
-            }
-
             foreach (var g in grouped)
             {
                 YearLabelSummaries.Add(new VisionNgDTO
@@ -127,11 +120,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
                 });
             }
 
-            Console.WriteLine("[BuildYearLabelSummaries] Final YearLabelSummaries:");
-            foreach (var item in YearLabelSummaries)
-            {
-                Console.WriteLine($"  Year={item.YearNumber}, Label={item.NgLabel}, Count={item.LabelCount}");
-            }
         }
 
         #region INotifyPropertyChanged

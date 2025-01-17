@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json; // 또는 Newtonsoft.Json
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
-using HyunDaiINJ.DATA.DTO;
-using HyunDaiINJ.Models.Monitoring.Vision;
+using System.Linq;
+using HyunDaiINJ.DATA.DTO;  // VisionNgDTO 정의
+using HyunDaiINJ.Models.Monitoring.Vision; // MSDApi 등
 
 namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
     public class VisionDailyViewModel : INotifyPropertyChanged
     {
-        private readonly VisionNgModel _visionNgModel;
+        private readonly MSDApi _api;
 
-        // 일간 데이터를 담을 컬렉션 (옵션)
         private List<VisionNgDTO> _dailyDataList;
         public List<VisionNgDTO> DailyDataList
         {
@@ -25,7 +25,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        // 차트에 넣을 JS config(JSON) 스크립트
         private string _chartScript;
         public string ChartScript
         {
@@ -37,55 +36,93 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        // 차트가 업데이트되었음을 알리는 이벤트 (UserControl 등에서 구독 가능)
         public event Action ChartScriptUpdated;
-        private void OnChartScriptUpdated() => ChartScriptUpdated?.Invoke();
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string prop = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
 
         public VisionDailyViewModel()
         {
-            _visionNgModel = new VisionNgModel();
+            _api = new MSDApi();
             DailyDataList = new List<VisionNgDTO>();
         }
 
         /// <summary>
-        /// DB나 서버에서 "오늘 날짜" 기준 데이터를 불러와, 라벨별로 표시
+        /// 예) 2025-01-16 0시(KST)~17일 0시(KST) 범위를 필터한 뒤, 
+        ///     NgLabel별 행 개수를 구하고 차트 스크립트를 만든다.
         /// </summary>
         public async Task LoadVisionNgDataDailyAsync()
         {
             try
             {
-                // (1) DB/서버에서 일간 데이터 조회
-                //     예: VisionNgModel.GetVisionNgDataDaily();
-                //     여기서는 Model(DAO) 호출로 List<VisionNgDTO> 가져온다고 가정
-                var dailyData = _visionNgModel.GetVisionNgDataDaily();
-                // dailyData가 각각 (NgLabel, LabelCount) 등을 포함한다고 가정
+                // 1) API 통해 DB 데이터 조회
+                var lineIds = new List<string> { "vp01", "vp02", "vp03", "vp04", "vp05" };
+                int offset = 0;
+                int count = 500;
 
-                if (dailyData == null || dailyData.Count == 0)
+                var allData = await _api.GetNgImagesAsync(lineIds, offset, count);
+                if (allData == null || allData.Count == 0)
                 {
-                    Console.WriteLine("[LoadVisionNgDataDailyAsync] no daily data");
+                    Console.WriteLine("[LoadVisionNgDataDailyAsync] No data returned from API");
                     return;
                 }
 
-                DailyDataList = dailyData; // 바인딩 등에서 쓸 수 있음
+                Console.WriteLine("[LoadVisionNgDataDailyAsync] Raw items from API (UTC-based):");
+                foreach (var d in allData)
+                {
+                    if (DateTimeOffset.TryParse(d.DateTime, out var dto))
+                    {
+                        Console.WriteLine($"  ID={d.Id}, UTC={dto.UtcDateTime}, KST={dto.LocalDateTime}, NgLabel={d.NgLabel}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"  ID={d.Id}, invalid datetime={d.DateTime}");
+                    }
+                }
 
-                // (2) Chart.js config 생성
-                var chartConfig = CreateChartConfig(dailyData);
+                // 2) 예) 1/16 0시(KST) ~ 1/17 0시(KST) 범위
+                var targetDateKst = new DateTime(2025, 1, 16, 0, 0, 0, DateTimeKind.Local);
+                var nextDayKst = targetDateKst.AddDays(1);
+                Console.WriteLine($"[LoadVisionNgDataDailyAsync] Filtering {targetDateKst} ~ {nextDayKst} (KST)");
 
-                // (3) JSON 직렬화
+                // 3) 필터: KST 시각 >= targetDateKst && < nextDayKst
+                var filteredData = allData.Where(d =>
+                {
+                    if (DateTimeOffset.TryParse(d.DateTime, out var dto))
+                    {
+                        var kstTime = dto.LocalDateTime; // PC가 KST 가정
+                        return (kstTime >= targetDateKst && kstTime < nextDayKst);
+                    }
+                    return false;
+                }).ToList();
+
+                if (filteredData.Count == 0)
+                {
+                    Console.WriteLine("[LoadVisionNgDataDailyAsync] No data found in that KST range");
+                    return;
+                }
+
+                // 4) NgLabel 기준 "행 개수" 집계 => LabelCount
+                var grouped = filteredData
+                    .GroupBy(d => d.NgLabel)
+                    .Select(g => new VisionNgDTO
+                    {
+                        NgLabel = g.Key,
+                        LabelCount = g.Count()
+                    })
+                    .ToList();
+
+                // 5) X축 라벨용: 필터된 데이터 중 가장 이른 KST 시각
+                var earliestKst = filteredData
+                    .Select(d => DateTimeOffset.Parse(d.DateTime).LocalDateTime)
+                    .Min(); // DateTime (KST)
+
+                // 6) 차트 구성
+                var chartConfig = CreateChartConfig(grouped, earliestKst);
                 string configJson = JsonSerializer.Serialize(chartConfig);
-
-                // (4) ChartScript에 저장 → 이벤트
                 ChartScript = configJson;
+
+                // 7) 바인딩/차트 업데이트
                 OnChartScriptUpdated();
 
-                // Debug
-                Console.WriteLine("[LoadVisionNgDataDailyAsync] ChartScript updated");
+                Console.WriteLine("[LoadVisionNgDataDailyAsync] ChartScript updated with UTC↔KST logic");
             }
             catch (Exception ex)
             {
@@ -94,16 +131,15 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
         }
 
         /// <summary>
-        /// 일간 데이터(dailyDataList)를 x축 하나(예: 오늘), 여러 개 ng_label로 dataset 구성
+        /// CreateChartConfig - X축 라벨=earliestKst, dataset=NgLabel별 LabelCount
         /// </summary>
-        private object CreateChartConfig(List<VisionNgDTO> dailyDataList)
+        private object CreateChartConfig(List<VisionNgDTO> groupedData, DateTime earliestKst)
         {
-            // X축은 "오늘" 1칸만
-            var xLabels = new[] { DateTime.Today.ToString("yyyy-MM-dd") };
+            var xLabel = earliestKst.ToString("yyyy-MM-dd");
+            var xLabels = new[] { xLabel };
 
-            // dataset: 라벨별로 1개씩
+            // NgLabel, LabelCount 추출
             var datasets = new List<object>();
-
             var colorPalette = new List<string>
             {
                 "rgba(75, 192, 192, 0.7)",
@@ -115,9 +151,8 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             };
 
             int colorIndex = 0;
-            foreach (var item in dailyDataList)
+            foreach (var item in groupedData)
             {
-                // 예: 라벨=item.NgLabel, data={ item.LabelCount }
                 datasets.Add(new
                 {
                     label = item.NgLabel,
@@ -128,7 +163,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
 
             // Chart.js config
-            var chartConfig = new
+            var config = new
             {
                 type = "bar",
                 data = new
@@ -145,7 +180,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                         title = new
                         {
                             display = true,
-                            text = "오늘 불량 (일간)"
+                            text = $"일간 불량 ({xLabel}, NgLabel count)"
                         }
                     },
                     scales = new
@@ -163,7 +198,15 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                 }
             };
 
-            return chartConfig;
+            return config;
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string prop = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+
+        private void OnChartScriptUpdated() => ChartScriptUpdated?.Invoke();
+        #endregion
     }
 }

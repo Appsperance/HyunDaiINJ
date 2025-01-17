@@ -24,13 +24,11 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         {
             if (data == null)
             {
-                Console.WriteLine("[VisionYear.SetData] data is null");
                 return;
             }
 
             // 로그: data가 몇 개인지, 어떤 값인지
             var listData = data.ToList();
-            Console.WriteLine($"[VisionYear.SetData] data count={listData.Count}");
             foreach (var d in listData)
             {
                 Console.WriteLine($"  Year={d.YearNumber}, Label={d.NgLabel}, Count={d.LabelCount}");

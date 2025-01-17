@@ -62,9 +62,9 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
-        // ====================
-        // MonQuan 예시 (setter에서 QtyWeekly 증감)
-        // ====================
+        /// <summary>
+        /// "월" 프로퍼티: 입력 값이 너무 커서 QtyWeekly가 음수가 되면 0으로 설정
+        /// </summary>
         public int MonQuan
         {
             get => _monQuan;
@@ -74,10 +74,24 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     int oldVal = _monQuan;
                     _monQuan = value;
+                    int delta = _monQuan - oldVal;
+                    QtyWeekly -= delta;
 
-                    int delta = _monQuan - oldVal;  // 증감량
-                    QtyWeekly -= delta;             // QtyWeekly 줄이거나 늘리기
-                    CheckQtyWeeklyZero();
+                    if (QtyWeekly < 0)
+                    {
+                        // 복원 로직 - 0으로 만들기
+                        int revert = _monQuan; // 새로 입력한 값
+                        _monQuan = 0;         // 요일을 0으로
+                        QtyWeekly += revert;  // 이미 한번 빼놨으므로 다시 되돌림
+
+                        System.Windows.MessageBox.Show(
+                            "남은 수량이 없습니다.",
+                            "주의",
+                            System.Windows.MessageBoxButton.OK,
+                            System.Windows.MessageBoxImage.Warning
+                        );
+                        return;
+                    }
 
                     OnPropertyChanged(nameof(MonQuan));
                     OnPropertyChanged(nameof(DailyTotal));
@@ -85,7 +99,9 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
-        // 화요일
+        /// <summary>
+        /// "화"
+        /// </summary>
         public int TueQuan
         {
             get => _tueQuan;
@@ -95,10 +111,18 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     int oldVal = _tueQuan;
                     _tueQuan = value;
-
                     int delta = _tueQuan - oldVal;
                     QtyWeekly -= delta;
-                    CheckQtyWeeklyZero();
+
+                    if (QtyWeekly < 0)
+                    {
+                        int revert = _tueQuan;
+                        _tueQuan = 0;
+                        QtyWeekly += revert;
+
+                        System.Windows.MessageBox.Show("남은 수량이 없습니다.");
+                        return;
+                    }
 
                     OnPropertyChanged(nameof(TueQuan));
                     OnPropertyChanged(nameof(DailyTotal));
@@ -106,7 +130,9 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
-        // 수요일
+        /// <summary>
+        /// "수"
+        /// </summary>
         public int WedQuan
         {
             get => _wedQuan;
@@ -116,10 +142,18 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     int oldVal = _wedQuan;
                     _wedQuan = value;
-
                     int delta = _wedQuan - oldVal;
                     QtyWeekly -= delta;
-                    CheckQtyWeeklyZero();
+
+                    if (QtyWeekly < 0)
+                    {
+                        int revert = _wedQuan;
+                        _wedQuan = 0;
+                        QtyWeekly += revert;
+
+                        System.Windows.MessageBox.Show("남은 수량이 없습니다.");
+                        return;
+                    }
 
                     OnPropertyChanged(nameof(WedQuan));
                     OnPropertyChanged(nameof(DailyTotal));
@@ -127,7 +161,9 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
-        // 목요일
+        /// <summary>
+        /// "목"
+        /// </summary>
         public int ThuQuan
         {
             get => _thuQuan;
@@ -137,10 +173,18 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     int oldVal = _thuQuan;
                     _thuQuan = value;
-
                     int delta = _thuQuan - oldVal;
                     QtyWeekly -= delta;
-                    CheckQtyWeeklyZero();
+
+                    if (QtyWeekly < 0)
+                    {
+                        int revert = _thuQuan;
+                        _thuQuan = 0;
+                        QtyWeekly += revert;
+
+                        System.Windows.MessageBox.Show("남은 수량이 없습니다.");
+                        return;
+                    }
 
                     OnPropertyChanged(nameof(ThuQuan));
                     OnPropertyChanged(nameof(DailyTotal));
@@ -148,7 +192,9 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
-        // 금요일
+        /// <summary>
+        /// "금"
+        /// </summary>
         public int FriQuan
         {
             get => _friQuan;
@@ -158,10 +204,18 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     int oldVal = _friQuan;
                     _friQuan = value;
-
                     int delta = _friQuan - oldVal;
                     QtyWeekly -= delta;
-                    CheckQtyWeeklyZero();
+
+                    if (QtyWeekly < 0)
+                    {
+                        int revert = _friQuan;
+                        _friQuan = 0;
+                        QtyWeekly += revert;
+
+                        System.Windows.MessageBox.Show("남은 수량이 없습니다.");
+                        return;
+                    }
 
                     OnPropertyChanged(nameof(FriQuan));
                     OnPropertyChanged(nameof(DailyTotal));
@@ -169,7 +223,9 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
-        // 토요일
+        /// <summary>
+        /// "토"
+        /// </summary>
         public int SatQuan
         {
             get => _satQuan;
@@ -179,10 +235,18 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     int oldVal = _satQuan;
                     _satQuan = value;
-
                     int delta = _satQuan - oldVal;
                     QtyWeekly -= delta;
-                    CheckQtyWeeklyZero();
+
+                    if (QtyWeekly < 0)
+                    {
+                        int revert = _satQuan;
+                        _satQuan = 0;
+                        QtyWeekly += revert;
+
+                        System.Windows.MessageBox.Show("남은 수량이 없습니다.");
+                        return;
+                    }
 
                     OnPropertyChanged(nameof(SatQuan));
                     OnPropertyChanged(nameof(DailyTotal));
@@ -190,7 +254,9 @@ namespace HyunDaiINJ.Models.Plan
             }
         }
 
-        // 일요일
+        /// <summary>
+        /// "일"
+        /// </summary>
         public int SunQuan
         {
             get => _sunQuan;
@@ -200,10 +266,18 @@ namespace HyunDaiINJ.Models.Plan
                 {
                     int oldVal = _sunQuan;
                     _sunQuan = value;
-
                     int delta = _sunQuan - oldVal;
                     QtyWeekly -= delta;
-                    CheckQtyWeeklyZero();
+
+                    if (QtyWeekly < 0)
+                    {
+                        int revert = _sunQuan;
+                        _sunQuan = 0;
+                        QtyWeekly += revert;
+
+                        System.Windows.MessageBox.Show("남은 수량이 없습니다.");
+                        return;
+                    }
 
                     OnPropertyChanged(nameof(SunQuan));
                     OnPropertyChanged(nameof(DailyTotal));
@@ -216,23 +290,6 @@ namespace HyunDaiINJ.Models.Plan
         /// </summary>
         public string PartIdWithTotal
             => $"{PartId}({_qtyWeekly})";
-
-        // 0 이하 되면 메시지
-        private void CheckQtyWeeklyZero()
-        {
-            if (_qtyWeekly <= 0)
-            {
-                _qtyWeekly = 0;
-                System.Windows.MessageBox.Show(
-                    $"{PartId}의 남은 수량이 없습니다.",
-                    "주의",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Warning
-                );
-                OnPropertyChanged(nameof(QtyWeekly));
-                OnPropertyChanged(nameof(PartIdWithTotal));
-            }
-        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propName)

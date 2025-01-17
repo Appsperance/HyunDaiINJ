@@ -22,6 +22,10 @@ namespace HyunDaiINJ.DATA.DTO
         public DateTime WeekStartDate { get; set; } // 주 시작 날짜
         public DateTime WeekEndDate { get; set; } // 주 끝 날짜
 
+        // 일일 데이터 속성 추가
+        public DateTimeOffset Date { get; set; }
+
+
         // (1) NotClassified → Good 치환
         public string DisplayNgLabel
         {

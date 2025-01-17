@@ -18,62 +18,37 @@ public class MSDApi
     public static string? JwtToken { get; private set; }
     public static string? JwtPublicKey { get; private set; }
     // 월~일 → 0~6 매핑용 딕셔너리
-    private static readonly Dictionary<string, int> DayMapping = new()
-    {
-        { "월", 0 },
-        { "화", 1 },
-        { "수", 2 },
-        { "목", 3 },
-        { "금", 4 },
-        { "토", 5 },
-        { "일", 6 }
-    };
+   
     public MSDApi()
     {
         _client = new HttpClient();
     }
     // PUT 요청으로 주차별 일일 생산 계획 수정
-    public async Task<bool> UpdateDailyPlanAsync(int isoWeek, string partId, Dictionary<string, int> dailyQuantities)
+    public async Task<bool> UpdateDailyPlanAsync(int isoWeek, string partId, Dictionary<string, int> dailyDict)
     {
-        // dailyQuantities : {"월"->MonQuan, "화"->TueQuan, ...}
-        // 이를 dayOfWeek=0..6, quantity 값으로 변환
-        var dailyPlans = new List<object>();
+        var arrayToSend = new List<int>
+    {
+        dailyDict["월"],
+        dailyDict["화"],
+        dailyDict["수"],
+        dailyDict["목"],
+        dailyDict["금"],
+        dailyDict["토"],
+        dailyDict["일"]
+    };
 
-        foreach (var kv in dailyQuantities)
-        {
-            // kv.Key = "월", "화", ...
-            // kv.Value = 수량
-            int dayOfWeek = DayMapping[kv.Key];
-            int quantity = kv.Value;
+        // 1) JSON 직렬화 시 **배열만** 직렬화
+        //    (즉, { partId=..., dailyQuantities=[...] } 이런게 아니라
+        //     그냥 [0,1,2,3,4,5,6] 이라는 “배열”이 JSON 최상위)
+        string jsonBody = JsonConvert.SerializeObject(arrayToSend);
+        // 예: [700,100,0,0,0,0,0]
 
-            if (quantity > 0)
-            {
-                dailyPlans.Add(new
-                {
-                    dayOfWeek = dayOfWeek,
-                    quantity = quantity
-                });
-            }
-        }
-
-        // PUT용 바디
-        var requestBody = new
-        {
-            partId = partId,
-            isoWeek = isoWeek,
-            dailyPlans = dailyPlans
-        };
-
-        string jsonBody = JsonConvert.SerializeObject(requestBody);
-
-        // 예시 URL: /api/Plan/week?weekNumber=3&partId=ABC123
-        // 실제 서버에서 요구하는 형식에 맞춰 쿼리스트링을 구성하거나
-        // /week/{weekNumber}?partid=... 형태로 조정하면 됨
-        string url = $"http://13.125.114.64:5282/api/Plan/week?weekNumber={isoWeek}&partId={partId}";
+        // 2) URL은 /api/Plan/week/{weekNumber}?partId=xxx 등
+        string url = $"http://13.125.114.64:5282/api/Plan/week/{isoWeek}?partId={partId}";
 
         using var request = new HttpRequestMessage(HttpMethod.Put, url);
         request.Headers.Authorization =
-            new AuthenticationHeaderValue("Bearer", JwtToken); // JWT 필요 시
+            new AuthenticationHeaderValue("Bearer", JwtToken);
         request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
         var response = await _client.SendAsync(request);
@@ -87,6 +62,10 @@ public class MSDApi
         Console.WriteLine($"[UpdateDailyPlanAsync] 성공: {partId}, isoWeek={isoWeek}");
         return true;
     }
+
+
+
+
     public async Task<bool> LoginAsync(string userName, string password)
     {
         try
@@ -288,6 +267,67 @@ public class MSDApi
         }
     }
 
-   
+    /// <summary>
+    /// 주차별 계획 데이터를 API에서 GET
+    /// 예: GET http://13.125.114.64:5282/api/Plan/week/3
+    /// → List<PlanWeekResponseDto> 형태의 JSON 응답
+    /// </summary>
+    public async Task<List<InjectionPlanDTO>> GetPlanWeekDataAsync(int weekNumber)
+    {
+        // JWT 필요 시 설정 (예시)
+        if (!string.IsNullOrEmpty(JwtToken))
+        {
+            _client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", JwtToken);
+        }
+
+        // (추가) 주차 번호 확인 로깅
+        Console.WriteLine($"[GetPlanWeekDataAsync] 호출 - 주차={weekNumber}");
+
+        string url = $"http://13.125.114.64:5282/api/Plan/week/{weekNumber}";
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        // (추가) 요청 URL 확인
+        Console.WriteLine($"[GetPlanWeekDataAsync] 요청 URL: {url}");
+
+        var response = await _client.SendAsync(request);
+
+        // (추가) 응답 코드 로깅
+        Console.WriteLine($"[GetPlanWeekDataAsync] 응답 코드: {response.StatusCode}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"[GetPlanWeekDataAsync] 실패: {response.StatusCode}, {errBody}");
+            return null;
+        }
+
+        // JSON 파싱
+        string json = await response.Content.ReadAsStringAsync();
+        var planList = JsonConvert.DeserializeObject<List<InjectionPlanDTO>>(json);
+
+        Console.WriteLine("[GetPlanWeekDataAsync] 수신 데이터 원문:");
+        Console.WriteLine(json);
+
+        // (추가) 받은 데이터 개수와 일부 항목 로깅
+        if (planList != null)
+        {
+            Console.WriteLine($"[GetPlanWeekDataAsync] planList.Count = {planList.Count}");
+            // 필요 시 planList 첫 항목(또는 전체 항목)도 출력
+            if (planList.Count > 0)
+            {
+                var first = planList[0];
+                Console.WriteLine($"[GetPlanWeekDataAsync] 예시 첫 항목: partId={first.PartId}, day={first.Day}, qty={first.QtyDaily}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("[GetPlanWeekDataAsync] planList가 null입니다.");
+        }
+
+        return planList;
+    }
+
+
 
 }

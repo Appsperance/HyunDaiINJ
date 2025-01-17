@@ -66,7 +66,7 @@
                 Foreground="White" 
                 FontWeight="Bold" 
                 FontSize="20" 
-                Command="{Binding SendAllInsertCommand}">
+                Command="{Binding SendDailyInsertCommand}">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}" 
@@ -123,7 +123,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding MonQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding MonQuan,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch" 
                                          TextAlignment="Center"/>
@@ -141,7 +141,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding TueQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding TueQuan,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"
                                           VerticalAlignment="Stretch"
                                           HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
@@ -159,7 +159,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding WedQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding WedQuan,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
@@ -178,7 +178,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding ThuQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding ThuQuan,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
@@ -197,7 +197,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding FriQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding FriQuan,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
@@ -216,7 +216,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding SatQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding SatQuan,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center"/>
@@ -234,7 +234,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding SunQuan,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding SunQuan,Mode=TwoWay,UpdateSourceTrigger=LostFocus}"
                                          VerticalAlignment="Stretch"
                                          HorizontalAlignment="Stretch"
                                          TextAlignment="Center" />

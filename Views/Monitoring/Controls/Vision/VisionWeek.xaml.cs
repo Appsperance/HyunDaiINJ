@@ -54,7 +54,7 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
             console.log('[VisionWeek] config:', config);
             if(myChart) {{
                 myChart.data = config.data;
-                myChart.update('none');
+                myChart.update('`ne');
             }} else {{
                 const ctx = document.getElementById('myCanvas').getContext('2d');
                 myChart = new Chart(ctx, config);

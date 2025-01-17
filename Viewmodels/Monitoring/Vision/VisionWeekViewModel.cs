@@ -61,7 +61,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
 
                 // API 호출
                 var dtoList = await _api.GetNgImagesAsync(lineIds, offset, count);
-                Console.WriteLine($"dtoList.Count = {dtoList.Count}");
 
                 if (dtoList == null || dtoList.Count == 0)
                 {
@@ -77,7 +76,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                         if (DateTime.TryParse(d.DateTime, out var parsedDt))
                         {
                             d.WeekNumber = GetWeekNumber(parsedDt);
-                            Console.WriteLine($"Parsed={parsedDt}, Week={d.WeekNumber}");
                         }
                     }
                 }
@@ -126,12 +124,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                     LabelCount = g.Count()
                 })
                 .ToList();
-
-            Console.WriteLine("[GenerateChartScript] Grouped data:");
-            foreach (var item in grouped)
-            {
-                Console.WriteLine($"  Week={item.WeekNumber}, Label={item.NgLabel}, Count={item.LabelCount}");
-            }
 
             // 2) X축: 주차 목록
             var distinctWeeks = grouped.Select(x => x.WeekNumber).Distinct().OrderBy(w => w).ToList();

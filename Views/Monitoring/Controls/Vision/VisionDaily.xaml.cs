@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Windows.Controls;
 using Microsoft.Web.WebView2.Core;
 using HyunDaiINJ.DATA.DTO;
+using System.Linq;
 
 namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {
@@ -20,36 +21,58 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         }
 
         /// <summary>
-        /// 외부에서 List<VisionNgDTO>를 받아 -> x축 1개(오늘), ng_label별 dataset -> 차트 표시
+        /// 외부(ViewModel)에서 만든 List<VisionNgDTO>를 받아 차트 표시
+        /// or 외부에서 chartScript(JSON) 자체를 받을 수도 있음
         /// </summary>
         public async void SetData(List<VisionNgDTO> dailyDataList)
         {
+            // 빈 데이터 예외
             if (dailyDataList == null || dailyDataList.Count == 0)
             {
                 Console.WriteLine("[VisionDaily.SetData] no daily data");
                 return;
             }
 
+            // WebView 초기화
             if (WebView.CoreWebView2 == null)
             {
                 await WebView.EnsureCoreWebView2Async();
             }
 
-            var chartConfig = CreateChartConfig(dailyDataList);
-            string configJson = JsonSerializer.Serialize(chartConfig);
+            // (A) 여기서는 dailyDataList 자체를 GroupBy etc. 해도 되지만
+            //     이미 ViewModel에서 그룹화/차트Script 생성 후 넘기는 구조도 가능
+            //     지금은 "직접 GroupBy -> chartConfig" 예시를 사용해도 됨
 
+            // 아래에서는 그냥 "빈 값이 아님"만 체크했고,
+            // 실제 ChartScript(JSON)은 ViewModel에서 만들어 넘기는 경우가 흔함
+            // => 'dailyDataList' 에서 X축 날짜, NgLabel 등 만들 수도 있음
+
+            // 일단 아래서는 "직접 직렬화" 샘플
+            string configJson = BuildSimpleChartJson(dailyDataList);
             Console.WriteLine("[VisionDaily.SetData] configJson=" + configJson);
 
             string html = GenerateHtmlContent(configJson);
             WebView.NavigateToString(html);
         }
 
-        private object CreateChartConfig(List<VisionNgDTO> dailyDataList)
+        /// <summary>
+        /// 간단히 dailyDataList를 NgLabel 기준으로 LabelCount 합산 후 차트 JSON 구성
+        /// (ViewModel에서 ChartScript가 준비됐으면 그걸 그냥 쓰는 편이 더 깔끔)
+        /// </summary>
+        private string BuildSimpleChartJson(List<VisionNgDTO> dailyDataList)
         {
-            // 오늘 날짜 1칸
-            var xLabels = new[] { DateTime.Today.ToString("yyyy-MM-dd") };
-            var datasets = new List<object>();
+            // GroupBy
+            var grouped = dailyDataList
+                .GroupBy(d => d.NgLabel)
+                .Select(g => new
+                {
+                    NgLabel = g.Key,
+                    LabelCount = g.Sum(x => x.LabelCount)
+                })
+                .ToList();
 
+            // X축 1칸 (임의로 today)
+            var xLabels = new[] { DateTime.Today.ToString("yyyy-MM-dd") };
             var colorPalette = new List<string>
             {
                 "rgba(75, 192, 192, 0.7)",
@@ -60,8 +83,9 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                 "rgba(255, 159, 64, 0.7)"
             };
 
+            var datasets = new List<object>();
             int colorIndex = 0;
-            foreach (var item in dailyDataList)
+            foreach (var item in grouped)
             {
                 datasets.Add(new
                 {
@@ -72,6 +96,7 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                 colorIndex++;
             }
 
+            // Chart.js config
             var config = new
             {
                 type = "bar",
@@ -89,7 +114,7 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                         title = new
                         {
                             display = true,
-                            text = "오늘 불량 (일간)"
+                            text = "오늘 불량 (일간, NgLabel 합산)"
                         }
                     },
                     scales = new
@@ -106,7 +131,8 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                     }
                 }
             };
-            return config;
+
+            return JsonSerializer.Serialize(config);
         }
 
         private string GenerateHtmlContent(string script)
