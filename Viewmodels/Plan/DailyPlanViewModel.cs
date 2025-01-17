@@ -10,9 +10,7 @@ using HyunDaiINJ.Services;
 using System.Windows.Input;
 using Prism.Commands;
 using System.Collections.Generic;
-using System.Globalization;
-using System.ComponentModel;
-using System.Linq;  // for GroupBy
+using System.Linq;
 using System.Windows;
 
 namespace HyunDaiINJ.ViewModels
@@ -23,6 +21,18 @@ namespace HyunDaiINJ.ViewModels
         private readonly InjectionPlanDAO _dao;
         private readonly MSDApi _msdApi;  // 주차 번호 등 API 호출 담당
 
+        // "월"→0, "화"→1, "수"→2, "목"→3, "금"→4, "토"→5, "일"→6
+        private static readonly Dictionary<string, int> DayMapping = new()
+        {
+            { "월", 0 },
+            { "화", 1 },
+            { "수", 2 },
+            { "목", 3 },
+            { "금", 4 },
+            { "토", 5 },
+            { "일", 6 }
+        };
+
         public ICommand SendAllInsertCommand { get; }
 
         public DailyPlanViewModel(IEventAggregator eventAggregator)
@@ -30,12 +40,12 @@ namespace HyunDaiINJ.ViewModels
             _eventAggregator = eventAggregator;
             _dao = new InjectionPlanDAO();
 
-            // MSDApi 인스턴스 생성 (또는 DI로 주입받아도 됨)
+            // MSDApi 인스턴스 생성 (또는 DI)
             _msdApi = new MSDApi();
 
             SendAllInsertCommand = new DelegateCommand(async () => await SaveAllPlansAsync());
 
-            // EventAggregator 구독
+            // 필요 시 이벤트 구독
             _eventAggregator.GetEvent<DataInsertedEvent>().Subscribe(OnDataInserted);
 
             // 초기 날짜/주차 설정
@@ -65,95 +75,16 @@ namespace HyunDaiINJ.ViewModels
             get => _selectedDate;
             set
             {
-                // Prism의 SetProperty를 사용해 값 변경 시에만 내부 로직 수행
                 if (SetProperty(ref _selectedDate, value))
                 {
                     if (_selectedDate.HasValue)
                     {
-                        // 날짜가 설정되면, 서버에서 주차 번호를 받아오고 이후 화면 갱신
+                        // 날짜가 설정되면 서버에서 주차 번호 받아와 화면 갱신
                         _ = UpdateWeekDataByDateAsync(_selectedDate.Value);
                     }
                 }
             }
         }
-
-        private async Task UpdateWeekDataByDateAsync(DateTime date)
-        {
-            try
-            {
-                // 서버에서 weekNumber + dates(7일치) 받아오기
-                var info = await _msdApi.GetWeekNumberInfoAsync(date);
-
-                if (info == null)
-                {
-                    // 서버 응답을 못 받았으니 로컬 계산으로 대체
-                    Console.WriteLine("[UpdateWeekDataByDateAsync] 서버 응답이 null이므로 로컬 주차 계산으로 대체합니다.");
-                    info = new WeekNumberInfo
-                    {
-                        WeekNumber = IsoWeekCalculator.GetIso8601WeekOfYear(date),
-                        Dates = new List<DateTime>()
-                    };
-                }
-
-                // 주차 번호가 유효한지 체크 (ex. 0 이하인 경우 등)
-                if (info.WeekNumber <= 0)
-                {
-                    Console.WriteLine("[UpdateWeekDataByDateAsync] 서버로부터 올바른 주차 번호를 받지 못함. 로컬 계산으로 대체합니다.");
-                    info.WeekNumber = IsoWeekCalculator.GetIso8601WeekOfYear(date);
-                }
-
-                // 1) 주차 번호 설정
-                CurrentWeekNumber = info.WeekNumber;
-
-                // 2) DB 로드
-                await LoadWeekDataAsync(info.WeekNumber);
-
-                // 3) 헤더 업데이트
-                // 서버에서 받은 dates[0]이 '월요일'이라고 가정
-                // (서버가 실제로 월요일부터 시작되는 배열을 주는지 확인 필요)
-                if (info.Dates != null && info.Dates.Count >= 7)
-                {
-                    // 예: 첫날(월요일)
-                    DateTime monday = info.Dates[0];
-
-                    MondayHeader = $"월({monday:MM/dd})";
-                    TuesdayHeader = $"화({monday.AddDays(1):MM/dd})";
-                    WednesdayHeader = $"수({monday.AddDays(2):MM/dd})";
-                    ThursdayHeader = $"목({monday.AddDays(3):MM/dd})";
-                    FridayHeader = $"금({monday.AddDays(4):MM/dd})";
-                    SaturdayHeader = $"토({monday.AddDays(5):MM/dd})";
-                    SundayHeader = $"일({monday.AddDays(6):MM/dd})";
-                }
-                else
-                {
-                    // 서버 응답이 7일 미만이면, 기존 로컬 로직 사용
-                    // isoYear 계산 후 IsoWeekCalculator.FirstDayOfIsoWeek 사용
-                    int isoYear = GetIso8601Year(date);
-                    DateTime monday = IsoWeekCalculator.FirstDayOfIsoWeek(isoYear, info.WeekNumber);
-
-                    MondayHeader = $"월({monday:MM/dd})";
-                    TuesdayHeader = $"화({monday.AddDays(1):MM/dd})";
-                    WednesdayHeader = $"수({monday.AddDays(2):MM/dd})";
-                    ThursdayHeader = $"목({monday.AddDays(3):MM/dd})";
-                    FridayHeader = $"금({monday.AddDays(4):MM/dd})";
-                    SaturdayHeader = $"토({monday.AddDays(5):MM/dd})";
-                    SundayHeader = $"일({monday.AddDays(6):MM/dd})";
-                }
-
-                RaisePropertyChanged(nameof(MondayHeader));
-                RaisePropertyChanged(nameof(TuesdayHeader));
-                RaisePropertyChanged(nameof(WednesdayHeader));
-                RaisePropertyChanged(nameof(ThursdayHeader));
-                RaisePropertyChanged(nameof(FridayHeader));
-                RaisePropertyChanged(nameof(SaturdayHeader));
-                RaisePropertyChanged(nameof(SundayHeader));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[DailyPlanVM] UpdateWeekDataByDateAsync 오류: {ex.Message}");
-            }
-        }
-
 
         private string _mondayHeader = "";
         public string MondayHeader
@@ -202,6 +133,72 @@ namespace HyunDaiINJ.ViewModels
 
         #region 메서드
 
+        private async Task UpdateWeekDataByDateAsync(DateTime date)
+        {
+            try
+            {
+                var info = await _msdApi.GetWeekNumberInfoAsync(date);
+
+                if (info == null)
+                {
+                    Console.WriteLine("[UpdateWeekDataByDateAsync] 서버 응답이 null이므로 로컬 계산으로 대체");
+                    info = new WeekNumberInfo
+                    {
+                        WeekNumber = IsoWeekCalculator.GetIso8601WeekOfYear(date),
+                        Dates = new List<DateTime>()
+                    };
+                }
+
+                if (info.WeekNumber <= 0)
+                {
+                    Console.WriteLine("[UpdateWeekDataByDateAsync] 서버로부터 올바른 주차 번호를 받지 못함. 로컬 계산으로 대체");
+                    info.WeekNumber = IsoWeekCalculator.GetIso8601WeekOfYear(date);
+                }
+
+                CurrentWeekNumber = info.WeekNumber;
+
+                // DB에서 기존 데이터 로드
+                await LoadWeekDataAsync(info.WeekNumber);
+
+                // 헤더 업데이트
+                if (info.Dates != null && info.Dates.Count >= 7)
+                {
+                    DateTime monday = info.Dates[0];
+                    MondayHeader = $"월({monday:MM/dd})";
+                    TuesdayHeader = $"화({monday.AddDays(1):MM/dd})";
+                    WednesdayHeader = $"수({monday.AddDays(2):MM/dd})";
+                    ThursdayHeader = $"목({monday.AddDays(3):MM/dd})";
+                    FridayHeader = $"금({monday.AddDays(4):MM/dd})";
+                    SaturdayHeader = $"토({monday.AddDays(5):MM/dd})";
+                    SundayHeader = $"일({monday.AddDays(6):MM/dd})";
+                }
+                else
+                {
+                    int isoYear = GetIso8601Year(date);
+                    DateTime monday = IsoWeekCalculator.FirstDayOfIsoWeek(isoYear, info.WeekNumber);
+                    MondayHeader = $"월({monday:MM/dd})";
+                    TuesdayHeader = $"화({monday.AddDays(1):MM/dd})";
+                    WednesdayHeader = $"수({monday.AddDays(2):MM/dd})";
+                    ThursdayHeader = $"목({monday.AddDays(3):MM/dd})";
+                    FridayHeader = $"금({monday.AddDays(4):MM/dd})";
+                    SaturdayHeader = $"토({monday.AddDays(5):MM/dd})";
+                    SundayHeader = $"일({monday.AddDays(6):MM/dd})";
+                }
+
+                RaisePropertyChanged(nameof(MondayHeader));
+                RaisePropertyChanged(nameof(TuesdayHeader));
+                RaisePropertyChanged(nameof(WednesdayHeader));
+                RaisePropertyChanged(nameof(ThursdayHeader));
+                RaisePropertyChanged(nameof(FridayHeader));
+                RaisePropertyChanged(nameof(SaturdayHeader));
+                RaisePropertyChanged(nameof(SundayHeader));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DailyPlanVM] UpdateWeekDataByDateAsync 오류: {ex.Message}");
+            }
+        }
+
         /// <summary>
         /// DB에서 iso_week=... 레코드(DTO) 가져오기 → part_id별 GroupBy → Pivot → DailyPlanModel
         /// </summary>
@@ -209,7 +206,7 @@ namespace HyunDaiINJ.ViewModels
         {
             try
             {
-                var dtoList = await _dao.GetPlansByWeekAsync(isoWeek); // returns List<InjectionPlanDTO>
+                var dtoList = await _dao.GetPlansByWeekAsync(isoWeek);
 
                 var grouped = dtoList.GroupBy(r => r.PartId);
                 var pivotList = new List<DailyPlanModel>();
@@ -250,7 +247,6 @@ namespace HyunDaiINJ.ViewModels
                                 break;
                         }
                     }
-
                     pivotList.Add(pivot);
                 }
 
@@ -264,61 +260,45 @@ namespace HyunDaiINJ.ViewModels
         }
 
         /// <summary>
-        /// "저장" → DailyRows pivot 반영 → Insert (QtyWeekly 없이)
+        /// "저장" 버튼 → DailyRows의 데이터(월~일)를 0~6으로 매핑 후 PUT 요청
         /// </summary>
         private async Task SaveAllPlansAsync()
         {
             try
             {
+                // isoYear로 월요일 구함(필요 시)
                 int isoYear = GetIso8601Year(DateTime.Today);
                 DateTime monday = IsoWeekCalculator.FirstDayOfIsoWeek(isoYear, CurrentWeekNumber);
 
-                // qtyWeekly 없이 qtyDaily만 담는 튜플
-                var dataList = new List<(string partId, DateTime dateVal, int isoWeek, int qtyDaily, string dayVal)>();
-
+                // (1) DailyRows를 순회
                 foreach (var row in DailyRows)
                 {
-                    if (row.MonQuan != 0)
+                    // (2) 요일별 수량을 Dictionary("월"→수량, "화"→수량, ...)
+                    var dailyQuantities = new Dictionary<string, int>
                     {
-                        dataList.Add((row.PartId, monday, row.IsoWeek, row.MonQuan, "월"));
-                    }
-                    if (row.TueQuan != 0)
+                        { "월", row.MonQuan },
+                        { "화", row.TueQuan },
+                        { "수", row.WedQuan },
+                        { "목", row.ThuQuan },
+                        { "금", row.FriQuan },
+                        { "토", row.SatQuan },
+                        { "일", row.SunQuan },
+                    };
+
+                    // (3) PUT 요청으로 전송
+                    bool success = await _msdApi.UpdateDailyPlanAsync(
+                        row.IsoWeek,
+                        row.PartId,
+                        dailyQuantities
+                    );
+
+                    if (!success)
                     {
-                        dataList.Add((row.PartId, monday.AddDays(1), row.IsoWeek, row.TueQuan, "화"));
-                    }
-                    // 나머지 요일도 동일한 방식으로 추가
-                    if (row.WedQuan != 0)
-                    {
-                        dataList.Add((row.PartId, monday.AddDays(2), row.IsoWeek, row.WedQuan, "수"));
-                    }
-                    if (row.ThuQuan != 0)
-                    {
-                        dataList.Add((row.PartId, monday.AddDays(3), row.IsoWeek, row.ThuQuan, "목"));
-                    }
-                    if (row.FriQuan != 0)
-                    {
-                        dataList.Add((row.PartId, monday.AddDays(4), row.IsoWeek, row.FriQuan, "금"));
-                    }
-                    if (row.SatQuan != 0)
-                    {
-                        dataList.Add((row.PartId, monday.AddDays(5), row.IsoWeek, row.SatQuan, "토"));
-                    }
-                    if (row.SunQuan != 0)
-                    {
-                        dataList.Add((row.PartId, monday.AddDays(6), row.IsoWeek, row.SunQuan, "일"));
+                        Console.WriteLine($"[SaveAllPlansAsync] PUT 실패: PartId={row.PartId}, IsoWeek={row.IsoWeek}");
                     }
                 }
 
-                if (dataList.Count == 0)
-                {
-                    Console.WriteLine("[DailyPlanVM] 저장할 데이터가 없음.");
-                    return;
-                }
-
-                // Upsert 대신 InsertDailyPlansAtOnceAsync 호출
-                await _dao.InsertDailyPlansAtOnceAsync(dataList);
-
-                Console.WriteLine($"[DailyPlanVM] SaveAllPlansAsync 완료 - {dataList.Count}건");
+                Console.WriteLine("[DailyPlanVM] SaveAllPlansAsync 완료 - PUT 요청 모두 진행");
             }
             catch (Exception ex)
             {

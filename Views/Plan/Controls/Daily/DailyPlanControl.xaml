@@ -82,10 +82,20 @@
 
         <DataGrid ItemsSource="{Binding DailyRows}" AutoGenerateColumns="False" Margin="10" Grid.Row="1" Grid.ColumnSpan="2">
             <DataGrid.Resources>
-                <Style TargetType="DataGridColumnHeader">
+
+                <!-- (1) DataGridColumnHeader 스타일: 헤더 텍스트 가운데 정렬 -->
+                <Style TargetType="DataGridColumnHeader" 
+            BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+
+                <!-- (2) DataGridCell 스타일: 셀 텍스트 가운데 정렬 -->
+                <Style TargetType="DataGridCell" 
+            BasedOn="{StaticResource MaterialDesignDataGridCell}">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
                 </Style>
+
             </DataGrid.Resources>
             <DataGrid.Columns>
 

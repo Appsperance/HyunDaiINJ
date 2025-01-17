@@ -5,21 +5,21 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using HyunDaiINJ.DATA.DTO;
-using HyunDaiINJ.Models.Monitoring.Vision;
+using System.Globalization; // 주차 계산 시 사용
+using System.Linq;
 
 namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
     public class VisionWeekViewModel : INotifyPropertyChanged
     {
-        private readonly VisionNgModel _visionNgModel;
+        // API를 통해 데이터를 가져온다고 가정
+        private readonly MSDApi _api;
+
         private readonly List<string> _colorPalette;
         private string _chartScript;
 
         public event Action ChartScriptUpdated;
         public event PropertyChangedEventHandler PropertyChanged;
-
-        // (옵션) 주간 DTO 리스트를 보관하려면 추가
-        // public List<VisionNgDTO> WeekDataList { get; set; }
 
         public string ChartScript
         {
@@ -34,9 +34,9 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
 
         public VisionWeekViewModel()
         {
-            _visionNgModel = new VisionNgModel();
+            _api = new MSDApi();
 
-            // 파스텔톤 색상 팔레트 (차트에 사용)
+            // 차트 색상 팔레트
             _colorPalette = new List<string>
             {
                 "rgba(75, 192, 192, 1)",
@@ -48,93 +48,126 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             };
         }
 
-        // (1) 주간 데이터 로드
+        /// <summary>
+        /// 주간 데이터 로드 (API 호출 → WeekNumber 계산 → ChartScript 생성)
+        /// </summary>
         public async Task LoadVisionNgDataWeekAsync()
         {
             try
             {
-                // 예: DAO -> (WeekNumber, NgLabel, LabelCount) 리스트
-                var visionNgDataWeek = await Task.Run(() => _visionNgModel.GetVisionNgDataWeek());
+                var lineIds = new List<string> { "vp01", "vp02", "vp03", "vp04", "vp05" };
+                int offset = 0;
+                int count = 500;
 
-                if (visionNgDataWeek == null || visionNgDataWeek.Count == 0)
+                // API 호출
+                var dtoList = await _api.GetNgImagesAsync(lineIds, offset, count);
+                Console.WriteLine($"dtoList.Count = {dtoList.Count}");
+
+                if (dtoList == null || dtoList.Count == 0)
                 {
                     ChartScript = GenerateEmptyChartScript();
                     return;
                 }
 
-                // (2) Chart.js config JSON 생성
-                ChartScript = GenerateChartScript(visionNgDataWeek);
+                // 주차 계산
+                foreach (var d in dtoList)
+                {
+                    if (!string.IsNullOrEmpty(d.DateTime))
+                    {
+                        if (DateTime.TryParse(d.DateTime, out var parsedDt))
+                        {
+                            d.WeekNumber = GetWeekNumber(parsedDt);
+                            Console.WriteLine($"Parsed={parsedDt}, Week={d.WeekNumber}");
+                        }
+                    }
+                }
 
-                // (옵션) WeekDataList = visionNgDataWeek;
+                // (선택) 현재 주만 필터링하거나, 특정 기간만 보고 싶다면 여기서 dtoList를 걸러낼 수 있음
+                // 예: int currentWeek = GetWeekNumber(DateTime.Now);
+                // dtoList = dtoList.Where(x => x.WeekNumber == currentWeek).ToList();
+
+                // 주차+라벨 그룹화 → Count() 후, ChartScript 생성
+                ChartScript = GenerateChartScript(dtoList);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"주간 Ng_Label 데이터 에러 : {ex.Message}");
+                ChartScript = GenerateEmptyChartScript();
             }
         }
 
-        // (2) ChartScript 생성: GroupBy(ngLabel, weekNumber) -> Sum(labelCount)
+        /// <summary>
+        /// 주차 계산: .NET 기본 FirstFourDayWeek. ISO-8601 필요 시 별도 로직 사용 가능
+        /// </summary>
+        private int GetWeekNumber(DateTime date)
+        {
+            var currentCulture = CultureInfo.CurrentCulture;
+            var calendar = currentCulture.Calendar;
+
+            return calendar.GetWeekOfYear(
+                date,
+                currentCulture.DateTimeFormat.CalendarWeekRule,
+                currentCulture.DateTimeFormat.FirstDayOfWeek
+            );
+        }
+
+        /// <summary>
+        /// (WeekNumber, NgLabel)로 그룹화하여 chart.js용 JSON 생성
+        /// </summary>
         private string GenerateChartScript(List<VisionNgDTO> visionNgDataWeek)
         {
-            // groupedData: key=ng_label, val=(Dictionary<week -> sum(labelCount)>)
-            var groupedData = new Dictionary<string, Dictionary<int, int>>();
-            var weekLabels = new HashSet<int>();
+            // 1) 주차+라벨별로 GroupBy → Count()
+            var grouped = visionNgDataWeek
+                .GroupBy(d => new { d.WeekNumber, d.NgLabel })
+                .Select(g => new
+                {
+                    WeekNumber = g.Key.WeekNumber,
+                    NgLabel = g.Key.NgLabel,
+                    LabelCount = g.Count()
+                })
+                .ToList();
 
-            // Grouping
-            foreach (var data in visionNgDataWeek)
+            Console.WriteLine("[GenerateChartScript] Grouped data:");
+            foreach (var item in grouped)
             {
-                if (!groupedData.ContainsKey(data.NgLabel))
-                {
-                    groupedData[data.NgLabel] = new Dictionary<int, int>();
-                }
-
-                if (!groupedData[data.NgLabel].ContainsKey(data.WeekNumber))
-                {
-                    groupedData[data.NgLabel][data.WeekNumber] = 0;
-                }
-
-                groupedData[data.NgLabel][data.WeekNumber] += data.LabelCount;
-                weekLabels.Add(data.WeekNumber);
+                Console.WriteLine($"  Week={item.WeekNumber}, Label={item.NgLabel}, Count={item.LabelCount}");
             }
 
-            // week 정렬
-            var sortedWeeks = new List<int>(weekLabels);
-            sortedWeeks.Sort();
+            // 2) X축: 주차 목록
+            var distinctWeeks = grouped.Select(x => x.WeekNumber).Distinct().OrderBy(w => w).ToList();
+            // 세로축 시리즈: 라벨 목록
+            var distinctLabels = grouped.Select(x => x.NgLabel).Distinct().ToList();
 
-            // dataset
+            // 3) datasets 구성
             var datasets = new List<object>();
             int colorIndex = 0;
 
-            foreach (var kvp in groupedData)
+            // 라벨(Mixed, Crack 등)마다 데이터를 구성
+            foreach (var lbl in distinctLabels)
             {
-                string label = kvp.Key; // ngLabel
-                var weekMap = kvp.Value; // Dictionary< weekNumber -> totalCount >
+                // 현재 라벨에 해당하는 각 주차의 Count
                 var dataPoints = new List<int>();
-
-                foreach (var w in sortedWeeks)
+                foreach (var w in distinctWeeks)
                 {
-                    dataPoints.Add(weekMap.ContainsKey(w) ? weekMap[w] : 0);
+                    var matched = grouped.FirstOrDefault(g => g.WeekNumber == w && g.NgLabel == lbl);
+                    dataPoints.Add(matched != null ? matched.LabelCount : 0);
                 }
 
-                // 배경색
                 string color = _colorPalette[colorIndex % _colorPalette.Count].Replace("1)", "0.6)");
+                colorIndex++;
+
                 datasets.Add(new
                 {
-                    label,
+                    label = lbl,
                     data = dataPoints,
                     backgroundColor = color
                 });
-                colorIndex++;
             }
 
-            // X축: "Week 3", "Week 4" 등
-            var weekLabelsStr = new List<string>();
-            foreach (var w in sortedWeeks)
-            {
-                weekLabelsStr.Add($"Week {w}");
-            }
+            // 주차를 보기 좋게 "Week X" 로 만들고 싶으면 여기서 문자열로 변환
+            var weekLabelsStr = distinctWeeks.Select(w => $"Week {w}").ToList();
 
-            // Chart.js config 객체
+            // 4) Chart.js 구성 객체
             var config = new
             {
                 type = "bar",
@@ -155,11 +188,13 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                 }
             };
 
-            // 직렬화 -> JSON
-            var json = JsonSerializer.Serialize(config);
-            return json;
+            // 5) 직렬화 → JSON
+            return JsonSerializer.Serialize(config);
         }
 
+        /// <summary>
+        /// 데이터가 없을 때 표시할 차트
+        /// </summary>
         private string GenerateEmptyChartScript()
         {
             var config = new

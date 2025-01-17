@@ -17,12 +17,76 @@ public class MSDApi
 
     public static string? JwtToken { get; private set; }
     public static string? JwtPublicKey { get; private set; }
-
+    // 월~일 → 0~6 매핑용 딕셔너리
+    private static readonly Dictionary<string, int> DayMapping = new()
+    {
+        { "월", 0 },
+        { "화", 1 },
+        { "수", 2 },
+        { "목", 3 },
+        { "금", 4 },
+        { "토", 5 },
+        { "일", 6 }
+    };
     public MSDApi()
     {
         _client = new HttpClient();
     }
+    // PUT 요청으로 주차별 일일 생산 계획 수정
+    public async Task<bool> UpdateDailyPlanAsync(int isoWeek, string partId, Dictionary<string, int> dailyQuantities)
+    {
+        // dailyQuantities : {"월"->MonQuan, "화"->TueQuan, ...}
+        // 이를 dayOfWeek=0..6, quantity 값으로 변환
+        var dailyPlans = new List<object>();
 
+        foreach (var kv in dailyQuantities)
+        {
+            // kv.Key = "월", "화", ...
+            // kv.Value = 수량
+            int dayOfWeek = DayMapping[kv.Key];
+            int quantity = kv.Value;
+
+            if (quantity > 0)
+            {
+                dailyPlans.Add(new
+                {
+                    dayOfWeek = dayOfWeek,
+                    quantity = quantity
+                });
+            }
+        }
+
+        // PUT용 바디
+        var requestBody = new
+        {
+            partId = partId,
+            isoWeek = isoWeek,
+            dailyPlans = dailyPlans
+        };
+
+        string jsonBody = JsonConvert.SerializeObject(requestBody);
+
+        // 예시 URL: /api/Plan/week?weekNumber=3&partId=ABC123
+        // 실제 서버에서 요구하는 형식에 맞춰 쿼리스트링을 구성하거나
+        // /week/{weekNumber}?partid=... 형태로 조정하면 됨
+        string url = $"http://13.125.114.64:5282/api/Plan/week?weekNumber={isoWeek}&partId={partId}";
+
+        using var request = new HttpRequestMessage(HttpMethod.Put, url);
+        request.Headers.Authorization =
+            new AuthenticationHeaderValue("Bearer", JwtToken); // JWT 필요 시
+        request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+        var response = await _client.SendAsync(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            string errorMsg = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"[UpdateDailyPlanAsync] 실패: {response.StatusCode}, {errorMsg}");
+            return false;
+        }
+
+        Console.WriteLine($"[UpdateDailyPlanAsync] 성공: {partId}, isoWeek={isoWeek}");
+        return true;
+    }
     public async Task<bool> LoginAsync(string userName, string password)
     {
         try
@@ -224,5 +288,6 @@ public class MSDApi
         }
     }
 
+   
 
 }
