@@ -224,7 +224,8 @@
                                HorizontalAlignment="Center"
                                Margin="10"
                                FontSize="16"
-                               FontWeight="Bold"/>
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"/>
 
                     <!-- 버튼 영역 -->
                     <!-- 버튼 영역 -->
@@ -274,7 +275,8 @@
                                HorizontalAlignment="Center"
                                Margin="10"
                                FontSize="16"
-                               FontWeight="Bold"/>
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"/>
 
                     <!-- 버튼 영역 -->
                     <!-- 버튼 영역 -->
@@ -324,7 +326,8 @@
                                HorizontalAlignment="Center"
                                Margin="10"
                                FontSize="16"
-                               FontWeight="Bold"/>
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"/>
 
                     <!-- 버튼 영역 -->
                     <!-- 버튼 영역 -->
