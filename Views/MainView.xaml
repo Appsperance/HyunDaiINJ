@@ -37,7 +37,6 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
 
             </Grid.RowDefinitions>
@@ -46,13 +45,8 @@
             <con:SideTab Grid.Column="0" Grid.RowSpan="2"
                          Background="#F0F0F0" />
 
-            <con:PageTabForm Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"/>
+            <con:PageTabForm Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Background="#404040"/>
 
-            <!-- (3) 오른쪽 Frame -->
-            <Frame Grid.Column="1" Grid.Row="1"
-                   Content="{Binding SelectedTab.CustomContent}"
-                   NavigationUIVisibility="Hidden"
-                   />
         </Grid>
     </Grid>
 </Window>

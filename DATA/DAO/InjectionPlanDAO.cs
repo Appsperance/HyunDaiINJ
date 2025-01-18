@@ -15,14 +15,6 @@ namespace HyunDaiINJ.DATA.DAO
     {
         private readonly string _connectionString;
 
-        public InjectionPlanDAO()
-        {
-            _connectionString = App.ConnectionString
-                ?? throw new InvalidOperationException("ConnectionString not initialized.");
-
-            Console.WriteLine($"[DAO] InjectionPlanDAO 생성, ConnectionString={_connectionString}");
-        }
-
         /// <summary>
         /// DailyPlanViewModel에서 qtyWeekly 없이 qtyDaily만 받아서 한 번에 INSERT.
         /// (part_id, date, qty_daily, iso_week, day)

@@ -1,51 +1,110 @@
 ﻿<UserControl x:Class="HyunDaiINJ.Views.Controls.PageTabForm"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:local="clr-namespace:HyunDaiINJ.Views.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="800">
-    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                  VerticalScrollBarVisibility="Disabled">
-        <ItemsControl ItemsSource="{Binding CustomTabs}">
-            <!-- 수평 배치 -->
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+             xmlns:service="clr-namespace:HyunDaiINJ.Services"
+             mc:Ignorable="d"
+             d:DesignHeight="1030" d:DesignWidth="800">
 
-            <!-- 각 탭 헤더 템플릿 -->
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Margin="4"
-                            Padding="8,4"
-                            Background="#F5F5F5"
-                            CornerRadius="4">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <!-- 탭을 선택하는 버튼 (또는 그냥 Click 이벤트) -->
-                            <Button Command="{Binding DataContext.SelectTabCommand,
-                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding}"
-                                    Style="{StaticResource MaterialDesignFlatButton}"
-                                    Padding="0">
-                                <TextBlock Text="{Binding CustomHeader}"
-                                           Margin="0,0,0,0" />
-                            </Button>
+    <UserControl.Resources>
+        <!-- EqualityConverter: (SelectedTab, ThisItem)을 비교하는 MultiBinding 컨버터 -->
+        <service:EqualityConverter x:Key="EqualityConverter"/>
 
-                            <!-- 닫기 버튼 -->
-                            <Button Command="{Binding CloseCommand}"
-                                    CommandParameter="{Binding}"
-                                    Style="{StaticResource MaterialDesignIconButton}"
-                                    Margin="3,-10">
-                                <materialDesign:PackIcon Kind="Close" />
-                            </Button>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </ScrollViewer>
+        <!-- (추가) 브러시나 색상 리소스 정리해두면 유지보수 편해집니다 -->
+        <SolidColorBrush x:Key="TabDefaultBackground" Color="#404040"/>
+        <SolidColorBrush x:Key="TabSelectedBackground" Color="#1F1F1F"/>
+        <SolidColorBrush x:Key="TabDefaultForeground" Color="Black"/>
+        <SolidColorBrush x:Key="TabSelectedForeground" Color="#222222"/>
+    </UserControl.Resources>
+
+    <!-- (1) 전체 레이아웃: 2행 Grid -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- Row 0: 탭 헤더 (ScrollViewer + ItemsControl) -->
+            <RowDefinition Height="Auto"/>
+            <!-- Row 1: 탭 컨텐츠 (Frame) -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- (2) 탭 바 -->
+        <ScrollViewer Grid.Row="0"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
+
+            <ItemsControl ItemsSource="{Binding CustomTabs}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <!-- 탭 ItemTemplate -->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="5,4,0,0" Padding="10,4,4,2" CornerRadius="10,10,0,0">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="{StaticResource TabDefaultBackground}"/>
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="TextElement.Foreground" Value="{StaticResource TabDefaultForeground}"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Value="True">
+                                            <DataTrigger.Binding>
+                                                <MultiBinding Converter="{StaticResource EqualityConverter}">
+                                                    <!-- 부모 VM의 SelectedTab -->
+                                                    <Binding Path="DataContext.SelectedTab" 
+                                                             RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
+                                                    <!-- 현재 탭 아이템 -->
+                                                    <Binding Path="."/>
+                                                </MultiBinding>
+                                            </DataTrigger.Binding>
+
+                                            <!-- 탭 선택 시 스타일 -->
+                                            <Setter Property="Background" Value="{StaticResource TabSelectedBackground}"/>
+                                            <!--<Setter Property="BorderBrush" Value="#33363f"/>-->
+                                            <Setter Property="BorderThickness" Value="0,0,0,0"/>
+                                            <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                            <Setter Property="TextElement.Foreground" Value="{StaticResource TabSelectedForeground}"/>
+                                            <Setter Property="Padding" Value="4,0,4,0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <!-- 탭 선택 버튼 -->
+                                <Button Command="{Binding DataContext.SelectTabCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Padding="0"
+                                        Foreground="#E0E0E0">
+                                    <TextBlock Text="{Binding CustomHeader}"/>
+                                </Button>
+
+                                <!-- 닫기 버튼 -->
+                                <Button Command="{Binding CloseCommand}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        Margin="3,-10">
+                                    <materialDesign:PackIcon Kind="Close" Foreground="Red"/>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- (3) 탭의 실제 콘텐츠: SelectedTab.CustomContent -->
+        <Frame Grid.Row="1"
+               NavigationUIVisibility="Hidden"
+               Content="{Binding SelectedTab.CustomContent}"
+               />
+    </Grid>
+    
 </UserControl>

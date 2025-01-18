@@ -19,15 +19,35 @@ namespace HyunDaiINJ.ViewModels.Main
     {
         // 예: MainViewModel도 IEventAggregator를 받음
         private readonly IEventAggregator _eventAggregator;
+        // 탭 관리
         public ObservableCollection<CustomTab> CustomTabs { get; } = new();
-        //public Injecti InjectionVM { get; }
-        // 예: 주간 계획 VM
+        // 주간 계획 VM
         public WeekPlanViewModel WeekPlanVM { get; }
+        // 일간 계획 VM
         public DailyPlanViewModel DailyPlanVM { get; }
-        //// 일간 계획 VM
-        //public InjectionPlanViewModel DailyPlanVM { get; }
 
-        
+        // 탭 선택
+        private void SelectTab(CustomTab tab)
+        {
+            if (CustomTabs.Contains(tab))
+            {
+                SelectedTab = tab;
+            }
+        }
+
+        // 탭 닫기
+        private void CloseTab(CustomTab tab)
+        {
+            if (CustomTabs.Contains(tab))
+            {
+                CustomTabs.Remove(tab);
+                // 닫은 탭이 현재 선택 탭이면, 첫 번째 탭으로 선택 전환
+                if (SelectedTab == tab)
+                {
+                    SelectedTab = CustomTabs.FirstOrDefault();
+                }
+            }
+        }
 
         // 현재 선택된 탭
         private CustomTab? _selectedTab;
@@ -61,8 +81,8 @@ namespace HyunDaiINJ.ViewModels.Main
 
         // 명령: 탭 추가/닫기
         public ICommand AddTabCommand { get; }
-        public ICommand CloseTabCommand { get; }
         public ICommand SelectTabCommand { get; }
+        public ICommand CloseTabCommand { get; }
         // 생성자
         public MainViewModel(IEventAggregator eventAggregator)
         {
@@ -134,27 +154,6 @@ namespace HyunDaiINJ.ViewModels.Main
         }
 
 
-        // 탭 닫기
-        private void CloseTab(CustomTab tab)
-        {
-            if (CustomTabs.Contains(tab))
-            {
-                CustomTabs.Remove(tab);
-                // 닫은 탭이 현재 선택 탭이면, 첫 번째 탭으로 선택 전환
-                if (SelectedTab == tab)
-                {
-                    SelectedTab = CustomTabs.FirstOrDefault();
-                }
-            }
-        }
-
-        // 탭 선택
-        private void SelectTab(CustomTab tab)
-        {
-            if (CustomTabs.Contains(tab))
-            {
-                SelectedTab = tab;
-            }
-        }
+       
     }
 }

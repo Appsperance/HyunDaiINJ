@@ -1,21 +1,19 @@
 ﻿<UserControl x:Class="HyunDaiINJ.Views.Plan.Controls.Week.WeekPlanControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
-             mc:Ignorable="d" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
              d:DesignHeight="750" d:DesignWidth="1350">
 
-    <Grid Background="#F0F0F0">
+    <Grid Background="#1F1F1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="35" />
             <RowDefinition Height="40" />
             <RowDefinition Height="20" />
             <RowDefinition Height="35" />
             <RowDefinition Height="3*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -31,17 +29,25 @@
         <!-- 상단 "총 계획" 헤더 -->
         <Grid Grid.Row="0" Margin="5" Grid.ColumnSpan="3">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
+                <materialDesign:PackIcon Foreground="#95C0FF"
+                                         Kind="CircleOutline"
+                                         Height="20"
+                                         Width="40"
+                                         VerticalAlignment="Center"/>
                 <TextBlock Text="총 계획"
                            FontSize="18"
                            FontWeight="Bold"
-                           Foreground="#002E6B"
+                           Foreground="#95C0FF"
                            VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
 
         <!-- 밑줄 -->
-        <Border Grid.ColumnSpan="7" Background="#002E6B" Height="1" VerticalAlignment="Bottom" Margin="0,0,0,3" />
+        <Border Grid.ColumnSpan="7"
+                Background="#95C0FF"
+                Height="1"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,3" />
 
         <!-- 상단 "제품명" 레이블 -->
         <StackPanel Orientation="Horizontal"
@@ -52,7 +58,7 @@
             <TextBlock Text="제품명"
                        FontSize="20"
                        FontWeight="Bold"
-                       Foreground="#002E6B"
+                       Foreground="#95C0FF"
                        VerticalAlignment="Center"/>
         </StackPanel>
 
@@ -60,11 +66,15 @@
         <StackPanel Orientation="Horizontal"
                     Grid.Row="3"
                     Margin="5">
-            <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
+            <materialDesign:PackIcon Foreground="#95C0FF"
+                                     Kind="CircleOutline"
+                                     Height="20"
+                                     Width="40"
+                                     VerticalAlignment="Center"/>
             <TextBlock Text="주 계획"
-                       FontSize="16"
+                       FontSize="18"
                        FontWeight="Bold"
-                       Foreground="#002E6B"
+                       Foreground="#95C0FF"
                        VerticalAlignment="Center"/>
         </StackPanel>
 
@@ -83,7 +93,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="3"
-                            BorderBrush="#444"
+                            BorderBrush="#95C0FF"
                             BorderThickness="1"
                             CornerRadius="5"
                             Background="Transparent">
@@ -91,7 +101,7 @@
                         <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  Width="120"
                                  FontSize="13"
-                                 Foreground="Black"
+                                 Foreground="#E0E0E0"
                                  FontWeight="Bold"/>
                     </Border>
                 </DataTemplate>
@@ -135,36 +145,98 @@
                 FontSize="20"
                 Command="{Binding SaveAllInsertCommand}" />
 
-        <!-- DataGrid (Row=4,5) -->
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      Grid.Row="4"
-                      Grid.ColumnSpan="7"
-                      Grid.RowSpan="2">
-            <DataGrid x:Name="WeekDataGrid"
-                      ItemsSource="{Binding WeekPlanRows}"
-                      AutoGenerateColumns="False"
-                      Margin="10"
-                      CanUserSortColumns="True"
-                      CellEditEnding="WeekDataGrid_CellEditEnding"/>
-        </ScrollViewer>
+        <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="7" Grid.RowSpan="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="*"/>
 
-        <!-- 하단 합계 영역 (Row=6) -->
+            </Grid.RowDefinitions>
+            <!-- Main DataGrid (Row=4,5) -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Grid.Row="0"
+                          Grid.ColumnSpan="7"
+                          Grid.RowSpan="3"
+                          Background="#E0E0E0">
+
+                <DataGrid x:Name="WeekDataGrid"
+                          GridLinesVisibility="All"
+                          VerticalGridLinesBrush="#E0E0E0"
+                          ItemsSource="{Binding WeekPlanRows}"
+                          AutoGenerateColumns="False"
+                          ColumnWidth="SizeToCells"
+                          Margin="10"
+                          CanUserSortColumns="True"
+                          Background="#1F1F1F"
+                          Foreground="#E0E0E0"
+                          >
+
+                    <!-- 헤더 스타일 -->
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#1F1F1F"/>
+                            <Setter Property="Foreground" Value="#E0E0E0"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="10,0,0,0"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+
+                    <!-- 행 스타일 -->
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <!-- 기본 상태(주차행) -->
+                            <Setter Property="Background" Value="#1F1F1F"/>
+                            <Setter Property="Foreground" Value="#E0E0E0"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+
+                            <Style.Triggers>
+                                <!-- 선택 상태 -->
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="Gray"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </Trigger>
+
+                                <!-- 합계 행 (IsSumRow == true) -->
+                                <DataTrigger Binding="{Binding IsSumRow}" Value="True">
+                                    <Setter Property="Background" Value="#E0E0E0"/>
+                                    <Setter Property="Foreground" Value="Navy"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                </DataGrid>
+               
+            </ScrollViewer>
+            <!-- 하단 (합계만) -->
+            <!--<DataGrid x:Name="WeekDataGrid"
+                       Grid.Row="2"
+                       AutoGenerateColumns="False"
+                       Margin="5"
+                       Height="80"
+                       Background="LightYellow"
+                       IsReadOnly="True"
+                       CanUserSortColumns="False"
+                       HeadersVisibility="Column">
+                --><!-- 같은 방식으로 열 생성 --><!--
+            </DataGrid>-->
+        </Grid>
+
+       
+        <!-- 하단 합계 영역 (Row=6) --><!--
         <Grid Grid.Row="6" Background="#E0E0E0" Grid.ColumnSpan="7">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <!-- "계획 총합" 라벨 -->
                 <ColumnDefinition Width="*"/>
-                <!-- 합계 Values -->
             </Grid.ColumnDefinitions>
 
-            <!-- 왼쪽 라벨: "계획 총합" -->
             <TextBlock Text="계획 총합"
                        FontWeight="Bold"
                        Foreground="Navy"
                        Margin="10"
                        VerticalAlignment="Center"/>
 
-            <!-- 오른쪽: 합계를 나열 (ItemsControl) -->
             <ItemsControl Grid.Column="1"
                           ItemsSource="{Binding SumDict}"
                           HorizontalAlignment="Left"
@@ -177,7 +249,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <!-- Key: PartName, Value: 합계 -->
+                            --><!-- Key=PartName는 바인딩에서 쓰지 않고, Value만 표기 --><!--
                             <TextBlock Text="{Binding Value}"
                                        Margin="20,0,0,0"
                                        Foreground="Navy"
@@ -186,6 +258,6 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>

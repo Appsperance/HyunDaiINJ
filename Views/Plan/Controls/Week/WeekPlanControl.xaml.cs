@@ -7,12 +7,14 @@ using System.Windows.Data;
 using HyunDaiINJ.ViewModels.Plan;
 using HyunDaiINJ.Models.Plan;
 using HyunDaiINJ.ViewModels;
+using System.Windows.Controls.Primitives;
 
 namespace HyunDaiINJ.Views.Plan.Controls.Week
 {
     public partial class WeekPlanControl : UserControl
     {
         private bool _isWeekColumnAdded = false;
+        private bool _isTotalColAdded = false;
 
         public WeekPlanControl()
         {
@@ -25,18 +27,36 @@ namespace HyunDaiINJ.Views.Plan.Controls.Week
             var vm = DataContext as WeekPlanViewModel;
             if (vm == null) return;
 
-            // PartInfoList의 추가/삭제 시 열을 동적으로 추가/삭제
             vm.PartInfoList.CollectionChanged += PartInfoList_CollectionChanged;
 
-            // 처음에 '주차' 열 + 기존 PartInfoList 열들 생성
             EnsureWeekColumn();
 
             foreach (var part in vm.PartInfoList)
             {
                 AddOneColumn(part);
             }
-        }
 
+            // (추가) '계획 총합' 열을 마지막에 추가
+            EnsureTotalColumn();
+        }
+        private void EnsureTotalColumn()
+        {
+            if (_isTotalColAdded) return;
+
+            var sumColumn = new DataGridTextColumn
+            {
+                Header = "계획 총합",
+                Binding = new Binding("RowSum")
+                {
+                    Mode = BindingMode.OneWay
+                },
+                Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader),
+                IsReadOnly = true
+            };
+
+            WeekDataGrid.Columns.Add(sumColumn);
+            _isTotalColAdded = true;
+        }
         private void PartInfoList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (WeekDataGrid == null) return;
@@ -71,7 +91,7 @@ namespace HyunDaiINJ.Views.Plan.Controls.Week
             {
                 Header = "주차",
                 Binding = new Binding("WeekDisplay"),
-                Width = 60,
+                Width = new DataGridLength(1, DataGridLengthUnitType.SizeToCells),
                 IsReadOnly = true
             };
             WeekDataGrid.Columns.Add(weekColumn);
@@ -106,6 +126,20 @@ namespace HyunDaiINJ.Views.Plan.Controls.Week
                 // SortMemberPath 등을 PartId 기반으로 세팅할 수도 있음
                 SortMemberPath = $"QuanDict[{part.PartId}]"
             };
+
+             // (A) 표시 모드(TextBlock)에서 가운데 정렬
+    var textBlockStyle = new Style(typeof(TextBlock));
+    textBlockStyle.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Center));
+    // (선택) 수직 정렬을 맞추고 싶다면 VerticalAlignment도 가능
+
+    // (B) 편집 모드(TextBox)에서 가운데 정렬
+    var textBoxStyle = new Style(typeof(TextBox));
+    textBoxStyle.Setters.Add(new Setter(TextBox.TextAlignmentProperty, TextAlignment.Center));
+    // (선택) VerticalContentAlignment도 가능
+
+    newCol.ElementStyle = textBlockStyle;       // 읽기 전용(표시) 상태일 때 텍스트 정렬
+    newCol.EditingElementStyle = textBoxStyle;  // 편집 상태일 때 텍스트 정렬
+
 
             // (B) partInfo.Name 바뀔 때마다 이 열의 헤더 갱신
             part.PropertyChanged += (s, e) =>

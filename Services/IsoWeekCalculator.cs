@@ -84,7 +84,7 @@ namespace HyunDaiINJ.Services
             int week = GetIso8601WeekOfYear(date);
 
             // 1월인데 week가 52나 53이면 → 전년도
-            if (date.Month == 1 && week >= 52)
+            if (date.Month == 1 && week >= 54)
             {
                 return date.Year - 1;
             }
