@@ -15,9 +15,9 @@
         <FirstVm:TimeViewModel/>
     </Page.DataContext>
 
-    <Grid Background="#F0F0F0">
+    <Grid Background="#1F1F1F">
 
-        <Grid Background="#F0F0F0" Margin="10">
+        <Grid Background="#1F1F1F" Margin="10">
             <Grid.RowDefinitions>
                 <!-- Header Rows -->
                 <RowDefinition Height="33" />
@@ -48,11 +48,11 @@
 
             <!-- 헤더 -->
             <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5" Grid.ColumnSpan="3">
-                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
+                <materialDesign:PackIcon Foreground="#95C0FF" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
                 <TextBlock Text="품질 통계"
                             FontSize="18" 
                             FontWeight="Bold" 
-                            Foreground="#002E6B" 
+                            Foreground="#95C0FF" 
                             Margin="10,0"
                             VerticalAlignment="Center"/>
             </StackPanel>
@@ -77,7 +77,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="3" Background="#002E6B" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+                        <Border Margin="3" Background="#95C0FF" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -105,11 +105,11 @@
 
             <!-- 헤더 -->
             <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="5" Grid.ColumnSpan="3">
-                <materialDesign:PackIcon Foreground="#002E6B" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
+                <materialDesign:PackIcon Foreground="#95C0FF" Kind="CircleOutline" Height="20" Width="40" VerticalAlignment="Center"/>
                 <TextBlock Text="품질 통계"
                            FontSize="18" 
                            FontWeight="Bold" 
-                           Foreground="#002E6B" 
+                           Foreground="#95C0FF" 
                            Margin="10,0"
                            VerticalAlignment="Center"/>
             </StackPanel>
@@ -124,13 +124,17 @@
                       CanUserAddRows="False"
                       HeadersVisibility="All"
                       ItemsSource="{Binding NgDetailedData}"
-                      IsReadOnly="True">
+                      IsReadOnly="True"
+                      Background="#1F1F1F"
+                      Foreground="#95C0FF">
                 <DataGrid.Resources>
 
                     <!-- (1) DataGridColumnHeader 스타일: 헤더 텍스트 가운데 정렬 -->
                     <Style TargetType="DataGridColumnHeader" 
                            BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="Foreground" Value="#95C0FF"/>
+
                     </Style>
 
                     <!-- (2) DataGridCell 스타일: 셀 텍스트 가운데 정렬 -->
@@ -138,6 +142,8 @@
                            BasedOn="{StaticResource MaterialDesignDataGridCell}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="Foreground" Value="#95C0FF"/>
+
                     </Style>
 
                 </DataGrid.Resources>
@@ -198,7 +204,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <!-- 불량 통계 -->
-                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#404040" BorderThickness="1" CornerRadius="3" Margin="5,0">
                     <!-- 차트 자리 -->
                     <Grid>
                         <Grid.RowDefinitions>
@@ -206,7 +212,7 @@
                             <!-- 차트 -->
                         </Grid.RowDefinitions>
                         <!--<vision:LineChart Grid.Row="1" Grid.ColumnSpan="2"/>-->
-                        <vision:VisionDaily x:Name="DailyChart" Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <vision:VisionDaily x:Name="DailyChart" Grid.Row="1" Grid.ColumnSpan="2" Background="#1F1F1F"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -218,7 +224,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <!-- 불량 통계 -->
-                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#404040" BorderThickness="1" CornerRadius="3" Margin="5,0">
                     <!-- 차트 자리 -->
                     <Grid>
                         <Grid.RowDefinitions>
@@ -237,7 +243,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <!-- 불량 통계 -->
-                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#444" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                <Border Grid.Column="0" Grid.Row="0" BorderBrush="#404040" BorderThickness="1" CornerRadius="3" Margin="5,0">
                     <!-- 차트 자리 -->
                     <Grid>
                         <Grid.RowDefinitions>

@@ -29,7 +29,6 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 
             // 로그: data가 몇 개인지, 어떤 값인지
             var listData = data.ToList();
-            
 
             if (WebView.CoreWebView2 == null)
             {
@@ -38,7 +37,6 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 
             var chartConfig = BuildChartConfig(listData);
             var script = System.Text.Json.JsonSerializer.Serialize(chartConfig);
-
 
             string html = GenerateHtml(script);
             WebView.NavigateToString(html);
@@ -75,7 +73,9 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                 {
                     label,
                     data = dataList,
-                    backgroundColor = colorPalette[colorIndex % colorPalette.Count]
+                    backgroundColor = colorPalette[colorIndex % colorPalette.Count],
+                    borderColor = "#404040", // 선 색깔을 #404040으로 설정
+                    borderWidth = 1 // 선의 두께 설정
                 });
                 colorIndex++;
             }
@@ -103,6 +103,18 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                     },
                     scales = new
                     {
+                        x = new
+                        {
+                            grid = new
+                            {
+                                color = "#404040"  // x축 그리드 선 색깔을 #404040으로 설정
+                            },
+                            ticks = new
+                            {
+                                color = "#95C0FF"  // x축 tick 색상 설정
+                            },
+                            borderColor = "#404040"  // x축 선 색깔을 #404040으로 설정
+                        },
                         y = new
                         {
                             beginAtZero = true,
@@ -110,7 +122,16 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                             {
                                 display = true,
                                 text = "개수"
-                            }
+                            },
+                            grid = new
+                            {
+                                color = "#404040"  // y축 그리드 선 색깔을 #404040으로 설정
+                            },
+                            ticks = new
+                            {
+                                color = "#95C0FF"  // y축 tick 색상 설정
+                            },
+                            borderColor = "#404040"  // y축 선 색깔을 #404040으로 설정
                         }
                     }
                 }
@@ -121,7 +142,6 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 
         private string GenerateHtml(string script)
         {
-            // 여기에 console.log() 추가로 스크립트 확인
             return $@"
                 <!DOCTYPE html>
                 <html>

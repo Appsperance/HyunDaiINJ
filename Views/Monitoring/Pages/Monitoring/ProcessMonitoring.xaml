@@ -9,9 +9,8 @@
       d:DesignHeight="750" d:DesignWidth="1350"
       Title="ProcessMonitoring">
 
-    <Grid Background="#F0F0F0">
-
-        <Grid Background="#F0F0F0" Margin="10">
+    <Grid Background="#1F1F1F ">
+        <Grid Background="#1F1F1F " Margin="10">
             <Grid.RowDefinitions>
                 <!-- Header Rows -->
                 <RowDefinition Height="120" />
@@ -37,7 +36,7 @@
 
             <!-- 예: 두 번째 그리드에 바인딩 -->
             <Border Grid.Row="0" Grid.Column="0" Margin="10"
-                    BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+                    BorderBrush="#404040" BorderThickness="1" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -46,14 +45,14 @@
                     <TextBlock Text="현재 총 생산 수량"
                                FontSize="20" 
                                FontWeight="Bold" 
-                               Foreground="Black" 
+                               Foreground="#95C0FF" 
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
                     <!-- 예시) D2를 표시해보자 -->
                     <TextBlock Grid.Row="1"
                                Text="{Binding D2}"  
                                FontWeight="Bold" 
-                               Foreground="Black"
+                               Foreground="#95C0FF"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"
                                FontSize="28"/>
@@ -64,7 +63,7 @@
             <!-- "공정 1 상태" Border 예시 -->
             <Border Grid.Row="0" Grid.Column="1" 
                     Margin="10" 
-                    BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+                    BorderBrush="#404040" BorderThickness="1" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -75,7 +74,7 @@
                     <TextBlock Text="공정 1 상태"
                                FontSize="20" 
                                FontWeight="Bold" 
-                               Foreground="Black" 
+                               Foreground="#95C0FF" 
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
 
@@ -122,7 +121,7 @@
                     <TextBlock Text="공정 2 상태"
                                FontSize="20" 
                                FontWeight="Bold" 
-                               Foreground="Black" 
+                               Foreground="#95C0FF" 
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
 
@@ -169,7 +168,7 @@
                     <TextBlock Text="공정 3 상태"
                                FontSize="20" 
                                FontWeight="Bold" 
-                               Foreground="Black" 
+                               Foreground="#95C0FF" 
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
 
@@ -205,7 +204,7 @@
 
             <Grid Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="0">
                 <!-- 현재 시간 -->
-                <Border Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Margin="10" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+                <Border Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Margin="10" BorderBrush="#404040" BorderThickness="1" CornerRadius="5">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="32"/>
@@ -214,14 +213,14 @@
                         <TextBlock Text="현재시간" 
                                    FontSize="20" 
                                    FontWeight="Bold" 
-                                   Foreground="Black" 
+                                   Foreground="#95C0FF" 
                                    Margin="0,5,0,0"
                                    HorizontalAlignment="Center" />
 
                         <TextBlock x:Name="TxtCurrentTime"
                                    Grid.Row="1" 
                                    FontWeight="Bold" 
-                                   Foreground="Black"
+                                   Foreground="#95C0FF"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    FontSize="25"/>

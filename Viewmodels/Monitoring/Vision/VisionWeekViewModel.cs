@@ -146,14 +146,14 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             // 3) datasets
             var datasets = new List<object>();
             var colorPalette = new List<string>
-            {
-                "rgba(75, 192, 192, 0.7)",
-                "rgba(255, 99, 132, 0.7)",
-                "rgba(54, 162, 235, 0.7)",
-                "rgba(255, 206, 86, 0.7)",
-                "rgba(153, 102, 255, 0.7)",
-                "rgba(255, 159, 64, 0.7)"
-            };
+    {
+        "rgba(75, 192, 192, 0.7)",
+        "rgba(255, 99, 132, 0.7)",
+        "rgba(54, 162, 235, 0.7)",
+        "rgba(255, 206, 86, 0.7)",
+        "rgba(153, 102, 255, 0.7)",
+        "rgba(255, 159, 64, 0.7)"
+    };
 
             int colorIndex = 0;
             foreach (var lbl in distinctLabels)
@@ -202,14 +202,33 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                     },
                     scales = new
                     {
-                        x = new { stacked = false },
-                        y = new 
-                        { 
+                        x = new
+                        {
+                            stacked = false,
+                            grid = new
+                            {
+                                color = "#404040"  // x축 그리드 선 색깔을 #404040으로 설정
+                            },
+                            ticks = new
+                            {
+                                color = "#95C0FF"  // x축 tick 색상 설정
+                            }
+                        },
+                        y = new
+                        {
                             stacked = false,
                             title = new
                             {
                                 display = true,
                                 text = "불량수"
+                            },
+                            grid = new
+                            {
+                                color = "#404040"  // y축 그리드 선 색깔을 #404040으로 설정
+                            },
+                            ticks = new
+                            {
+                                color = "#95C0FF"  // x축 tick 색상 설정
                             }
                         }
                     }
