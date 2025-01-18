@@ -55,11 +55,9 @@ public class MSDApi
         if (!response.IsSuccessStatusCode)
         {
             string errorMsg = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"[UpdateDailyPlanAsync] 실패: {response.StatusCode}, {errorMsg}");
             return false;
         }
 
-        Console.WriteLine($"[UpdateDailyPlanAsync] 성공: {partId}, isoWeek={isoWeek}");
         return true;
     }
 
@@ -157,7 +155,6 @@ public class MSDApi
             if (!response.IsSuccessStatusCode)
             {
                 var err = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"[NG 이미지 조회 실패] Status={response.StatusCode}, Body={err}");
                 return null;
             }
 
@@ -192,7 +189,6 @@ public class MSDApi
         if (!response.IsSuccessStatusCode)
         {
             string errorMsg = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"[SendWeekPlanAsync] 실패: {response.StatusCode}, {errorMsg}");
             return false;
         }
 
@@ -213,8 +209,6 @@ public class MSDApi
             // 서버에서 요구하는 날짜 형식 (예: yyyy-MM-dd)
             string formattedDate = date.ToString("yyyy-MM-dd");
             string requestUrl = $"http://13.125.114.64:5282/api/calendar/week-number/{formattedDate}";
-            Console.WriteLine($"[GetWeekNumberInfoAsync] 요청 날짜: {formattedDate}");
-            
 
             // GET 요청
             HttpResponseMessage response = await client.GetAsync(requestUrl);
@@ -253,7 +247,6 @@ public class MSDApi
 
                 // {"weekNumber":3, "dates":["2025-01-13T00:00:00", ...]} 구조
                 var info = JsonConvert.DeserializeObject<WeekNumberInfo>(jsonString);
-                Console.WriteLine($"[GetWeekNumberInfoAsync] 서버 응답: {jsonString}");
                 return info;
 
 
@@ -281,24 +274,14 @@ public class MSDApi
                 new AuthenticationHeaderValue("Bearer", JwtToken);
         }
 
-        // (추가) 주차 번호 확인 로깅
-        Console.WriteLine($"[GetPlanWeekDataAsync] 호출 - 주차={weekNumber}");
-
         string url = $"http://13.125.114.64:5282/api/Plan/week/{weekNumber}";
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-        // (추가) 요청 URL 확인
-        Console.WriteLine($"[GetPlanWeekDataAsync] 요청 URL: {url}");
-
         var response = await _client.SendAsync(request);
-
-        // (추가) 응답 코드 로깅
-        Console.WriteLine($"[GetPlanWeekDataAsync] 응답 코드: {response.StatusCode}");
 
         if (!response.IsSuccessStatusCode)
         {
             var errBody = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"[GetPlanWeekDataAsync] 실패: {response.StatusCode}, {errBody}");
             return null;
         }
 
@@ -306,18 +289,13 @@ public class MSDApi
         string json = await response.Content.ReadAsStringAsync();
         var planList = JsonConvert.DeserializeObject<List<InjectionPlanDTO>>(json);
 
-        Console.WriteLine("[GetPlanWeekDataAsync] 수신 데이터 원문:");
-        Console.WriteLine(json);
-
         // (추가) 받은 데이터 개수와 일부 항목 로깅
         if (planList != null)
         {
-            Console.WriteLine($"[GetPlanWeekDataAsync] planList.Count = {planList.Count}");
             // 필요 시 planList 첫 항목(또는 전체 항목)도 출력
             if (planList.Count > 0)
             {
                 var first = planList[0];
-                Console.WriteLine($"[GetPlanWeekDataAsync] 예시 첫 항목: partId={first.PartId}, day={first.Day}, qty={first.QtyDaily}");
             }
         }
         else

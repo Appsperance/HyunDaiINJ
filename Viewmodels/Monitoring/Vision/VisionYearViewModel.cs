@@ -51,26 +51,14 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
         {
             try
             {
-                var lineIds = new List<string> { "vp01", "vp02", "vp03", "vp04", "vp05" };
+                var lineIds = new List<string> { "vp01", "vi01", "vp03", "vp04", "vp05" };
                 int offset = 0;
                 int count = 500;
 
                 var dtoList = await _api.GetNgImagesAsync(lineIds, offset, count);
-                if (dtoList == null || dtoList.Count == 0)
-                {
-                    Console.WriteLine("[LoadVisionNgDataYearAsync] No data returned from API");
-                    return;
-                }
 
                 // 기존 데이터 초기화
                 YearData.Clear();
-
-                // 로그: 받아온 dtoList 각 항목
-                Console.WriteLine("[LoadVisionNgDataYearAsync] Raw items:");
-                foreach (var d in dtoList)
-                {
-                    Console.WriteLine($"  ID={d.Id}, DateTime={d.DateTime}, NgLabel={d.NgLabel}, LabelCount={d.LabelCount}");
-                }
 
                 // dateTime → YearNumber
                 foreach (var d in dtoList)
@@ -84,8 +72,6 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
                     }
                     YearData.Add(d);
                 }
-
-                Console.WriteLine($"[LoadVisionNgDataYearAsync] Loaded count={YearData.Count}");
 
                 // (2) GroupBy
                 BuildYearLabelSummaries();

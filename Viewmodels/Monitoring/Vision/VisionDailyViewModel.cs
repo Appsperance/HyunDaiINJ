@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Linq;
-using HyunDaiINJ.DATA.DTO;  // VisionNgDTO 정의
+using HyunDaiINJ.DATA.DTO;
 using HyunDaiINJ.Models.Monitoring.Vision; // MSDApi 등
 
 namespace HyunDaiINJ.ViewModels.Monitoring.vision
@@ -36,6 +36,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
+        // 뷰에게 "차트 스크립트가 갱신됐다"는 이벤트 알림
         public event Action ChartScriptUpdated;
 
         public VisionDailyViewModel()
@@ -45,49 +46,29 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
         }
 
         /// <summary>
-        /// 예) 2025-01-16 0시(KST)~17일 0시(KST) 범위를 필터한 뒤, 
-        ///     NgLabel별 행 개수를 구하고 차트 스크립트를 만든다.
+        /// 예시: 2025-01-16 0시(KST) ~ 1/17 0시(KST) 범위 필터 후 NgLabel별 count → 차트 스크립트 생성
         /// </summary>
         public async Task LoadVisionNgDataDailyAsync()
         {
             try
             {
-                // 1) API 통해 DB 데이터 조회
-                var lineIds = new List<string> { "vp01", "vp02", "vp03", "vp04", "vp05" };
+                // (1) API 호출
+                var lineIds = new List<string> { "vp01", "vi01", "vp03", "vp04", "vp05" };
                 int offset = 0;
                 int count = 500;
 
                 var allData = await _api.GetNgImagesAsync(lineIds, offset, count);
-                if (allData == null || allData.Count == 0)
-                {
-                    Console.WriteLine("[LoadVisionNgDataDailyAsync] No data returned from API");
-                    return;
-                }
-
-                Console.WriteLine("[LoadVisionNgDataDailyAsync] Raw items from API (UTC-based):");
-                foreach (var d in allData)
-                {
-                    if (DateTimeOffset.TryParse(d.DateTime, out var dto))
-                    {
-                        Console.WriteLine($"  ID={d.Id}, UTC={dto.UtcDateTime}, KST={dto.LocalDateTime}, NgLabel={d.NgLabel}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"  ID={d.Id}, invalid datetime={d.DateTime}");
-                    }
-                }
-
-                // 2) 예) 1/16 0시(KST) ~ 1/17 0시(KST) 범위
-                var targetDateKst = new DateTime(2025, 1, 16, 0, 0, 0, DateTimeKind.Local);
+               
+                // (2) 날짜 범위 설정 (오늘 0시 ~ 내일 0시)
+                var targetDateKst = DateTime.Today; // 오늘 0시, PC가 KST라고 가정
                 var nextDayKst = targetDateKst.AddDays(1);
-                Console.WriteLine($"[LoadVisionNgDataDailyAsync] Filtering {targetDateKst} ~ {nextDayKst} (KST)");
 
-                // 3) 필터: KST 시각 >= targetDateKst && < nextDayKst
+                // (3) 필터
                 var filteredData = allData.Where(d =>
                 {
                     if (DateTimeOffset.TryParse(d.DateTime, out var dto))
                     {
-                        var kstTime = dto.LocalDateTime; // PC가 KST 가정
+                        var kstTime = dto.LocalDateTime; // PC가 KST라고 가정
                         return (kstTime >= targetDateKst && kstTime < nextDayKst);
                     }
                     return false;
@@ -95,34 +76,31 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
 
                 if (filteredData.Count == 0)
                 {
-                    Console.WriteLine("[LoadVisionNgDataDailyAsync] No data found in that KST range");
+                    DailyDataList.Clear();
                     return;
                 }
 
-                // 4) NgLabel 기준 "행 개수" 집계 => LabelCount
+                // (4) NgLabel별 집계 → LabelCount
                 var grouped = filteredData
                     .GroupBy(d => d.NgLabel)
-                    .Select(g => new VisionNgDTO
-                    {
-                        NgLabel = g.Key,
-                        LabelCount = g.Count()
-                    })
+                    .Select(g => new { NgLabel = g.Key, Count = g.Count() })
                     .ToList();
 
-                // 5) X축 라벨용: 필터된 데이터 중 가장 이른 KST 시각
+                // (5) 가장 이른 KST시각
                 var earliestKst = filteredData
                     .Select(d => DateTimeOffset.Parse(d.DateTime).LocalDateTime)
-                    .Min(); // DateTime (KST)
+                    .Min();
 
-                // 6) 차트 구성
-                var chartConfig = CreateChartConfig(grouped, earliestKst);
-                string configJson = JsonSerializer.Serialize(chartConfig);
+                // (6) 차트 스크립트 생성
+                string configJson = BuildDailyChartScript(grouped, earliestKst);
                 ChartScript = configJson;
 
-                // 7) 바인딩/차트 업데이트
+                // (7) DailyDataList 바인딩(필요 시)
+                DailyDataList = filteredData;
+
+                // (8) 알림 이벤트
                 OnChartScriptUpdated();
 
-                Console.WriteLine("[LoadVisionNgDataDailyAsync] ChartScript updated with UTC↔KST logic");
             }
             catch (Exception ex)
             {
@@ -130,15 +108,15 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
+
         /// <summary>
-        /// CreateChartConfig - X축 라벨=earliestKst, dataset=NgLabel별 LabelCount
+        /// (내부) 일간 차트를 위한 Chart.js config JSON 생성
         /// </summary>
-        private object CreateChartConfig(List<VisionNgDTO> groupedData, DateTime earliestKst)
+        private string BuildDailyChartScript(IEnumerable<dynamic> grouped, DateTime earliestKst)
         {
             var xLabel = earliestKst.ToString("yyyy-MM-dd");
             var xLabels = new[] { xLabel };
 
-            // NgLabel, LabelCount 추출
             var datasets = new List<object>();
             var colorPalette = new List<string>
             {
@@ -151,18 +129,17 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             };
 
             int colorIndex = 0;
-            foreach (var item in groupedData)
+            foreach (var item in grouped)
             {
                 datasets.Add(new
                 {
                     label = item.NgLabel,
-                    data = new[] { item.LabelCount },
+                    data = new[] { item.Count },
                     backgroundColor = colorPalette[colorIndex % colorPalette.Count]
                 });
                 colorIndex++;
             }
 
-            // Chart.js config
             var config = new
             {
                 type = "bar",
@@ -191,22 +168,26 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                             title = new
                             {
                                 display = true,
-                                text = "건수"
+                                text = "불량수"
                             }
                         }
                     }
                 }
             };
 
-            return config;
+            return JsonSerializer.Serialize(config);
         }
 
+        // INotifyPropertyChanged 구현
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string prop = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 
-        private void OnChartScriptUpdated() => ChartScriptUpdated?.Invoke();
+        private void OnChartScriptUpdated()
+        {
+            ChartScriptUpdated?.Invoke();
+        }
         #endregion
     }
 }

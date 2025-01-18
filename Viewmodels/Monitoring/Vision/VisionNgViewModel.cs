@@ -72,7 +72,7 @@ public class VisionNgViewModel : INotifyPropertyChanged
             // if(!loginOk) { /* 에러 처리*/ }
 
             // API 호출 파라미터 (lineIds, offset, count)
-            var lineIds = new List<string> { "vp01", "vp02", "vp03", "vp04", "vp05" };
+            var lineIds = new List<string> { "vp01", "vi01", "vp03", "vp04", "vp05" };
             int offset = 0;
             int count = 100;
 

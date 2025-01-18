@@ -40,32 +40,32 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         private string GenerateHtml(string script)
         {
             return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='UTF-8'/>
-    <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
-</head>
-<body style='margin:0;padding:0;display:flex;align-items:center;justify-content:center;height:100vh;'>
-    <canvas id='myCanvas' style='width:90vw;height:80vh;'></canvas>
-    <script>
-        let myChart;
-        function updateChartData(config) {{
-            console.log('[VisionWeek] config:', config);
-            if(myChart) {{
-                myChart.data = config.data;
-                myChart.update('`ne');
-            }} else {{
-                const ctx = document.getElementById('myCanvas').getContext('2d');
-                myChart = new Chart(ctx, config);
-            }}
-        }}
-        {(string.IsNullOrEmpty(script)
-            ? "console.log('No data');"
-            : $"updateChartData({script});")}
-    </script>
-</body>
-</html>";
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset='UTF-8'/>
+                    <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+                </head>
+                <body style='margin:0;padding:0;display:flex;align-items:center;justify-content:center;height:100vh;'>
+                    <canvas id='myCanvas' style='width:90vw;height:90vh;'></canvas>
+                    <script>
+                        let myChart;
+                        function updateChartData(config) {{
+                            console.log('[VisionWeek] config:', config);
+                            if(myChart) {{
+                                myChart.data = config.data;
+                                myChart.update('`ne');
+                            }} else {{
+                                const ctx = document.getElementById('myCanvas').getContext('2d');
+                                myChart = new Chart(ctx, config);
+                            }}
+                        }}
+                        {(string.IsNullOrEmpty(script)
+                            ? "console.log('No data');"
+                            : $"updateChartData({script});")}
+                    </script>
+                </body>
+                </html>";
         }
     }
 }

@@ -8,7 +8,7 @@
         xmlns:con="clr-namespace:HyunDaiINJ.Views.Controls"
         xmlns:vm="clr-namespace:HyunDaiINJ.ViewModels.Main"
         mc:Ignorable="d"
-        Title="MainView" Height="800" Width="1520"
+        Title="MainView" Height="860" Width="1600"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource MaterialDesignWindow}">
 
@@ -47,7 +47,7 @@
                          Background="#F0F0F0" />
 
             <con:PageTabForm Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"/>
-            
+
             <!-- (3) 오른쪽 Frame -->
             <Frame Grid.Column="1" Grid.Row="1"
                    Content="{Binding SelectedTab.CustomContent}"

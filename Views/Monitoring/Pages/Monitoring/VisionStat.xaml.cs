@@ -57,10 +57,9 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
             // 이제 세 개 차트가 거의 동시에 Render를 시작하게 되어
             // 뒤죽박죽 순서가 아니라, 한꺼번에 표시됨
             YearChart.SetData(_viewModel.NgDetailedData);
-            DailyChart.SetData(_dailyViewModel.DailyDataList);
             YearChart.SetData(_yearViewModel.YearLabelSummaries);
             WeekChart.SetData(_weekViewModel.ChartScript);
-            DailyChart.SetData(_dailyViewModel.DailyDataList);
+            DailyChart.SetChartScript(_dailyViewModel.ChartScript);
         }
     }
 }

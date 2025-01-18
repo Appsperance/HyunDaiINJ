@@ -29,10 +29,7 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 
             // 로그: data가 몇 개인지, 어떤 값인지
             var listData = data.ToList();
-            foreach (var d in listData)
-            {
-                Console.WriteLine($"  Year={d.YearNumber}, Label={d.NgLabel}, Count={d.LabelCount}");
-            }
+            
 
             if (WebView.CoreWebView2 == null)
             {
@@ -42,7 +39,6 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
             var chartConfig = BuildChartConfig(listData);
             var script = System.Text.Json.JsonSerializer.Serialize(chartConfig);
 
-            Console.WriteLine($"[VisionYear.SetData] chart script={script}");
 
             string html = GenerateHtml(script);
             WebView.NavigateToString(html);
@@ -52,9 +48,6 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         {
             var yearSet = data.Select(d => d.YearNumber).Distinct().OrderBy(x => x).ToList();
             var labelSet = data.Select(d => d.NgLabel).Distinct().ToList();
-
-            Console.WriteLine("[BuildChartConfig] yearSet=" + string.Join(",", yearSet));
-            Console.WriteLine("[BuildChartConfig] labelSet=" + string.Join(",", labelSet));
 
             var colorPalette = new List<string>
             {
@@ -77,9 +70,6 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                     int val = item?.LabelCount ?? 0;
                     dataList.Add(val);
                 }
-
-                // 로그: 각 라벨별 dataList
-                Console.WriteLine($"[BuildChartConfig] label={label}, dataList=[{string.Join(",", dataList)}]");
 
                 datasets.Add(new
                 {
@@ -133,32 +123,32 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
         {
             // 여기에 console.log() 추가로 스크립트 확인
             return $@"
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset='UTF-8'/>
-  <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
-</head>
-<body>
-  <canvas id='stackedBarChart'></canvas>
-  <script>
-    let myChart;
-    function updateChartData(config) {{
-        console.log('Chart config from HTML side:', config);
-        if (myChart) {{
-            myChart.data = config.data;
-            myChart.update('none');
-        }} else {{
-            const ctx = document.getElementById('stackedBarChart').getContext('2d');
-            myChart = new Chart(ctx, config);
-        }}
-    }}
-    {(string.IsNullOrEmpty(script)
-      ? "console.log('No initial data');"
-      : $"updateChartData({script});")}
-  </script>
-</body>
-</html>";
+                <!DOCTYPE html>
+                <html>
+                <head>
+                  <meta charset='UTF-8'/>
+                  <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+                </head>
+                <body style='margin:0;padding:0;display:flex;align-items:center;justify-content:center;height:100vh;'>
+                  <canvas id='stackedBarChart' style='width:90vw;height:90vh;'></canvas>
+                  <script>
+                    let myChart;
+                    function updateChartData(config) {{
+                        console.log('Chart config from HTML side:', config);
+                        if (myChart) {{
+                            myChart.data = config.data;
+                            myChart.update('none');
+                        }} else {{
+                            const ctx = document.getElementById('stackedBarChart').getContext('2d');
+                            myChart = new Chart(ctx, config);
+                        }}
+                    }}
+                    {(string.IsNullOrEmpty(script)
+                      ? "console.log('No initial data');"
+                      : $"updateChartData({script});")}
+                  </script>
+                </body>
+                </html>";
         }
     }
 }
