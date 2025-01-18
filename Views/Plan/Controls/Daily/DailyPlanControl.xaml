@@ -32,7 +32,7 @@
                       RelativeSource={RelativeSource AncestorType=UserControl}}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       Foreground="#0C4C9D"
+                       Foreground="#95C0FF"
                        FontSize="40"/>
             </StackPanel>
 
@@ -41,7 +41,7 @@
                Margin="-70,0,0,0"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
-                    Foreground="#0C4C9D"
+                    Foreground="#95C0FF"
                     FontSize="40"/>
             </StackPanel>
 
@@ -52,6 +52,7 @@
                         FontSize="28"
                         FontWeight="Bold"
                         VerticalAlignment="Center"
+                        Foreground="#95C0FF"
                         HorizontalAlignment="Center"/>
         </Grid>
 
@@ -80,25 +81,48 @@
             </Button.Template>
         </Button>
 
-        <DataGrid ItemsSource="{Binding DailyRows}" AutoGenerateColumns="False" Margin="10" Grid.Row="1" Grid.ColumnSpan="2">
+        <DataGrid ItemsSource="{Binding DailyRows}" AutoGenerateColumns="False" Margin="10" Grid.Row="1" Grid.ColumnSpan="2" Background="#1F1F1F" HorizontalGridLinesBrush="#404040" Foreground="#95C0FF">
             <DataGrid.Resources>
-
                 <!-- (1) DataGridColumnHeader 스타일: 헤더 텍스트 가운데 정렬 -->
-                <Style TargetType="DataGridColumnHeader" 
-            BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    <Setter Property="Background" Value="#1F1F1F"/>
+                    <Setter Property="Foreground" Value="#95C0FF"/>
                 </Style>
 
-                <!-- (2) DataGridCell 스타일: 셀 텍스트 가운데 정렬 -->
-                <Style TargetType="DataGridCell" 
-            BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                <!-- (2) DataGridCell 스타일: 셀 텍스트 가운데 정렬 및 배경색 설정 -->
+                <Style TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Background" Value="#1F1F1F"/>
+                    <Setter Property="Foreground" Value="#95C0FF"/>
+
+                    <!-- 마우스 오버 상태 수정: 색깔 변경되지 않도록 설정 -->
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter Property="Background" Value="#1F1F1F"/>
+                            <Setter Property="BorderBrush" Value="#1F1F1F"/>
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#1F1F1F"/>
+                            <Setter Property="BorderBrush" Value="#404040 "/>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
 
+                <!-- (3) 선택된 셀에 배경색 변경 -->
+                <Style TargetType="DataGridCell" x:Key="SelectedCellStyle">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#404040"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
             </DataGrid.Resources>
-            <DataGrid.Columns>
 
+            <DataGrid.Columns>
                 <!-- 주차 컬럼 -->
                 <DataGridTemplateColumn Header="" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
@@ -118,7 +142,8 @@
                         <DataTemplate>
                             <!-- DataGrid나 UserControl의 DataContext(= InjectionPlanViewModel)를 바라봄 -->
                             <TextBlock Text="{Binding DataContext.MondayHeader, 
-                                     RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                     RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                       Background="#1F1F1F"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
@@ -261,63 +286,5 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-
-        <!-- 하단 합계 영역 (Row=6) -->
-        <!--
-        <Grid Grid.Column="1" Grid.Row="1" Background="#E0E0E0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="48"/>
-                -->
-        <!-- "계획 총합" 라벨 -->
-        <!--
-                <RowDefinition Height="auto"/>
-                -->
-        <!-- 합계 Values -->
-        <!--
-            </Grid.RowDefinitions>
-
-            -->
-        <!-- 위쪽 라벨: "계획 총합" -->
-        <!--
-            <TextBlock Text="계획 총합"
-                       FontWeight="Bold"
-                       Grid.Row="0"
-                       Foreground="Navy"
-                       Margin="10"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
-
-            <ItemsControl 
-                          Grid.Row="1"
-                          ItemsSource="{Binding DailyRows}"  
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        -->
-        <!-- 여기서, 한 행(DailyPlanModel)에 대한 템플릿 -->
-        <!--
-                        <StackPanel Orientation="Horizontal">
-                            -->
-        <!-- 행의 월~일 합계 (DailyTotal) -->
-        <!--
-                            <TextBlock Text="asdfasfsdf"
-                                       
-                                       Margin="0,0,0,0"
-                                       Foreground="Navy"
-                                       FontWeight="Bold"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>-->
-
-        <!--</Grid>-->
-
     </Grid>
 </UserControl>

@@ -155,13 +155,21 @@
                       CellEditEnding="WeekDataGrid_CellEditEnding">
                 <!-- Header Alignment -->
                 <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
+                    <Style TargetType="DataGridColumnHeader"  BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="Background" Value="#1F1F1F"/>
                         <Setter Property="Foreground" Value="#95C0FF"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
-                
+
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell"  BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Background" Value="#1F1F1F"/>
+                        <Setter Property="Foreground" Value="#95C0FF"/>
+                    </Style>
+                </DataGrid.CellStyle>
+
             </DataGrid>
         </ScrollViewer>
 
