@@ -20,6 +20,7 @@ namespace HyunDaiINJ.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly InjectionPlanDAO _planDao;
 
+        // (A) MSDApi 인스턴스
         private readonly MSDApi _msdApi = new MSDApi();
 
         public ObservableCollection<PartInfo> PartInfoList { get; }
@@ -46,11 +47,10 @@ namespace HyunDaiINJ.ViewModels
 
             PartInfoList.CollectionChanged += OnPartInfoListChanged;
 
-            // 초기: 1~52주 행
+            // (B) WeekPlanRows 초기화 (1~52주 생성 예시)
             int currentYear = DateTime.Now.Year;
             for (int w = 1; w <= 52; w++)
             {
-                // 일반 행: (year, week, false)
                 WeekPlanRows.Add(new WeekRow(currentYear, w));
             }
 
@@ -67,13 +67,14 @@ namespace HyunDaiINJ.ViewModels
             {
                 foreach (var newItem in e.NewItems)
                 {
-                    if (newItem is PartInfo p)
+                    if (newItem is PartInfo newPart)
                     {
+                        // PartId를 딕셔너리 키로 사용
                         foreach (var row in WeekPlanRows)
                         {
-                            if (!row.QuanDict.ContainsKey(p.PartId))
+                            if (!row.QuanDict.ContainsKey(newPart.PartId))
                             {
-                                row.QuanDict[p.PartId] = 0;
+                                row.QuanDict[newPart.PartId] = 0;
                             }
                         }
                     }
@@ -83,13 +84,13 @@ namespace HyunDaiINJ.ViewModels
             {
                 foreach (var oldItem in e.OldItems)
                 {
-                    if (oldItem is PartInfo p)
+                    if (oldItem is PartInfo oldPart)
                     {
                         foreach (var row in WeekPlanRows)
                         {
-                            if (row.QuanDict.ContainsKey(p.PartId))
+                            if (row.QuanDict.ContainsKey(oldPart.PartId))
                             {
-                                row.QuanDict.Remove(p.PartId);
+                                row.QuanDict.Remove(oldPart.PartId);
                             }
                         }
                     }
@@ -101,16 +102,18 @@ namespace HyunDaiINJ.ViewModels
 
         private void OnExecutePlusLine()
         {
+            // 1) 숫자 ID (Dictionary 키)
             int newPartId = PartInfoList.Count + 1;
+
+            // 2) 문자열 Name
             string partName = $"Part-{newPartId}";
 
-            var newPart = new PartInfo
+            var newPartInfo = new PartInfo
             {
-                PartId = newPartId,
-                Name = partName
+                PartId = newPartId,  // int
+                Name = partName    // string
             };
-            PartInfoList.Add(newPart);
-
+            PartInfoList.Add(newPartInfo);
             RecalcSum();
         }
 
@@ -123,11 +126,9 @@ namespace HyunDaiINJ.ViewModels
             }
         }
 
-        private async Task SaveAllInsertAsync()
-        {
-            // 예시용...
-        }
-
+        /// <summary>
+        /// DAO를 이용해 일괄 Insert + 서버 전송 예시
+        /// </summary>
         private async Task SaveAllPlansAtOnceAsync()
         {
             try
@@ -138,6 +139,7 @@ namespace HyunDaiINJ.ViewModels
                 {
                     foreach (var part in PartInfoList)
                     {
+                        // Only process if QuanDict has a value AND it's non-zero
                         if (row.QuanDict.TryGetValue(part.PartId, out int qty) && qty != 0)
                         {
                             DateTime dateVal = row.WeekStartDate;
@@ -155,10 +157,10 @@ namespace HyunDaiINJ.ViewModels
                     return;
                 }
 
-                // local DB insert (option)
+                // 1) Optionally insert to local DB first...
                 // await _planDao.InsertAllPlansAtOnceAsync(dataList);
 
-                // server send
+                // 2) Then send only non-zero items to server
                 int sendCount = 0;
                 foreach (var row in WeekPlanRows)
                 {
@@ -166,13 +168,21 @@ namespace HyunDaiINJ.ViewModels
                     {
                         if (row.QuanDict.TryGetValue(part.PartId, out int qtyWeekly) && qtyWeekly != 0)
                         {
-                            bool success = await _msdApi.SendWeekPlanAsync(part.Name, row.Week, qtyWeekly);
-                            if (success) sendCount++;
+                            // Send only if qtyWeekly != 0
+                            bool success = await _msdApi.SendWeekPlanAsync(
+                                part.Name,
+                                row.Week,
+                                qtyWeekly
+                            );
+                            if (success)
+                                sendCount++;
                         }
                     }
                 }
 
                 Console.WriteLine($"[WeekPlanVM] Sent {sendCount} items to server (non-zero only).");
+
+                // Fire event
                 _eventAggregator.GetEvent<DataInsertedEvent>().Publish();
             }
             catch (Exception ex)
@@ -181,47 +191,24 @@ namespace HyunDaiINJ.ViewModels
             }
         }
 
+
         public void RecalcSum()
         {
             var newSum = new Dictionary<string, int>();
 
-            // 합계 행 제외 후 계산
             foreach (var part in PartInfoList)
             {
                 int total = 0;
-                foreach (var row in WeekPlanRows.Where(r => !r.IsSumRow))
+                foreach (var row in WeekPlanRows)
                 {
                     if (row.QuanDict.TryGetValue(part.PartId, out int val))
+                    {
                         total += val;
+                    }
                 }
                 newSum[part.Name] = total;
             }
             SumDict = newSum;
-
-            foreach (var row in WeekPlanRows)
-                row.OnRowSumChanged();
-
-            // 기존 합계 행 제거
-            var oldSumRow = WeekPlanRows.FirstOrDefault(r => r.IsSumRow);
-            if (oldSumRow != null)
-            {
-                WeekPlanRows.Remove(oldSumRow);
-            }
-
-            // 새 합계 행: year=0,week=0, isSumRow=true
-            var sumRow = new WeekRow(0, 0, true);
-            sumRow.QuanDict = new Dictionary<int, int>();
-
-            // part별 합계 넣기
-            foreach (var part in PartInfoList)
-            {
-                if (newSum.TryGetValue(part.Name, out int totalVal))
-                    sumRow.QuanDict[part.PartId] = totalVal;
-                else
-                    sumRow.QuanDict[part.PartId] = 0;
-            }
-
-            WeekPlanRows.Add(sumRow);
         }
     }
 }

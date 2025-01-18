@@ -15,7 +15,7 @@
         <!-- (추가) 브러시나 색상 리소스 정리해두면 유지보수 편해집니다 -->
         <SolidColorBrush x:Key="TabDefaultBackground" Color="#404040"/>
         <SolidColorBrush x:Key="TabSelectedBackground" Color="#1F1F1F"/>
-        <SolidColorBrush x:Key="TabDefaultForeground" Color="Black"/>
+        <SolidColorBrush x:Key="TabDefaultForeground" Color="#1F1F1F"/>
         <SolidColorBrush x:Key="TabSelectedForeground" Color="#222222"/>
     </UserControl.Resources>
 
