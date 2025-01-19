@@ -7,11 +7,11 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              >
-    <Grid>
+    <Grid Background="#1F1F1F">
         <StackPanel Margin="4" Orientation="Vertical">
             <!-- 모니터링 그룹 -->
-            <Expander Header="모니터링" IsExpanded="False" Margin="4" >
-                <StackPanel Orientation="Vertical" Background="#F0F0F0">
+            <Expander Header="모니터링" IsExpanded="False" Margin="4" Background="#404040" Foreground="#E0E0E0">
+                <StackPanel Orientation="Vertical" Background="#404040">
                     <RadioButton Content="생산 모니터링"
                                  Margin="4"
                                  Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
@@ -32,8 +32,8 @@
             </Expander>
 
             <!-- 생산관리 그룹 -->
-            <Expander Header="일정지시" IsExpanded="False" Margin="4">
-                <StackPanel Orientation="Vertical" Background="#F0F0F0">
+            <Expander Header="일정지시" IsExpanded="False" Margin="4"  Background="#404040" Foreground="#E0E0E0">
+                <StackPanel Orientation="Vertical" Background="#404040">
                     <RadioButton Content="생산계획/지시"
                                  Margin="4"
                                  Command="{Binding DataContext.AddTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"

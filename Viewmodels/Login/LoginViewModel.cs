@@ -21,7 +21,7 @@ namespace HyunDaiINJ.ViewModels.Login
             _api = new MSDApi();
             LoginCommand = new RelayCommand(async () => await OnLoginAsync());
             // (1) 기본값 설정
-            Username = "string";
+            Username = "admin1";
             Password = "string";
         }
 
@@ -71,11 +71,12 @@ namespace HyunDaiINJ.ViewModels.Login
                 // role 추출
                 var role = JwtParser.ExtractRoleFromJwt(MSDApi.JwtToken);
 
-                if (role == "systemAdmin" || Regex.IsMatch(role, @"^admin\d*$", RegexOptions.IgnoreCase))
+                if (role == "sytemAdmin" || Regex.IsMatch(role, @"^admin.*$", RegexOptions.IgnoreCase))
                 {
                     // LoginSuccess 이벤트 발생
                     LoginSuccess?.Invoke();
                 }
+
                 else
                 {
                     // 권한이 맞지 않을 때
