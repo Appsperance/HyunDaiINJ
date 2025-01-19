@@ -13,7 +13,7 @@
         <service:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <service:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
     </UserControl.Resources>
-    
+
     <Grid Background="#1F1F1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="35" />
@@ -209,7 +209,7 @@
                            Width="195"
                            HorizontalAlignment="Center"/>
             </StackPanel>
-            
+
             <!-- 합계 항목들 -->
             <ItemsControl Grid.Column="1"
                           ItemsSource="{Binding SumDict}"

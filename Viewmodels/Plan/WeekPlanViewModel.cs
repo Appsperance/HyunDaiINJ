@@ -11,7 +11,8 @@ using Prism.Events;
 using Prism.Commands;
 using HyunDaiINJ.DATA.DAO;     // InjectionPlanDAO
 using HyunDaiINJ.Models.Plan;
-using HyunDaiINJ.Services;    // PartInfo, WeekRow, MSDApi
+using HyunDaiINJ.Services;
+using System.Windows;    // PartInfo, WeekRow, MSDApi
 
 namespace HyunDaiINJ.ViewModels
 {
@@ -112,7 +113,7 @@ namespace HyunDaiINJ.ViewModels
             // 최대 6개까지만 허용
             if (PartInfoList.Count >= 6)
             {
-                Console.WriteLine("[WeekPlanVM] PartInfoList의 최대 개수(6개)를 초과할 수 없습니다.");
+                MessageBox.Show("열추가는 최대 개수(6개)를 초과할 수 없습니다.");
                 return;
             }
 
