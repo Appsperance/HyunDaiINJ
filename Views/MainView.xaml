@@ -25,8 +25,49 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- 예시: 헤더 UserControl (생략 가능) -->
-        <con:Header Grid.Row="0" />
+
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+
+                <ColumnDefinition Width="*"/>
+
+            </Grid.ColumnDefinitions>
+            <!-- 예시: 헤더 UserControl (생략 가능) -->
+            <con:Header Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"/>
+            <Grid Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0">
+                <!-- 현재 시간 -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="현재시간 : " 
+                                   FontSize="20" 
+                                   Grid.Column="0"
+                                   FontWeight="Bold" 
+                                   Foreground="White" 
+                                   Margin="0,0,0,0"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+
+                        <TextBlock x:Name="TxtCurrentTime"
+                                   Grid.Column="1"
+                                   FontWeight="Bold" 
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   FontSize="20"/>
+                    </Grid>
+            </Grid>
+        </Grid>
+
+
+
+
 
         <!-- 메인 콘텐츠 -->
         <Grid Grid.Row="1">

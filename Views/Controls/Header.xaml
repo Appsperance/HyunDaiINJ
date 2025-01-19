@@ -28,13 +28,13 @@
         <materialDesign:ColorZone Padding="16" Background="#002E6B" Mode="SecondaryDark" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <DockPanel>
                 <!-- PopupBox -->
-                <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" >
+                <!--<materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" >
                     <ListBox>
                         <ListBoxItem Content="Hello World" />
                         <ListBoxItem Content="Nice Popup" />
                         <ListBoxItem Content="Goodbye" />
                     </ListBox>
-                </materialDesign:PopupBox>
+                </materialDesign:PopupBox>-->
 
                 <!-- 헤더 콘텐츠 -->
                 <StackPanel Orientation="Horizontal">
