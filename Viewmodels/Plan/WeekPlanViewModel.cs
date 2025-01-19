@@ -36,6 +36,13 @@ namespace HyunDaiINJ.ViewModels
             set => SetProperty(ref _sumDict, value);
         }
 
+        private bool _isDataGridVisible = false;
+        public bool IsDataGridVisible
+        {
+            get => _isDataGridVisible;
+            set => SetProperty(ref _isDataGridVisible, value);
+        }
+
         public ICommand PlusLineCommand { get; }
         public ICommand MinusLineCommand { get; }
         public ICommand SaveAllInsertCommand { get; }
@@ -102,6 +109,13 @@ namespace HyunDaiINJ.ViewModels
 
         private void OnExecutePlusLine()
         {
+            // 최대 6개까지만 허용
+            if (PartInfoList.Count >= 6)
+            {
+                Console.WriteLine("[WeekPlanVM] PartInfoList의 최대 개수(6개)를 초과할 수 없습니다.");
+                return;
+            }
+
             // 1) 숫자 ID (Dictionary 키)
             int newPartId = PartInfoList.Count + 1;
 
@@ -114,6 +128,8 @@ namespace HyunDaiINJ.ViewModels
                 Name = partName    // string
             };
             PartInfoList.Add(newPartInfo);
+            // 열 추가 시 데이터그리드 표시
+            IsDataGridVisible = true;
             RecalcSum();
         }
 
@@ -122,6 +138,11 @@ namespace HyunDaiINJ.ViewModels
             if (PartInfoList.Count > 0)
             {
                 PartInfoList.RemoveAt(PartInfoList.Count - 1);
+                // 데이터가 모두 제거되면 데이터그리드 숨기기
+                if (PartInfoList.Count == 0)
+                {
+                    IsDataGridVisible = false;
+                }
                 RecalcSum();
             }
         }

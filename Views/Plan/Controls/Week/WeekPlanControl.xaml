@@ -4,9 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+             xmlns:service="clr-namespace:HyunDaiINJ.Services"
              mc:Ignorable="d" 
              d:DesignHeight="750" d:DesignWidth="1350">
 
+    <UserControl.Resources>
+        <!-- 여기서 컨버터를 등록 -->
+        <service:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <service:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    
     <Grid Background="#1F1F1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="35" />
@@ -46,10 +53,9 @@
         <!-- 상단 "제품명" 레이블 -->
         <StackPanel Orientation="Horizontal"
                     Grid.Row="1"
-                    Margin="5"
                     VerticalAlignment="Center"
-                    HorizontalAlignment="Center">
-            <TextBlock Text="제품명"
+                    Margin="33,0,0,0">
+            <TextBlock Text="제 품 명"
                        FontSize="20"
                        FontWeight="Bold"
                        Foreground="#95C0FF"
@@ -137,12 +143,23 @@
                 FontSize="20"
                 Command="{Binding SaveAllInsertCommand}" />
 
-        <!-- DataGrid (Row=4,5) -->
+        <TextBlock Text="열추가해야 데이터그리드가 나옵니다"
+                   Grid.Column="2"
+                   Grid.ColumnSpan="2"
+                   Grid.Row="3"
+                   Foreground="#95C0FF"
+                   FontWeight="Bold"
+                   FontSize="20"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Visibility="{Binding IsDataGridVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+
         <!-- DataGrid -->
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Grid.Row="4"
                       Grid.ColumnSpan="7"
-                      Grid.RowSpan="2">
+                      Grid.RowSpan="2"
+                      Visibility="{Binding IsDataGridVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <DataGrid x:Name="WeekDataGrid"
                       ItemsSource="{Binding WeekPlanRows}"
                       AutoGenerateColumns="False"
