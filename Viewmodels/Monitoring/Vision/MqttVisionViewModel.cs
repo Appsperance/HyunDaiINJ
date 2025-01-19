@@ -11,7 +11,7 @@ using HyunDaiINJ.DATA.DTO;
 using Newtonsoft.Json;
 using WpfApp1;
 
-namespace HyunDaiINJ.ViewModels.MQTT
+namespace HyunDaiINJ.ViewModels.Monitoring.vision
 {
     public class MqttVisionViewModel : INotifyPropertyChanged
     {

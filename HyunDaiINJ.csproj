@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Models\Monitoring\Process\" />
+    <Folder Include="ViewModels\MQTT\" />
   </ItemGroup>
 
 </Project>

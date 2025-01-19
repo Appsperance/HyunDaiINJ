@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using HyunDaiINJ.DATA.DTO;
 using HyunDaiINJ.ViewModels.Monitoring.Process;
-using HyunDaiINJ.ViewModels.MQTT;
 
 namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 {

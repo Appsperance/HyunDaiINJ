@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using HyunDaiINJ.ViewModels.MQTT;
+using HyunDaiINJ.ViewModels.Monitoring.vision;
 using HyunDaiINJ.Views.Monitoring.Controls.Vision;
 
 namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
