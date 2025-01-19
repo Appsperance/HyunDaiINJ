@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using HyunDaiINJ.DATA.DTO;
 using Newtonsoft.Json;
@@ -16,6 +15,9 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
     public class MqttVisionViewModel : INotifyPropertyChanged
     {
         private readonly MQTTModel _mqttModel;
+
+        // 이 ViewModel이 구독할 토픽 (예: "Vision/ng/1")
+        private readonly string _visionTopic;
 
         // MQTT 연결 상태
         public bool MqttConnected => _mqttModel.MqttConnected;
@@ -32,7 +34,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        // 현재 표시 중인 이미지
+        // 현재 표시 중인 이미지(NgImg에서 변환한 결과)
         private BitmapImage? _currentImage;
         public BitmapImage? CurrentImage
         {
@@ -44,7 +46,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        // 단계별 이미지
+        // StageVal에 따라 표시하는 시퀀스 이미지
         private BitmapImage? _stageValImage;
         public BitmapImage? StageValImage
         {
@@ -56,7 +58,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        // 깜빡임 상태
+        // 상태 표시용 (버튼 깜빡임 등)
         private bool _isInputBlinking;
         public bool IsInputBlinking
         {
@@ -90,7 +92,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        // 품질 이미지를 저장
+        // 품질 이미지들 (히스토리로 쌓는 용도라면)
         private ObservableCollection<BitmapImage> _qualityImages = new();
         public ObservableCollection<BitmapImage> QualityImages
         {
@@ -102,31 +104,29 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
-        public MqttVisionViewModel(MQTTModel mqttModel)
+        public MqttVisionViewModel(MQTTModel mqttModel, string visionTopic)
         {
             _mqttModel = mqttModel ?? throw new ArgumentNullException(nameof(mqttModel));
+            _visionTopic = visionTopic;
 
-            // 필드 초기화
             _currentMessage = new MqttVisionDTO();
             _currentImage = new BitmapImage();
 
-            // MQTT 연결 및 구독
-            ConnectAndSubscribeAsync().ConfigureAwait(false);
-
-            // 메시지 수신 이벤트 구독
+            // 메시지 수신
             _mqttModel.VisionMessageReceived += OnVisionMessageReceived;
+
+            // 연결 + 이 토픽 구독
+            _ = ConnectAndSubscribeAsync();
         }
 
         private async Task ConnectAndSubscribeAsync()
         {
             try
             {
-                await _mqttModel.MqttConnect(); // MQTT 연결
-
-                if (MqttConnected)
+                await _mqttModel.MqttConnect();
+                if (_mqttModel.MqttConnected)
                 {
-                    Console.WriteLine("MQTT 연결 성공");
-                    await _mqttModel.SubscribeMQTT("Vision/ng/#"); // Vision 관련 토픽 구독
+                    await _mqttModel.SubscribeMQTT(_visionTopic);
                 }
             }
             catch (Exception ex)
@@ -135,13 +135,19 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
+        // 메시지 들어오면 해당 토픽이면 처리
         private async void OnVisionMessageReceived(string topic, MqttVisionDTO message)
         {
+            if (!topic.Equals(_visionTopic, StringComparison.OrdinalIgnoreCase))
+                return; // 다른 토픽 무시
+
+            // UI 스레드에서 처리
             App.Current.Dispatcher.Invoke(() =>
             {
                 CurrentMessage = message;
                 UpdateBlinkingStates(message.StageVal);
 
+                // NgImg -> BitmapImage
                 if (message.NgImg != null && message.NgImg.Length > 0)
                 {
                     var image = ConvertImage(message.NgImg);
@@ -150,6 +156,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                 }
             });
 
+            // StageVal 시퀀스 이미지
             await HandleStageValImagesAsync(message.StageVal);
         }
 
@@ -180,6 +187,11 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             if (imagePaths.Length > 0)
             {
                 await DisplayImageSequenceAsync(imagePaths);
+            }
+            else
+            {
+                // StageVal이 3자리 중 '가운데 1'이라면 ...
+                // 등등 확장 가능
             }
         }
 
@@ -244,10 +256,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

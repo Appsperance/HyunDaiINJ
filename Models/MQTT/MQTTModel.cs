@@ -14,22 +14,24 @@ public class MQTTModel
     // Vision 관련 메시지 이벤트
     public event Action<string, MqttVisionDTO>? VisionMessageReceived;
 
-    // PLC 관련 메시지 이벤트
+    // PLC 관련 메시지 이벤트 (필요하면 사용)
     public event Action<string, MqttProcessDTO>? ProcessMessageReceived;
 
     public bool MqttConnected => mqttClient?.IsConnected ?? false;
 
+    // MQTT 연결
     public async Task MqttConnect()
     {
         if (mqttClient != null && mqttClient.IsConnected)
         {
-            // 이미 연결된 상태면 굳이 다시 연결하지 않아도 됨
+            // 이미 연결된 상태면 재연결 생략
             return;
         }
 
         var factory = new MqttFactory();
         mqttClient = factory.CreateMqttClient();
 
+        // 메시지 수신 핸들러
         mqttClient.ApplicationMessageReceivedAsync += MqttRecivedMessage;
 
         var options = new MqttClientOptionsBuilder()
@@ -73,15 +75,18 @@ public class MQTTModel
 
         try
         {
+            // Vision/ng/... ?
             if (topic.StartsWith("Vision/ng"))
             {
                 var visionMessage = JsonConvert.DeserializeObject<MqttVisionDTO>(payload);
                 if (visionMessage != null)
                 {
+                    // VisionMessageReceived 이벤트로 알림
                     VisionMessageReceived?.Invoke(topic, visionMessage);
                     Console.WriteLine($"[MqttService] Vision 메시지 처리 완료: {JsonConvert.SerializeObject(visionMessage)}");
                 }
             }
+            // Process/PLC/... ?
             else if (topic.StartsWith("Process/PLC"))
             {
                 var processMessage = JsonConvert.DeserializeObject<MqttProcessDTO>(payload);

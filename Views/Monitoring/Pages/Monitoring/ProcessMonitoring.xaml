@@ -1,18 +1,21 @@
 ﻿<Page x:Class="HyunDaiINJ.Views.Monitoring.Pages.Monitoring.ProcessMonitoring"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:process="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Process"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
       d:DesignHeight="750" d:DesignWidth="1350"
       Title="ProcessMonitoring">
 
-    <Grid Background="#1F1F1F ">
-        <Grid Background="#1F1F1F " Margin="10">
+    <Grid Background="#1F1F1F">
+        <Grid Background="#1F1F1F" Margin="10">
+
+            <!-- ========================================= -->
+            <!-- Row/Column 정의 (생략 없이) -->
+            <!-- ========================================= -->
             <Grid.RowDefinitions>
-                <!-- Header Rows -->
                 <RowDefinition Height="120" />
                 <RowDefinition Height="35" />
                 <RowDefinition Height="*" />
@@ -29,12 +32,14 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
-
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- 예: 두 번째 그리드에 바인딩 -->
+
+            <!-- ======================
+                 공정1 현재 생산 수량
+            ====================== -->
             <Border Grid.Row="0" Grid.Column="0" Margin="10"
                     BorderBrush="#404040" BorderThickness="1" CornerRadius="5">
                 <Grid>
@@ -42,15 +47,17 @@
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="현재 총 생산 수량"
+
+                    <TextBlock Text="공정1 현재 생산 수량"
                                FontSize="20" 
                                FontWeight="Bold" 
                                Foreground="#95C0FF" 
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
-                    <!-- 예시) D2를 표시해보자 -->
+
+                    <!-- Producer1의 DataContext.D2 바인딩 -->
                     <TextBlock Grid.Row="1"
-                               Text="{Binding D2}"  
+                               Text="{Binding ElementName=Producer1, Path=DataContext.D2}"
                                FontWeight="Bold" 
                                Foreground="#95C0FF"
                                VerticalAlignment="Center"
@@ -60,9 +67,10 @@
             </Border>
 
 
-            <!-- "공정 1 상태" Border 예시 -->
-            <Border Grid.Row="0" Grid.Column="1" 
-                    Margin="10" 
+            <!-- ======================
+                 공정2 현재 생산 수량
+            ====================== -->
+            <Border Grid.Row="0" Grid.Column="1" Margin="10"
                     BorderBrush="#404040" BorderThickness="1" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -70,34 +78,91 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- 상단 타이틀 -->
+                    <TextBlock Text="공정2 현재 생산 수량"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"
+                               Margin="0,5,0,0"
+                               HorizontalAlignment="Center" />
+
+                    <!-- Producer2의 DataContext.D2 -->
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding ElementName=Producer2, Path=DataContext.D2}"
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontSize="28"/>
+                </Grid>
+            </Border>
+
+
+            <!-- ======================
+                 공정3 현재 생산 수량
+            ====================== -->
+            <Border Grid.Row="0" Grid.Column="2" Margin="10"
+                    BorderBrush="#404040" BorderThickness="1" CornerRadius="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="공정3 현재 생산 수량"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"
+                               Margin="0,5,0,0"
+                               HorizontalAlignment="Center" />
+
+                    <!-- Producer3의 DataContext.D2 -->
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding ElementName=Producer3, Path=DataContext.D2}"
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontSize="28"/>
+                </Grid>
+            </Border>
+
+
+            <!-- =================================
+                 공정 1 상태
+            ================================= -->
+            <Border Grid.Row="0" Grid.Column="3" Margin="10"
+                    BorderBrush="#404040" BorderThickness="1" CornerRadius="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
                     <TextBlock Text="공정 1 상태"
-                               FontSize="20" 
-                               FontWeight="Bold" 
-                               Foreground="#95C0FF" 
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
 
-                    <!-- 상태 표시 TextBlock -->
                     <TextBlock Grid.Row="1"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontSize="28">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <!-- 기본값(둘 다 0)일 때 대기 / 회색 -->
                                 <Setter Property="Text" Value="대기" />
                                 <Setter Property="Foreground" Value="Gray" />
-
                                 <Style.Triggers>
-                                    <!-- X20이 "1"이면 '운전'(초록색) -->
-                                    <DataTrigger Binding="{Binding X20}" Value="1">
+                                    <!-- 
+                                        여기서도 Producer1의 X20, X21를 ElementName 바인딩
+                                    -->
+                                    <DataTrigger Binding="{Binding ElementName=Producer1, Path=DataContext.X20}" Value="1">
                                         <Setter Property="Text" Value="운전" />
                                         <Setter Property="Foreground" Value="Green" />
                                     </DataTrigger>
 
-                                    <!-- X21이 "1"이면 '정지'(빨간색) -->
-                                    <DataTrigger Binding="{Binding X21}" Value="1">
+                                    <DataTrigger Binding="{Binding ElementName=Producer1, Path=DataContext.X21}" Value="1">
                                         <Setter Property="Text" Value="정지" />
                                         <Setter Property="Foreground" Value="Red" />
                                     </DataTrigger>
@@ -109,42 +174,39 @@
             </Border>
 
 
-            <!-- "공정 1 상태" Border 예시 -->
-            <Border Grid.Row="0" Grid.Column="2" Margin="10" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+            <!-- =================================
+                 공정 2 상태
+            ================================= -->
+            <Border Grid.Row="0" Grid.Column="4" Margin="10"
+                    BorderBrush="#444" BorderThickness="1" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- 상단 타이틀 -->
                     <TextBlock Text="공정 2 상태"
-                               FontSize="20" 
-                               FontWeight="Bold" 
-                               Foreground="#95C0FF" 
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
 
-                    <!-- 상태 표시 TextBlock -->
                     <TextBlock Grid.Row="1"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontSize="28">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <!-- 기본값(둘 다 0)일 때 대기 / 회색 -->
                                 <Setter Property="Text" Value="대기" />
                                 <Setter Property="Foreground" Value="Gray" />
-
                                 <Style.Triggers>
-                                    <!-- X20이 "1"이면 '운전'(초록색) -->
-                                    <DataTrigger Binding="{Binding X20}" Value="1">
+                                    <!-- Producer2's X20, X21 -->
+                                    <DataTrigger Binding="{Binding ElementName=Producer2, Path=DataContext.X20}" Value="1">
                                         <Setter Property="Text" Value="운전" />
                                         <Setter Property="Foreground" Value="Green" />
                                     </DataTrigger>
-
-                                    <!-- X21이 "1"이면 '정지'(빨간색) -->
-                                    <DataTrigger Binding="{Binding X21}" Value="1">
+                                    <DataTrigger Binding="{Binding ElementName=Producer2, Path=DataContext.X21}" Value="1">
                                         <Setter Property="Text" Value="정지" />
                                         <Setter Property="Foreground" Value="Red" />
                                     </DataTrigger>
@@ -156,42 +218,39 @@
             </Border>
 
 
-            <!-- "공정 1 상태" Border 예시 -->
-            <Border Grid.Row="0" Grid.Column="3" Margin="10" BorderBrush="#444" BorderThickness="1" CornerRadius="5">
+            <!-- =================================
+                 공정 3 상태
+            ================================= -->
+            <Border Grid.Row="0" Grid.Column="5" Margin="10"
+                    BorderBrush="#444" BorderThickness="1" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- 상단 타이틀 -->
                     <TextBlock Text="공정 3 상태"
-                               FontSize="20" 
-                               FontWeight="Bold" 
-                               Foreground="#95C0FF" 
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="#95C0FF"
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center" />
 
-                    <!-- 상태 표시 TextBlock -->
                     <TextBlock Grid.Row="1"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontSize="28">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <!-- 기본값(둘 다 0)일 때 대기 / 회색 -->
                                 <Setter Property="Text" Value="대기" />
                                 <Setter Property="Foreground" Value="Gray" />
-
                                 <Style.Triggers>
-                                    <!-- X20이 "1"이면 '운전'(초록색) -->
-                                    <DataTrigger Binding="{Binding X20}" Value="1">
+                                    <!-- Producer3's X20, X21 -->
+                                    <DataTrigger Binding="{Binding ElementName=Producer3, Path=DataContext.X20}" Value="1">
                                         <Setter Property="Text" Value="운전" />
                                         <Setter Property="Foreground" Value="Green" />
                                     </DataTrigger>
-
-                                    <!-- X21이 "1"이면 '정지'(빨간색) -->
-                                    <DataTrigger Binding="{Binding X21}" Value="1">
+                                    <DataTrigger Binding="{Binding ElementName=Producer3, Path=DataContext.X21}" Value="1">
                                         <Setter Property="Text" Value="정지" />
                                         <Setter Property="Foreground" Value="Red" />
                                     </DataTrigger>
@@ -202,93 +261,96 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="0">
-                <!-- 현재 시간 -->
-                <Border Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Margin="10" BorderBrush="#404040" BorderThickness="1" CornerRadius="5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="32"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="현재시간" 
-                                   FontSize="20" 
-                                   FontWeight="Bold" 
-                                   Foreground="#95C0FF" 
-                                   Margin="0,5,0,0"
-                                   HorizontalAlignment="Center" />
 
-                        <TextBlock x:Name="TxtCurrentTime"
-                                   Grid.Row="1" 
-                                   FontWeight="Bold" 
-                                   Foreground="#95C0FF"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   FontSize="25"/>
-                    </Grid>
-                </Border>
-            </Grid>
-
-            <!-- 헤더 -->
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5" Grid.ColumnSpan="3">
-                <materialDesign:PackIcon Foreground="#95C0FF " Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
+            <!-- =================================
+                 헤더 라벨들
+            ================================= -->
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="1" Margin="5"
+                        Grid.ColumnSpan="3">
+                <materialDesign:PackIcon Foreground="#95C0FF" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
                 <TextBlock Text="공정 1"
-                           FontSize="18" 
-                           FontWeight="Bold" 
+                           FontSize="18"
+                           FontWeight="Bold"
                            Foreground="#95C0FF"
                            Margin="10,0"
                            VerticalAlignment="Center"/>
             </StackPanel>
 
-            <!-- 헤더 -->
-            <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1" Margin="5" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="1" Grid.Column="3" Margin="5"
+                        Grid.ColumnSpan="3">
                 <materialDesign:PackIcon Foreground="#95C0FF" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
                 <TextBlock Text="공정 2"
-                           FontSize="18" 
-                           FontWeight="Bold" 
-                           Foreground="#95C0FF" 
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#95C0FF"
                            Margin="10,0"
                            VerticalAlignment="Center"/>
             </StackPanel>
 
-            <!-- 헤더 -->
-            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5" Margin="5" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="5" Grid.Column="0" Margin="5"
+                        Grid.ColumnSpan="3">
                 <materialDesign:PackIcon Foreground="#95C0FF" Kind="CircleOutline" Height="30" Width="40" VerticalAlignment="Center"/>
                 <TextBlock Text="공정 3"
-                           FontSize="18" 
-                           FontWeight="Bold" 
-                           Foreground="#95C0FF" 
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#95C0FF"
                            Margin="10,0"
                            VerticalAlignment="Center"/>
             </StackPanel>
 
-            <!-- 공정1 위치 -->
-            <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3">
+
+            <!-- ========================================= -->
+            <!-- 공정1 Producer (x:Name="Producer1")       -->
+            <!-- ========================================= -->
+            <Grid Grid.Column="0" Grid.Row="2"
+                  Grid.ColumnSpan="3" Grid.RowSpan="3">
                 <Grid Grid.Row="1" Margin="12,2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*"/>
                     </Grid.RowDefinitions>
+
                     <TextBlock Text="공정 1" FontSize="15" Grid.Row="0" Margin="3"/>
-                    <process:ProcessProducer Grid.Row="1"
-                                             MqttTopic="Process/PLC/1" />
+
+                    <!-- Producer1 -->
+                    <process:ProcessProducer x:Name="Producer1"
+                                             Grid.Row="1"
+                                             MqttTopic="Process/PLC"/>
                 </Grid>
             </Grid>
 
-            <!-- 공정2 위치 -->
-            <Grid Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3">
+
+            <!-- ========================================= -->
+            <!-- 공정2 Producer (x:Name="Producer2")       -->
+            <!-- ========================================= -->
+            <Grid Grid.Column="3" Grid.Row="2"
+                  Grid.ColumnSpan="3" Grid.RowSpan="3">
                 <Grid Grid.Row="1" Margin="12,2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
-                    <process:ProcessProducer Grid.Row="1"
-                                             MqttTopic="Process/PLC/2" />
+
+                    <!-- Producer2 -->
+                    <process:ProcessProducer x:Name="Producer2"
+                                             Grid.Row="1"
+                                             MqttTopic="Process/PLC/2"/>
                 </Grid>
             </Grid>
 
-            <!-- 공정3 위치 -->
-            <Grid Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" Grid.RowSpan="3">
+
+            <!-- ========================================= -->
+            <!-- 공정3 Producer (x:Name="Producer3")       -->
+            <!-- ========================================= -->
+            <Grid Grid.Column="0" Grid.Row="6"
+                  Grid.ColumnSpan="3" Grid.RowSpan="3">
                 <Grid Grid.Row="1" Margin="12,2">
-                    <process:ProcessProducer Grid.Row="1"
-                                             MqttTopic="Process/PLC/3" />
+
+                    <!-- Producer3 -->
+                    <process:ProcessProducer x:Name="Producer3"
+                                             Grid.Row="1"
+                                             MqttTopic="Process/PLC/3"/>
                 </Grid>
             </Grid>
 
