@@ -15,196 +15,184 @@ namespace HyunDaiINJ.ViewModels.MQTT
 {
     public class MqttVisionViewModel : INotifyPropertyChanged
     {
-        private readonly MQTTModel MqttModel; // Model 인스턴스 (의존성 주입)
+        private readonly MQTTModel _mqttModel;
+
         // MQTT 연결 상태
-        public bool mqttConnected => MqttModel.mqttConnected;
+        public bool MqttConnected => _mqttModel.MqttConnected;
 
         // 최신 메시지
-        private MqttVisionDTO currentMessage;
+        private MqttVisionDTO _currentMessage;
         public MqttVisionDTO CurrentMessage
         {
-            get => currentMessage;
+            get => _currentMessage;
             set
             {
-                currentMessage = value;
+                _currentMessage = value;
                 OnPropertyChanged();
             }
         }
+
         // 현재 표시 중인 이미지
-        private BitmapImage? currentImage;
+        private BitmapImage? _currentImage;
         public BitmapImage? CurrentImage
         {
-            get => currentImage;
+            get => _currentImage;
             set
             {
-                currentImage = value;
+                _currentImage = value;
                 OnPropertyChanged();
             }
         }
 
-        private BitmapImage? stageValImage;
+        // 단계별 이미지
+        private BitmapImage? _stageValImage;
         public BitmapImage? StageValImage
         {
-            get => stageValImage;
+            get => _stageValImage;
             set
             {
-                stageValImage = value;
+                _stageValImage = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool isInputBlinking;
+        // 깜빡임 상태
+        private bool _isInputBlinking;
         public bool IsInputBlinking
         {
-            get => isInputBlinking;
+            get => _isInputBlinking;
             set
             {
-                isInputBlinking = value;
+                _isInputBlinking = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool isVisionBlinking;
+        private bool _isVisionBlinking;
         public bool IsVisionBlinking
         {
-            get => isVisionBlinking;
+            get => _isVisionBlinking;
             set
             {
-                isVisionBlinking = value;
+                _isVisionBlinking = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool isCompleteBlinking;
+        private bool _isCompleteBlinking;
         public bool IsCompleteBlinking
         {
-            get => isCompleteBlinking;
+            get => _isCompleteBlinking;
             set
             {
-                isCompleteBlinking = value;
+                _isCompleteBlinking = value;
                 OnPropertyChanged();
             }
         }
 
-        private ObservableCollection<BitmapImage> qualityImages = new();
+        // 품질 이미지를 저장
+        private ObservableCollection<BitmapImage> _qualityImages = new();
         public ObservableCollection<BitmapImage> QualityImages
         {
-            get => qualityImages;
+            get => _qualityImages;
             set
             {
-                qualityImages = value;
+                _qualityImages = value;
                 OnPropertyChanged();
             }
-        }
-
-        // 기본 생성자
-        public MqttVisionViewModel() : this(new MQTTModel())
-        {
         }
 
         public MqttVisionViewModel(MQTTModel mqttModel)
         {
-            MqttModel = mqttModel ?? throw new ArgumentNullException(nameof(mqttModel));
+            _mqttModel = mqttModel ?? throw new ArgumentNullException(nameof(mqttModel));
 
             // 필드 초기화
-            currentMessage = new MqttVisionDTO();
-            currentImage = new BitmapImage();
+            _currentMessage = new MqttVisionDTO();
+            _currentImage = new BitmapImage();
 
             // MQTT 연결 및 구독
             ConnectAndSubscribeAsync().ConfigureAwait(false);
 
             // 메시지 수신 이벤트 구독
-            MqttModel.VisionMessageReceived += OnVisionMessageReceived;
-            MqttModel.ProcessMessageReceived += OnProcessMessageReceived;
-
+            _mqttModel.VisionMessageReceived += OnVisionMessageReceived;
         }
 
         private async Task ConnectAndSubscribeAsync()
         {
             try
             {
-                await MqttModel.MqttConnect(); // MQTT 연결
+                await _mqttModel.MqttConnect(); // MQTT 연결
 
-                if (mqttConnected) // 연결 성공 여부 확인
+                if (MqttConnected)
                 {
-                    Console.WriteLine("MQTT 자동 연결 성공"); // 성공 메시지 출력
-                    await MqttModel.SubscribeMQTT("#"); // 토픽 구독
+                    Console.WriteLine("MQTT 연결 성공");
+                    await _mqttModel.SubscribeMQTT("Vision/ng/#"); // Vision 관련 토픽 구독
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"MQTT 자동 연결 실패: {ex.Message}");
+                Console.WriteLine($"MQTT 연결 실패: {ex.Message}");
             }
         }
 
         private async void OnVisionMessageReceived(string topic, MqttVisionDTO message)
         {
-            // UI 스레드에서 작업
             App.Current.Dispatcher.Invoke(() =>
             {
-                CurrentMessage = message; // 최신 메시지 업데이트
-                // 상태 업데이트
+                CurrentMessage = message;
                 UpdateBlinkingStates(message.StageVal);
 
-                // 이미지 데이터 처리
                 if (message.NgImg != null && message.NgImg.Length > 0)
                 {
-                    var image = ConvertImage(message.NgImg); // 이미지 변환 및 설정
+                    var image = ConvertImage(message.NgImg);
                     CurrentImage = image;
-
-                    // 품질 사진에 이미지 추가
                     QualityImages.Add(image);
                 }
             });
 
-            switch (message.StageVal)
+            await HandleStageValImagesAsync(message.StageVal);
+        }
+
+        private async Task HandleStageValImagesAsync(string stageVal)
+        {
+            string[] imagePaths = stageVal switch
             {
-                case "100":
-                    await DisplayImageSequenceAsync(new[]
-                    {
-                "Resources/1.png", "Resources/2.png", "Resources/3.png", "Resources/4.png",
-                "Resources/5.png", "Resources/6.png", "Resources/7.png", "Resources/8.png",
-                "Resources/9.png", "Resources/10.png", "Resources/11.png", "Resources/12.png",
-                "Resources/13.png", "Resources/14.png"
-            });
-                    break;
+                "100" => new[]
+                {
+                    "Resources/1.png", "Resources/2.png", "Resources/3.png", "Resources/4.png",
+                    "Resources/5.png", "Resources/6.png", "Resources/7.png", "Resources/8.png",
+                    "Resources/9.png", "Resources/10.png", "Resources/11.png", "Resources/12.png",
+                    "Resources/13.png", "Resources/14.png"
+                },
+                "010" => new[]
+                {
+                    "Resources/15.png", "Resources/16.png", "Resources/17.png", "Resources/18.png",
+                    "Resources/19.png", "Resources/20.png", "Resources/21.png", "Resources/22.png"
+                },
+                "001" => new[]
+                {
+                    "Resources/23.png", "Resources/24.png", "Resources/25.png", "Resources/26.png",
+                    "Resources/27.png", "Resources/28.png", "Resources/29.png"
+                },
+                _ => Array.Empty<string>()
+            };
 
-                case "010":
-                    await DisplayImageSequenceAsync(new[]
-                    {
-                "Resources/15.png", "Resources/16.png", "Resources/17.png", "Resources/18.png",
-                "Resources/19.png", "Resources/20.png", "Resources/21.png", "Resources/22.png"
-            });
-                    break;
-
-                case "001":
-                    await DisplayImageSequenceAsync(new[]
-                    {
-                "Resources/23.png", "Resources/24.png", "Resources/25.png", "Resources/26.png",
-                "Resources/27.png", "Resources/28.png", "Resources/29.png"
-            });
-                    break;
-
-                default:
-                    App.Current.Dispatcher.Invoke(() => StageValImage = null); // 기본 상태
-                    break;
+            if (imagePaths.Length > 0)
+            {
+                await DisplayImageSequenceAsync(imagePaths);
             }
         }
 
         private async Task DisplayImageSequenceAsync(string[] imagePaths)
         {
-            // 각 사진이 표시될 시간 (밀리초 단위로 계산)
-            int displayTimePerImage = 3000 / imagePaths.Length;
-
             foreach (var path in imagePaths)
             {
                 var image = LoadImageFromPath(path);
-
-                // UI 스레드에서 StageValImage 업데이트
-                App.Current.Dispatcher.Invoke(() => StageValImage = image);
-
-                // 각 사진의 표시 시간만큼 대기
-                await Task.Delay(displayTimePerImage);
+                if (image != null)
+                {
+                    App.Current.Dispatcher.Invoke(() => StageValImage = image);
+                    await Task.Delay(300); // 각 이미지 표시 시간
+                }
             }
         }
 
@@ -228,21 +216,18 @@ namespace HyunDaiINJ.ViewModels.MQTT
             }
         }
 
-        // 이미지 변환 (byte[] -> BitmapImage)
-        private static BitmapImage? ConvertImage(byte[] image)
+        private BitmapImage? ConvertImage(byte[] image)
         {
             try
             {
-                using (var ms = new MemoryStream(image))
-                {
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = ms;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-                    bitmapImage.Freeze();
-                    return bitmapImage;
-                }
+                using var ms = new MemoryStream(image);
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = ms;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+                return bitmapImage;
             }
             catch (Exception ex)
             {
@@ -258,17 +243,8 @@ namespace HyunDaiINJ.ViewModels.MQTT
             IsCompleteBlinking = stageVal == "001";
         }
 
-        private void OnProcessMessageReceived(string topic, MqttProcessDTO message) =>
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                Console.WriteLine($"수신된 Process 토픽: {topic}, 메시지: {message}");
-
-                // Process 데이터를 처리하는 로직 추가
-                // 예: UI 업데이트 또는 데이터 저장
-            });
-
-
         public event PropertyChangedEventHandler? PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -48,7 +48,7 @@
                             <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
                                             From="White"
                                             To="Blue"
-                                            Duration="0:0:0.5" />
+                                            Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
@@ -80,7 +80,7 @@
                             <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
                                             From="White"
                                             To="Green"
-                                            Duration="0:0:0.7" />
+                                            Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
@@ -89,7 +89,7 @@
                         <Storyboard>
                             <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
                                             To="White"
-                                            Duration="0:0:0.5" />
+                                            Duration="0:0:0.1" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.ExitActions>
@@ -144,7 +144,7 @@
                             <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
                                         From="White"
                                         To="Blue"
-                                        Duration="0:0:0.5" />
+                                        Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
@@ -176,7 +176,7 @@
                             <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
                                         From="White"
                                         To="Green"
-                                        Duration="0:0:0.7" />
+                                        Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
@@ -185,7 +185,7 @@
                         <Storyboard>
                             <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
                                         To="White"
-                                        Duration="0:0:0.5" />
+                                        Duration="0:0:0.1" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.ExitActions>

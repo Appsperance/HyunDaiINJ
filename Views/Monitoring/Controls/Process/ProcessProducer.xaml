@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Process"
+             xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Process" xmlns:process="clr-namespace:HyunDaiINJ.ViewModels.Monitoring.Process" d:DataContext="{d:DesignInstance Type=process:ProcessProcedureViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="#1F1F1F">
@@ -22,7 +22,7 @@
                     <Image Stretch="Fill"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
-                           Source="{Binding MyVM.CurrentImage}" />
+                           Source="{Binding  CurrentImage}" />
                 </Border>
                 
 

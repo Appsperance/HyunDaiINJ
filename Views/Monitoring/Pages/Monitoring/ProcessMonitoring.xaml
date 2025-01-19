@@ -271,7 +271,7 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="공정 1" FontSize="15" Grid.Row="0" Margin="3"/>
                     <!-- stageVal 나오는 곳-->
-                    <process:ProcessProducer Grid.Row="1"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
+                    <process:ProcessProducer Grid.Row="1"  />
                 </Grid>
             </Grid>
             <!--</Border>-->
@@ -284,7 +284,7 @@
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
                     <!-- stageVal 나오는 곳-->
-                    <process:ProcessProducer Grid.Row="1"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
+                    <process:ProcessProducer Grid.Row="1"  />
                 </Grid>
             </Grid>
 
@@ -293,7 +293,7 @@
                 <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="12,2">
                     <!-- stageVal 나오는 곳-->
-                    <process:ProcessProducer Grid.Row="1"  StageVal="{Binding DataContext.Y41, RelativeSource={RelativeSource AncestorType=Page}}" />
+                    <process:ProcessProducer Grid.Row="1"  />
                 </Grid>
             </Grid>
 

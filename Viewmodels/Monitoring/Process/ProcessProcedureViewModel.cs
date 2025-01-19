@@ -1,38 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using HyunDaiINJ.DATA.DTO;
 
 namespace HyunDaiINJ.ViewModels.Monitoring.Process
 {
     public class ProcessProcedureViewModel : INotifyPropertyChanged
     {
-        // 필드
+        private readonly MQTTModel _mqttModel;
         private int _sequenceToken = 0;
 
-        private string? stageVal;
-        public string? StageVal
+        public ProcessProcedureViewModel(MQTTModel mqttModel)
         {
-            get => stageVal;
-            set
-            {
-                stageVal = value;
-                OnPropertyChanged();
-                OnStageValUpdated(stageVal);
-            }
+            _mqttModel = mqttModel ?? throw new ArgumentNullException(nameof(mqttModel));
+            _mqttModel.ProcessMessageReceived += OnProcessMessageReceived;
         }
 
-        private BitmapImage? currentImage;
-        public BitmapImage? CurrentImage
+        // PLC 데이터 속성
+        private string? _x20;
+        public string? X20
         {
-            get => currentImage;
+            get => _x20;
+            set => SetProperty(ref _x20, value);
+        }
+
+        private string? _x21;
+        public string? X21
+        {
+            get => _x21;
+            set => SetProperty(ref _x21, value);
+        }
+
+        private string? _y40;
+        public string? Y40
+        {
+            get => _y40;
+            set => SetProperty(ref _y40, value);
+        }
+
+        private string? _d1;
+        public string? D1
+        {
+            get => _d1;
+            set => SetProperty(ref _d1, value);
+        }
+
+        private string? _d2;
+        public string? D2
+        {
+            get => _d2;
+            set => SetProperty(ref _d2, value);
+        }
+
+        private string? _stageVal;
+        public string? StageVal
+        {
+            get => _stageVal;
             set
             {
-                currentImage = value;
-                OnPropertyChanged();
+                if (SetProperty(ref _stageVal, value))
+                {
+                    OnStageValUpdated(_stageVal);
+                }
             }
         }
 
@@ -40,50 +74,53 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Process
         public bool IsInputType
         {
             get => _isInputType;
-            set
-            {
-                if (_isInputType != value)
-                {
-                    _isInputType = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isInputType, value);
         }
 
         private bool _heatingType;
         public bool HeatingType
         {
             get => _heatingType;
-            set
-            {
-                if (_heatingType != value)
-                {
-                    _heatingType = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _heatingType, value);
         }
 
         private bool _takeOutStyle;
         public bool TakeOutStyle
         {
             get => _takeOutStyle;
-            set
-            {
-                if (_takeOutStyle != value)
-                {
-                    _takeOutStyle = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _takeOutStyle, value);
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string? name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        private BitmapImage? _currentImage;
+        public BitmapImage? CurrentImage
+        {
+            get => _currentImage;
+            set => SetProperty(ref _currentImage, value);
+        }
 
+
+        // MQTT 메시지 수신 처리
+        private void OnProcessMessageReceived(string topic, MqttProcessDTO message)
+        {
+            X20 = message.X20;
+            X21 = message.X21;
+            Y40 = message.Y40;
+            D1 = message.D1;
+            D2 = message.D2;
+
+            // StageVal 업데이트
+            if (message.Y41 == "1") StageVal = "Y41";
+            else if (message.Y42 == "1") StageVal = "Y42";
+            else if (message.Y43 == "1") StageVal = "Y43";
+            else StageVal = null;
+
+            Console.WriteLine($"[ProcessProcedureViewModel] 데이터 업데이트 - X20: {X20}, Y40: {Y40}, StageVal: {StageVal}");
+        }
+
+        // StageVal 변경 시 이미지와 상태 업데이트
         private async void OnStageValUpdated(string? newVal)
         {
+            Console.WriteLine($"[ProcessProcedureViewModel] OnStageValUpdated 호출됨 - newVal: {newVal}");
             _sequenceToken++;
             int localToken = _sequenceToken;
 
@@ -97,32 +134,31 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Process
                     TakeOutStyle = false;
                     await DisplayImageSequenceAsync(new[]
                     {
-                        "Resources/1.png","Resources/2.png","Resources/3.png","Resources/4.png",
-                        "Resources/5.png","Resources/6.png","Resources/7.png","Resources/8.png",
-                        "Resources/9.png","Resources/10.png","Resources/11.png","Resources/12.png",
-                        "Resources/13.png","Resources/14.png"
-                    },localToken);
+                        "Resources/1.png", "Resources/2.png", "Resources/3.png", "Resources/4.png",
+                        "Resources/5.png", "Resources/6.png", "Resources/7.png", "Resources/8.png"
+                    }, localToken);
                     break;
+
                 case "Y42":
                     IsInputType = false;
                     HeatingType = true;
                     TakeOutStyle = false;
                     await DisplayImageSequenceAsync(new[]
                     {
-                        "Resources/15.png","Resources/16.png","Resources/17.png","Resources/18.png",
-                        "Resources/19.png","Resources/20.png","Resources/21.png","Resources/22.png"
+                        "Resources/15.png", "Resources/16.png", "Resources/17.png", "Resources/18.png"
                     }, localToken);
                     break;
+
                 case "Y43":
                     IsInputType = false;
                     HeatingType = false;
                     TakeOutStyle = true;
                     await DisplayImageSequenceAsync(new[]
                     {
-                        "Resources/23.png","Resources/24.png","Resources/25.png","Resources/26.png",
-                        "Resources/27.png","Resources/28.png","Resources/29.png"
+                        "Resources/23.png", "Resources/24.png", "Resources/25.png", "Resources/26.png"
                     }, localToken);
                     break;
+
                 default:
                     CurrentImage = null;
                     IsInputType = false;
@@ -135,32 +171,50 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Process
         private async Task DisplayImageSequenceAsync(IEnumerable<string> imagePaths, int token)
         {
             foreach (var path in imagePaths)
-                {// ★ 토큰 체크
-                 //   현재 OnStageValUpdated(...)에서 _sequenceToken이 또 바뀌면
-                 //   여기서 token != _sequenceToken => 이전 시퀀스 중단
-                if (token != _sequenceToken)
-                {
-                    // 시퀀스 도중에 새 StageVal이 들어옴 => 중단
-                    return;
-                }
+            {
+                if (token != _sequenceToken) return;
+
                 try
                 {
-                    // ★ 수정안
                     var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                    var fullPath = Path.Combine(baseDir, path); // path = "Resources/1.png"
-                    System.Diagnostics.Debug.WriteLine(fullPath);
+                    var fullPath = Path.Combine(baseDir, path);
 
-                    var bitmap = new BitmapImage(new Uri(fullPath, UriKind.Absolute));
-                    
+                    Console.WriteLine($"[DisplayImageSequenceAsync] 이미지 경로: {fullPath}, 파일 존재 여부: {File.Exists(fullPath)}");
+
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+                    bitmap.Freeze();
+
                     CurrentImage = bitmap;
-                    Console.WriteLine(CurrentImage);
+
+                    Debug.WriteLine($"[DisplayImageSequenceAsync] 이미지 로드 성공: {fullPath}");
+                    await Task.Delay(500);
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[ProcessProcedureViewModel] 로드 실패: {path}, {ex.Message}");
+                    Console.WriteLine($"[DisplayImageSequenceAsync] 이미지 로드 실패: {path}, {ex.Message}");
                 }
-                await Task.Delay(500);
             }
+        }
+
+
+        // INotifyPropertyChanged 구현
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

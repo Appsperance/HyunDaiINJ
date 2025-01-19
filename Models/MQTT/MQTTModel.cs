@@ -1,30 +1,29 @@
-﻿using MQTTnet.Client;
+﻿using HyunDaiINJ.DATA.DTO;
+using MQTTnet.Client;
 using MQTTnet;
-using Newtonsoft.Json;
-using System;
-using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using MQTTnet.Server;
-using System.Diagnostics;
+using System;
+using Newtonsoft.Json;
+using System.Text;
 using System.Linq;
-using HyunDaiINJ.DATA.DTO;
 
 public class MQTTModel
 {
     private IMqttClient? mqttClient;
+
+    // Vision 관련 메시지 이벤트
     public event Action<string, MqttVisionDTO>? VisionMessageReceived;
+
+    // PLC 관련 메시지 이벤트
     public event Action<string, MqttProcessDTO>? ProcessMessageReceived;
 
+    public bool MqttConnected => mqttClient?.IsConnected ?? false;
 
-
-    public bool mqttConnected => mqttClient?.IsConnected ?? false;
     public async Task MqttConnect()
     {
         var factory = new MqttFactory();
         mqttClient = factory.CreateMqttClient();
 
-        // 메시지 수신 이벤트 핸들러 등록
         mqttClient.ApplicationMessageReceivedAsync += MqttRecivedMessage;
 
         var options = new MqttClientOptionsBuilder()
@@ -36,17 +35,9 @@ public class MQTTModel
         try
         {
             await mqttClient.ConnectAsync(options);
-
-            // 연결 상태 확인
-            if (mqttClient.IsConnected)
-            {
-                // 연결 성공 상태만 반환
-                Console.WriteLine("[MqttService] MQTT 연결이 활성화되었습니다.");
-            }
-            else
-            {
-                Console.WriteLine("[MqttService] MQTT 연결이 활성화되지 않았습니다.");
-            }
+            Console.WriteLine(mqttClient.IsConnected
+                ? "[MqttService] MQTT 연결 성공"
+                : "[MqttService] MQTT 연결 실패");
         }
         catch (Exception ex)
         {
@@ -54,14 +45,17 @@ public class MQTTModel
         }
     }
 
-    public async Task SubscribeMQTT(string topic)
+    public async Task SubscribeToTopics()
     {
         if (mqttClient?.IsConnected == true)
         {
-            await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
-                .WithTopic(topic)
-                .Build());
-            Console.WriteLine($"[MqttService] 토픽 구독 성공: {topic}");
+            // Vision 관련 토픽 구독
+            await SubscribeMQTT("Vision/ng/#");
+
+            // PLC 관련 토픽 구독
+            await SubscribeMQTT("Process/PLC/#");
+
+            Console.WriteLine("[MqttService] 모든 토픽 구독 완료");
         }
         else
         {
@@ -69,39 +63,51 @@ public class MQTTModel
         }
     }
 
-    public async Task MqttRecivedMessage(MqttApplicationMessageReceivedEventArgs e)
+    public async Task SubscribeMQTT(string topic)
     {
-        await Task.Run(() =>
+        if (mqttClient?.IsConnected == true)
         {
-            var topic = e.ApplicationMessage.Topic;
-            var payload = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
-
-            try
-            {
-                if (topic.StartsWith("Vision/ng"))
-                {
-                    var visionNg = JsonConvert.DeserializeObject<MqttVisionDTO>(payload);
-                    if (visionNg != null)
-                    {
-                        VisionMessageReceived?.Invoke(topic, visionNg);
-                        Console.WriteLine($"{visionNg}");
-                    }
-                }
-
-                if (topic.StartsWith("Process/PLC"))
-                {
-                    var processPlc = JsonConvert.DeserializeObject<MqttProcessDTO>(payload);
-                    if (processPlc != null)
-                    {
-                        ProcessMessageReceived?.Invoke(topic, processPlc);
-                        Console.WriteLine($"{processPlc}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[MqttService] 역직렬화 실패: {ex.Message}");
-            }
-        });
+            await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
+            Console.WriteLine($"[MqttService] 토픽 구독: {topic}");
+        }
     }
+
+    private async Task MqttRecivedMessage(MqttApplicationMessageReceivedEventArgs e)
+    {
+        var topic = e.ApplicationMessage.Topic;
+        var payload = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
+
+        Console.WriteLine($"[MqttService] 수신된 메시지 - 토픽: {topic}, 데이터: {payload}");
+
+        try
+        {
+            if (topic.StartsWith("Vision/ng"))
+            {
+                var visionMessage = JsonConvert.DeserializeObject<MqttVisionDTO>(payload);
+                if (visionMessage != null)
+                {
+                    VisionMessageReceived?.Invoke(topic, visionMessage);
+                    Console.WriteLine($"[MqttService] Vision 메시지 처리 완료: {JsonConvert.SerializeObject(visionMessage)}");
+                }
+            }
+            else if (topic.StartsWith("Process/PLC"))
+            {
+                var processMessage = JsonConvert.DeserializeObject<MqttProcessDTO>(payload);
+                if (processMessage != null)
+                {
+                    ProcessMessageReceived?.Invoke(topic, processMessage);
+                    Console.WriteLine($"[MqttService] Process 메시지 처리 완료: {JsonConvert.SerializeObject(processMessage)}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[MqttService] 알 수 없는 토픽: {topic}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MqttService] 메시지 처리 실패: {ex.Message}");
+        }
+    }
+
 }
