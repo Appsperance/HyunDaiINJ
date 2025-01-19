@@ -21,6 +21,12 @@ public class MQTTModel
 
     public async Task MqttConnect()
     {
+        if (mqttClient != null && mqttClient.IsConnected)
+        {
+            // 이미 연결된 상태면 굳이 다시 연결하지 않아도 됨
+            return;
+        }
+
         var factory = new MqttFactory();
         mqttClient = factory.CreateMqttClient();
 
@@ -45,30 +51,16 @@ public class MQTTModel
         }
     }
 
-    public async Task SubscribeToTopics()
-    {
-        if (mqttClient?.IsConnected == true)
-        {
-            // Vision 관련 토픽 구독
-            await SubscribeMQTT("Vision/ng/#");
-
-            // PLC 관련 토픽 구독
-            await SubscribeMQTT("Process/PLC/#");
-
-            Console.WriteLine("[MqttService] 모든 토픽 구독 완료");
-        }
-        else
-        {
-            Console.WriteLine("[MqttService] MQTT 연결이 활성화되지 않았습니다.");
-        }
-    }
-
     public async Task SubscribeMQTT(string topic)
     {
         if (mqttClient?.IsConnected == true)
         {
             await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
             Console.WriteLine($"[MqttService] 토픽 구독: {topic}");
+        }
+        else
+        {
+            Console.WriteLine("[MqttService] MQTT 연결이 활성화되지 않았습니다.");
         }
     }
 
@@ -109,5 +101,4 @@ public class MQTTModel
             Console.WriteLine($"[MqttService] 메시지 처리 실패: {ex.Message}");
         }
     }
-
 }

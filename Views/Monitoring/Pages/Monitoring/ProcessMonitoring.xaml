@@ -261,39 +261,34 @@
                            VerticalAlignment="Center"/>
             </StackPanel>
 
-            <!-- 첫 번째 Border -->
-            <!--<Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Grid.RowSpan="3" BorderBrush="#444" BorderThickness="1" CornerRadius="5" Margin="5" >-->
+            <!-- 공정1 위치 -->
             <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3">
-                <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="12,2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Text="공정 1" FontSize="15" Grid.Row="0" Margin="3"/>
-                    <!-- stageVal 나오는 곳-->
-                    <process:ProcessProducer Grid.Row="1"  />
+                    <process:ProcessProducer Grid.Row="1"
+                                             MqttTopic="Process/PLC/1" />
                 </Grid>
             </Grid>
-            <!--</Border>-->
 
-            <!-- 첫 번째 Border -->
+            <!-- 공정2 위치 -->
             <Grid Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3">
-                <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="12,2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
-                    <!-- stageVal 나오는 곳-->
-                    <process:ProcessProducer Grid.Row="1"  />
+                    <process:ProcessProducer Grid.Row="1"
+                                             MqttTopic="Process/PLC/2" />
                 </Grid>
             </Grid>
 
-            <!-- 첫 번째 Border -->
+            <!-- 공정3 위치 -->
             <Grid Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" Grid.RowSpan="3">
-                <!-- 내부 콘텐츠 -->
                 <Grid Grid.Row="1" Margin="12,2">
-                    <!-- stageVal 나오는 곳-->
-                    <process:ProcessProducer Grid.Row="1"  />
+                    <process:ProcessProducer Grid.Row="1"
+                                             MqttTopic="Process/PLC/3" />
                 </Grid>
             </Grid>
 

@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Process" xmlns:process="clr-namespace:HyunDaiINJ.ViewModels.Monitoring.Process" d:DataContext="{d:DesignInstance Type=process:ProcessProcedureViewModel}"
+             xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Process"
+             xmlns:process="clr-namespace:HyunDaiINJ.ViewModels.Monitoring.Process"
+             d:DataContext="{d:DesignInstance Type=process:ProcessProcedureViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="#1F1F1F">
@@ -12,19 +14,18 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="3*"/>
-                    <!-- 사진 영역 -->
+                    <!-- 이미지 영역 -->
                     <RowDefinition Height="auto"/>
                     <!-- 버튼 영역 -->
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" BorderBrush="#404040" BorderThickness="0,0,0,1" >
-                    <!-- 사진 영역 -->
+                <!-- 이미지 영역 -->
+                <Border Grid.Row="0" BorderBrush="#404040" BorderThickness="0,0,0,1">
                     <Image Stretch="Fill"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
-                           Source="{Binding  CurrentImage}" />
+                           Source="{Binding CurrentImage}" />
                 </Border>
-                
 
                 <!-- 버튼 영역 -->
                 <Grid Grid.Row="1" Margin="0,-5">
@@ -35,18 +36,33 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- 투입 버튼 -->
-                    <Border Grid.Column="0" Style="{StaticResource FirstIsInputType}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="10" Width="160" Height="40">
-                        <TextBlock Text="투입" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                    <Border Grid.Column="0" Style="{StaticResource FirstIsInputType}"
+                            BorderBrush="Black" BorderThickness="1" CornerRadius="3"
+                            Margin="10" Width="160" Height="40">
+                        <TextBlock Text="투입"
+                                   VerticalAlignment="Center" FontSize="30"
+                                   HorizontalAlignment="Center" Foreground="Black"
+                                   FontWeight="Bold"/>
                     </Border>
 
                     <!-- 가열 버튼 -->
-                    <Border Grid.Column="1" Style="{StaticResource SecondHeatingType}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="10" Width="160" Height="40">
-                        <TextBlock Text="가열" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                    <Border Grid.Column="1" Style="{StaticResource SecondHeatingType}"
+                            BorderBrush="Black" BorderThickness="1" CornerRadius="3"
+                            Margin="10" Width="160" Height="40">
+                        <TextBlock Text="가열"
+                                   VerticalAlignment="Center" FontSize="30"
+                                   HorizontalAlignment="Center" Foreground="Black"
+                                   FontWeight="Bold"/>
                     </Border>
 
                     <!-- 취출 버튼 -->
-                    <Border Grid.Column="2" Style="{StaticResource LastTakeOutStyle}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="10" Width="160" Height="40">
-                        <TextBlock Text="취출" VerticalAlignment="Center" FontSize="30" HorizontalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                    <Border Grid.Column="2" Style="{StaticResource LastTakeOutStyle}"
+                            BorderBrush="Black" BorderThickness="1" CornerRadius="3"
+                            Margin="10" Width="160" Height="40">
+                        <TextBlock Text="취출"
+                                   VerticalAlignment="Center" FontSize="30"
+                                   HorizontalAlignment="Center" Foreground="Black"
+                                   FontWeight="Bold"/>
                     </Border>
                 </Grid>
             </Grid>
