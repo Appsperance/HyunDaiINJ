@@ -71,7 +71,7 @@ namespace HyunDaiINJ.ViewModels.Login
                 // role 추출
                 var role = JwtParser.ExtractRoleFromJwt(MSDApi.JwtToken);
 
-                if (role == "sytemAdmin" || Regex.IsMatch(role, @"^admin.*$", RegexOptions.IgnoreCase))
+                if (role == "systemAdmin" || Regex.IsMatch(role, @"^admin.*$", RegexOptions.IgnoreCase))
                 {
                     // LoginSuccess 이벤트 발생
                     LoginSuccess?.Invoke();

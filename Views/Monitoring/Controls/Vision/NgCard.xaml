@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:HyunDaiINJ.Views.Monitoring.Controls.Vision"
         xmlns:service="clr-namespace:HyunDaiINJ.Services"
         mc:Ignorable="d"
-        Title="자세히보기" Height="541" Width="533"
+        Title="자세히보기" Height="785" Width="726"
         Loaded="NgCard_Loaded">
     <Window.Resources>
         <!-- Base64ToBitmapConverter가 Window.Resources나 App.xaml 등 어디에도 선언되지 않으면 에러 -->
@@ -17,7 +17,7 @@
     <Grid Background="#F0F0F0" Margin="10">
         <!-- Grid 레이아웃 -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="4*" />
             <!-- 선택된 이미지 -->
             <RowDefinition Height="*" />
             <!-- 이미지 리스트 -->
@@ -25,7 +25,7 @@
 
         <!-- 선택된 이미지 표시 영역 -->
         <Border Grid.Row="0" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="5" Margin="10">
-            <Image x:Name="SelectedImage" Stretch="Fill" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <Image x:Name="SelectedImage" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Border>
 
         <!-- 썸네일 ListView -->

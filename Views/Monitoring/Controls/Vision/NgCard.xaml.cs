@@ -57,7 +57,7 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
             try
             {
                 // 1) 목록 API 호출 -> id, ngImgPath, etc.만 받음 (ngImgBase64는 null)
-                var lineIds = new List<string> { "vp01" };
+                var lineIds = new List<string> { "vi01" };
                 int offset = 2;
                 int count = 10;
 

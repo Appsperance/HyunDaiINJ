@@ -110,397 +110,489 @@
         <!-- ======================  비전1 영역  ====================== -->
         <!-- ===================================================================== -->
 
-        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"
-                BorderBrush="#95C0FF" BorderThickness="4" CornerRadius="5"
-                Margin="5"
-                DataContext="{Binding VisionVM1}">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <Grid Margin="10" Background="White" 
+              Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="9"
+              DataContext="{Binding VisionVM1}" 
+              Style="{StaticResource BlinkingRedGridBackgroundStyle}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <!-- (1) VisionProcedure : StageValImage 표시 -->
-                <Border Grid.Row="0"
-                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                        Margin="5">
-                    <vision:VisionProcedure />
-                </Border>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
 
-                <!-- (2) 검사 개수 (현재는 고정 텍스트) -->
-                <TextBlock Grid.Row="1"
-                           Text="검사 개수: 30 / 2000"
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- (1) VisionProcedure : StageValImage 표시 -->
+            <Border Grid.Row="0"
+                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5" 
+                        Margin="3"
+                        Grid.ColumnSpan="5">
+                <vision:VisionProcedure />
+            </Border>
+
+            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
+                           Text="{Binding CompletedCount, StringFormat='검사 개수: {0} / 2000'}"
                            HorizontalAlignment="Center"
                            Margin="10"
                            FontSize="16"
                            FontWeight="Bold"
                            Foreground="#95C0FF"/>
 
-                <!-- (3) 버튼 영역 (깜빡임) -->
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <!-- 투입 -->
-                    <Border Style="{StaticResource InputBlinkingStyle}"
+            <!-- (3) 버튼 영역 (깜빡임) -->
+            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- 투입 -->
+                <Border Style="{StaticResource InputBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="투입"
+                    <TextBlock Text="투입"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <!-- 비전 -->
-                    <Border Style="{StaticResource VisionBlinkingStyle}"
+                </Border>
+                <!-- 비전 -->
+                <Border Style="{StaticResource VisionBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="비전"
+                    <TextBlock Text="비전"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <!-- 완료 -->
-                    <Border Style="{StaticResource CompleteBlinkingStyle}"
+                </Border>
+                <!-- 완료 -->
+                <Border Style="{StaticResource CompleteBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="완료"
+                    <TextBlock Text="완료"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                </StackPanel>
-            </Grid>
-        </Border>
+                </Border>
 
+            </StackPanel>
+            <Border Grid.Row="0" Grid.Column="5" Grid.RowSpan="3" Grid.ColumnSpan="3"
+                    BorderBrush="#95C0FF"  CornerRadius="5" 
+                    Margin="0" Cursor="Hand"
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown"
+>
+                <Grid>
+                    <Image Source="{Binding CurrentImage}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Width="300"
+                           />
+                </Grid>
+            </Border>
+        </Grid>
 
         <!-- ===================================================================== -->
         <!-- ======================  비전2 영역  ====================== -->
         <!-- ===================================================================== -->
 
-        <Border Grid.Row="1" Grid.Column="9" Grid.ColumnSpan="5"
-                BorderBrush="#95C0FF" BorderThickness="4" CornerRadius="5"
-                Margin="5"
-                DataContext="{Binding VisionVM2}">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <Grid Margin="10" Background="White" 
+              Grid.Column="9" Grid.Row="1" Grid.ColumnSpan="9"
+              DataContext="{Binding VisionVM2}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <Border Grid.Row="0"
-                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                        Margin="5">
-                    <vision:VisionProcedure />
-                </Border>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
 
-                <TextBlock Grid.Row="1"
-                           Text="검사 개수: 30 / 2000"
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- (1) VisionProcedure : StageValImage 표시 -->
+            <Border Grid.Row="0"
+                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5" 
+                        Margin="3"
+                        Grid.ColumnSpan="5">
+                <vision:VisionProcedure />
+            </Border>
+
+            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
+                           Text="{Binding CompletedCount, StringFormat='검사 개수: {0} / 2000'}"
                            HorizontalAlignment="Center"
                            Margin="10"
                            FontSize="16"
                            FontWeight="Bold"
                            Foreground="#95C0FF"/>
 
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Border Style="{StaticResource InputBlinkingStyle}"
+            <!-- (3) 버튼 영역 (깜빡임) -->
+            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- 투입 -->
+                <Border Style="{StaticResource InputBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="투입"
+                    <TextBlock Text="투입"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <Border Style="{StaticResource VisionBlinkingStyle}"
+                </Border>
+                <!-- 비전 -->
+                <Border Style="{StaticResource VisionBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="비전"
+                    <TextBlock Text="비전"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <Border Style="{StaticResource CompleteBlinkingStyle}"
+                </Border>
+                <!-- 완료 -->
+                <Border Style="{StaticResource CompleteBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="완료"
+                    <TextBlock Text="완료"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                </StackPanel>
-            </Grid>
-        </Border>
+                </Border>
+
+            </StackPanel>
+            <Border Grid.Row="0" Grid.Column="5" Grid.RowSpan="3" Grid.ColumnSpan="3"
+                    BorderBrush="#95C0FF"  CornerRadius="5" 
+                    Margin="0" Cursor="Hand"
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown"
+>
+                <Grid>
+                    <Image Source="{Binding CurrentImage}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Width="300"
+                           />
+                </Grid>
+            </Border>
+        </Grid>
 
 
         <!-- ===================================================================== -->
         <!-- ======================  비전3 영역  ====================== -->
         <!-- ===================================================================== -->
 
-        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5"
-                BorderBrush="#95C0FF" BorderThickness="4" CornerRadius="5"
-                Margin="5"
-                DataContext="{Binding VisionVM3}">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <Grid Margin="10" Background="White" 
+              Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="9"
+              DataContext="{Binding VisionVM3}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <Border Grid.Row="0"
-                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                        Margin="5">
-                    <vision:VisionProcedure />
-                </Border>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
 
-                <TextBlock Grid.Row="1"
-                           Text="검사 개수: 30 / 2000"
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- (1) VisionProcedure : StageValImage 표시 -->
+            <Border Grid.Row="0"
+                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5" 
+                        Margin="3"
+                        Grid.ColumnSpan="5">
+                <vision:VisionProcedure />
+            </Border>
+
+            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
+                           Text="{Binding CompletedCount, StringFormat='검사 개수: {0} / 2000'}"
                            HorizontalAlignment="Center"
                            Margin="10"
                            FontSize="16"
                            FontWeight="Bold"
                            Foreground="#95C0FF"/>
 
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Border Style="{StaticResource InputBlinkingStyle}"
+            <!-- (3) 버튼 영역 (깜빡임) -->
+            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- 투입 -->
+                <Border Style="{StaticResource InputBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="투입"
+                    <TextBlock Text="투입"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <Border Style="{StaticResource VisionBlinkingStyle}"
+                </Border>
+                <!-- 비전 -->
+                <Border Style="{StaticResource VisionBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="비전"
+                    <TextBlock Text="비전"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <Border Style="{StaticResource CompleteBlinkingStyle}"
+                </Border>
+                <!-- 완료 -->
+                <Border Style="{StaticResource CompleteBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="완료"
+                    <TextBlock Text="완료"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                </StackPanel>
-            </Grid>
-        </Border>
+                </Border>
+
+            </StackPanel>
+            <Border Grid.Row="0" Grid.Column="5" Grid.RowSpan="3" Grid.ColumnSpan="3"
+                    BorderBrush="#95C0FF"  CornerRadius="5" 
+                    Margin="0" Cursor="Hand"
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown"
+>
+                <Grid>
+                    <Image Source="{Binding CurrentImage}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Width="300"
+                           />
+                </Grid>
+            </Border>
+        </Grid>
 
 
         <!-- ===================================================================== -->
         <!-- ======================  비전4 영역  ====================== -->
         <!-- ===================================================================== -->
 
-        <Border Grid.Row="3" Grid.Column="9" Grid.ColumnSpan="5"
-                BorderBrush="#95C0FF" BorderThickness="4" CornerRadius="5"
-                Margin="5"
-                DataContext="{Binding VisionVM4}">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <Grid Margin="10" Background="White" 
+              Grid.Column="9" Grid.Row="3" Grid.ColumnSpan="9"
+              DataContext="{Binding VisionVM4}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <Border Grid.Row="0"
-                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                        Margin="5">
-                    <vision:VisionProcedure />
-                </Border>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
 
-                <TextBlock Grid.Row="1"
-                           Text="검사 개수: 30 / 2000"
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- (1) VisionProcedure : StageValImage 표시 -->
+            <Border Grid.Row="0"
+                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5" 
+                        Margin="3"
+                        Grid.ColumnSpan="5">
+                <vision:VisionProcedure />
+            </Border>
+
+            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
+                           Text="{Binding CompletedCount, StringFormat='검사 개수: {0} / 2000'}"
                            HorizontalAlignment="Center"
                            Margin="10"
                            FontSize="16"
                            FontWeight="Bold"
                            Foreground="#95C0FF"/>
 
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Border Style="{StaticResource InputBlinkingStyle}"
+            <!-- (3) 버튼 영역 (깜빡임) -->
+            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- 투입 -->
+                <Border Style="{StaticResource InputBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="투입"
+                    <TextBlock Text="투입"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <Border Style="{StaticResource VisionBlinkingStyle}" 
+                </Border>
+                <!-- 비전 -->
+                <Border Style="{StaticResource VisionBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="비전"
+                    <TextBlock Text="비전"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <Border Style="{StaticResource CompleteBlinkingStyle}"
+                </Border>
+                <!-- 완료 -->
+                <Border Style="{StaticResource CompleteBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="완료"
+                    <TextBlock Text="완료"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                </StackPanel>
-            </Grid>
-        </Border>
+                </Border>
+
+            </StackPanel>
+            <Border Grid.Row="0" Grid.Column="5" Grid.RowSpan="3" Grid.ColumnSpan="3"
+                    BorderBrush="#95C0FF"  CornerRadius="5" 
+                    Margin="0" Cursor="Hand"
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown"
+>
+                <Grid>
+                    <Image Source="{Binding CurrentImage}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Width="300"
+                           />
+                </Grid>
+            </Border>
+        </Grid>
 
 
         <!-- ===================================================================== -->
         <!-- ======================  비전5 영역  ====================== -->
         <!-- ===================================================================== -->
 
-        <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5"
-                BorderBrush="#95C0FF" BorderThickness="4" CornerRadius="5"
-                Margin="5"
-                DataContext="{Binding VisionVM5}">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <Grid Margin="10" Background="White" 
+              Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="9"
+              DataContext="{Binding VisionVM5}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <Border Grid.Row="0"
-                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                        Margin="5">
-                    <vision:VisionProcedure />
-                </Border>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
 
-                <TextBlock Grid.Row="1"
-                           Text="검사 개수: 30 / 2000"
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- (1) VisionProcedure : StageValImage 표시 -->
+            <Border Grid.Row="0"
+                        BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5" 
+                        Margin="3"
+                        Grid.ColumnSpan="5">
+                <vision:VisionProcedure />
+            </Border>
+
+            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
+                           Text="{Binding CompletedCount, StringFormat='검사 개수: {0} / 2000'}"
                            HorizontalAlignment="Center"
                            Margin="10"
                            FontSize="16"
                            FontWeight="Bold"
                            Foreground="#95C0FF"/>
 
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Border Style="{StaticResource InputBlinkingStyle}"
+            <!-- (3) 버튼 영역 (깜빡임) -->
+            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- 투입 -->
+                <Border Style="{StaticResource InputBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="투입"
+                    <TextBlock Text="투입"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <Border Style="{StaticResource VisionBlinkingStyle}"
+                </Border>
+                <!-- 비전 -->
+                <Border Style="{StaticResource VisionBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="비전"
+                    <TextBlock Text="비전"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                    <Border Style="{StaticResource CompleteBlinkingStyle}"
+                </Border>
+                <!-- 완료 -->
+                <Border Style="{StaticResource CompleteBlinkingStyle}"
                             BorderBrush="Black" BorderThickness="1"
                             CornerRadius="3"
                             Width="60" Height="40" Margin="5">
-                        <TextBlock Text="완료"
+                    <TextBlock Text="완료"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="Black"
                                    FontWeight="Bold"/>
-                    </Border>
-                </StackPanel>
-            </Grid>
-        </Border>
+                </Border>
+
+            </StackPanel>
+            <Border Grid.Row="0" Grid.Column="5" Grid.RowSpan="3" Grid.ColumnSpan="3"
+                    BorderBrush="#95C0FF"  CornerRadius="5" 
+                    Margin="0" Cursor="Hand"
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown"
+>
+                <Grid>
+                    <Image Source="{Binding CurrentImage}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Width="300"
+                           />
+                </Grid>
+            </Border>
+        </Grid>
+
 
 
         <!-- ===================================================================== -->
         <!-- 품질 사진 1 (비전1) -->
         <!-- ===================================================================== -->
 
-        <Border Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="4"
-                BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                Margin="5" Cursor="Hand"
-                MouseLeftButtonDown="Border_MouseLeftButtonDown"
-                DataContext="{Binding VisionVM1}">
-            <Grid>
-                <Image Source="{Binding CurrentImage}"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Stretch="UniformToFill"/>
-            </Grid>
-        </Border>
 
-        <!-- 품질 사진 2 (비전2) -->
-        <Border Grid.Row="1" Grid.Column="14" Grid.ColumnSpan="4"
-                BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                Margin="5" Cursor="Hand"
-                MouseLeftButtonDown="Border_MouseLeftButtonDown"
-                DataContext="{Binding VisionVM2}">
-            <Grid>
-                <Image Source="{Binding CurrentImage}"
-                       Stretch="UniformToFill"/>
-            </Grid>
-        </Border>
 
-        <!-- 품질 사진 3 (비전3) -->
-        <Border Grid.Row="3" Grid.Column="5" Grid.ColumnSpan="4"
-                BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                Margin="5" Cursor="Hand"
-                MouseLeftButtonDown="Border_MouseLeftButtonDown"
-                DataContext="{Binding VisionVM3}">
-            <Grid>
-                <Image Source="{Binding CurrentImage}"
-                       Stretch="UniformToFill"/>
-            </Grid>
-        </Border>
+        
 
-        <!-- 품질 사진 4 (비전4) -->
-        <Border Grid.Row="3" Grid.Column="14" Grid.ColumnSpan="4"
-                BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                Margin="5" Cursor="Hand"
-                MouseLeftButtonDown="Border_MouseLeftButtonDown"
-                DataContext="{Binding VisionVM4}">
-            <Grid>
-                <Image Source="{Binding CurrentImage}"
-                       Stretch="UniformToFill"/>
-            </Grid>
-        </Border>
+        
+        
 
-        <!-- 품질 사진 5 (비전5) -->
-        <Border Grid.Row="5" Grid.Column="5" Grid.ColumnSpan="4"
-                BorderBrush="#95C0FF" BorderThickness="2" CornerRadius="5"
-                Margin="5" Cursor="Hand"
-                MouseLeftButtonDown="Border_MouseLeftButtonDown"
-                DataContext="{Binding VisionVM5}">
-            <Grid>
-                <Image Source="{Binding CurrentImage}"
-                       Stretch="UniformToFill"/>
-            </Grid>
-        </Border>
-
+        
     </Grid>
 </Page>

@@ -33,7 +33,16 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                 OnPropertyChanged();
             }
         }
-
+        private bool _isImageBlinking;
+        public bool IsImageBlinking
+        {
+            get => _isImageBlinking;
+            set
+            {
+                _isImageBlinking = value;
+                OnPropertyChanged();
+            }
+        }
         // 현재 표시 중인 이미지(NgImg에서 변환한 결과)
         private BitmapImage? _currentImage;
         public BitmapImage? CurrentImage
@@ -43,6 +52,16 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             {
                 _currentImage = value;
                 OnPropertyChanged();
+
+                // 이미지가 들어오면 깜빡이도록
+                if (value != null)
+                {
+                    IsImageBlinking = true;
+                }
+                else
+                {
+                    IsImageBlinking = false;
+                }
             }
         }
 
@@ -92,6 +111,17 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             }
         }
 
+        private int _completedCount = 0;
+        public int CompletedCount
+        {
+            get => _completedCount;
+            set
+            {
+                _completedCount = value;
+                OnPropertyChanged();
+            }
+        }
+
         // 품질 이미지들 (히스토리로 쌓는 용도라면)
         private ObservableCollection<BitmapImage> _qualityImages = new();
         public ObservableCollection<BitmapImage> QualityImages
@@ -110,7 +140,11 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             _visionTopic = visionTopic;
 
             _currentMessage = new MqttVisionDTO();
-            _currentImage = new BitmapImage();
+            //_currentImage = LoadImageFromPath("Resources/30.png");
+            //_currentImage = new BitmapImage();
+
+            // 페이지 처음 로드 시점 기본 이미지
+            _stageValImage = LoadImageFromPath("Resources/30.png");
 
             // 메시지 수신
             _mqttModel.VisionMessageReceived += OnVisionMessageReceived;
@@ -162,6 +196,16 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
 
         private async Task HandleStageValImagesAsync(string stageVal)
         {
+            // stageVal이 null이면 빈 문자열로 교체해 예외 방지
+            stageVal ??= string.Empty;
+
+            // 미리 null 또는 빈 문자열이면 배열을 한 번에 설정
+            if (string.IsNullOrEmpty(stageVal))
+            {
+                await DisplayImageSequenceAsync(new[] { "Resources/30.png" });
+                return;
+            }
+
             string[] imagePaths = stageVal switch
             {
                 "100" => new[]
@@ -181,7 +225,8 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                     "Resources/23.png", "Resources/24.png", "Resources/25.png", "Resources/26.png",
                     "Resources/27.png", "Resources/28.png", "Resources/29.png"
                 },
-                _ => Array.Empty<string>()
+                // 이 부분이 default(또는 _) 케이스
+                _ => new[] { "Resources/30.png" }
             };
 
             if (imagePaths.Length > 0)
@@ -252,7 +297,16 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
         {
             IsInputBlinking = stageVal == "100";
             IsVisionBlinking = stageVal == "010";
-            IsCompleteBlinking = stageVal == "001";
+
+            if (stageVal == "001")
+            {
+                IsCompleteBlinking = true;
+                CompletedCount++;
+            }
+            else
+            {
+                IsCompleteBlinking = false;
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

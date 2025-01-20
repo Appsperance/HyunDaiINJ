@@ -193,4 +193,54 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="BlinkingRedBorderStyle" TargetType="Border">
+        <Setter Property="BorderBrush" Value="#95C0FF"/>
+        <!-- 기본 색상 -->
+        <Setter Property="BorderThickness" Value="4"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsImageBlinking}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                            <ColorAnimation 
+                            Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                            To="Red" Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <!-- IsImageBlinking가 false로 바뀌면 애니메이션 해제 -->
+                <DataTrigger.ExitActions>
+                    <StopStoryboard/>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="BlinkingRedGridBackgroundStyle" TargetType="Grid">
+        <!-- 기본 배경을 SolidColorBrush로 설정 -->
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="White"/>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <!-- 여기서는 IsImageBlinking가 true일 때 배경색을 깜빡이게 한다고 가정 -->
+            <DataTrigger Binding="{Binding IsImageBlinking}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                            <ColorAnimation
+                            Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)"
+                            To="Red"
+                            Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <StopStoryboard/>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
