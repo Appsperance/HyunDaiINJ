@@ -97,7 +97,7 @@
                         <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  Width="120"
                                  FontSize="13"
-                                 Foreground="#95C0FF"
+                                 Foreground="white"
                                  VerticalAlignment="Stretch"
                                  HorizontalContentAlignment="Center"
                                  FontWeight="Bold"/>
@@ -175,7 +175,9 @@
                     <Style TargetType="DataGridColumnHeader"  BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="Background" Value="#1F1F1F"/>
-                        <Setter Property="Foreground" Value="#95C0FF"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontSize" Value="20"/>
+
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
 
@@ -183,7 +185,9 @@
                     <Style TargetType="DataGridCell"  BasedOn="{StaticResource MaterialDesignDataGridCell}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="Background" Value="#1F1F1F"/>
-                        <Setter Property="Foreground" Value="#95C0FF"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontSize" Value="20"/>
+
                     </Style>
                 </DataGrid.CellStyle>
 
@@ -203,6 +207,7 @@
                 <!-- 왼쪽 라벨: "계획 총합" -->
                 <TextBlock Text="제품별 계획 총합"
                            FontWeight="Bold"
+                           FontSize="20"
                            Foreground="#95C0FF"
                            Margin="40,0,0,0"
                            VerticalAlignment="Center" 
@@ -224,12 +229,13 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Value}"
-                                       Margin="20,0,0,0"
+                                       Margin="55,0,0,0"
+                                       FontSize="20"
                                        Foreground="#95C0FF"
                                        FontWeight="Bold"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Center"
-                                       Width="180"/>
+                                       Width="95"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

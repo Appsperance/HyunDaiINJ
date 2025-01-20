@@ -102,7 +102,7 @@ namespace HyunDaiINJ.Views.Plan.Controls.Week
                     Mode = BindingMode.TwoWay,
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                 },
-                Width = 200,
+                Width = 150,
 
                 // SortMemberPath 등을 PartId 기반으로 세팅할 수도 있음
                 SortMemberPath = $"QuanDict[{part.PartId}]"
