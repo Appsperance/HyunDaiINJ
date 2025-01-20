@@ -1,5 +1,6 @@
 ﻿using HyunDaiINJ.ViewModels;
 using HyunDaiINJ.ViewModels.Main;
+using HyunDaiINJ.Views.Login;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,16 @@ namespace HyunDaiINJ.Views
                 TxtCurrentTime.Text = DateTime.Now.ToString("yyyy-MM-dd (ddd) HH시 mm분 ss초");
             };
             _timer.Start();
+        }
+
+        private void Logout_btn_Click(object sender, RoutedEventArgs e)
+        {
+            // 1) LoginView 다시 열기
+            var loginView = new LoginView();
+            loginView.Show();
+
+            // 2) 현재 MainView 닫기
+            this.Close();
         }
     }
 }

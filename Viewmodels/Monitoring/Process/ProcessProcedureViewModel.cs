@@ -26,13 +26,33 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Process
             _mqttModel = mqttModel ?? throw new ArgumentNullException(nameof(mqttModel));
             _processTopic = processTopic;
 
+            // (1) 기본 이미지 초기화
+            CurrentImage = LoadImage("Resources/30.png");
             // MQTT 메시지 수신 핸들러 등록
             _mqttModel.ProcessMessageReceived += OnProcessMessageReceived;
 
             // MQTT 연결 및 해당 토픽 구독
             _ = ConnectAndSubscribe();
         }
-
+        private BitmapImage? LoadImage(string relativePath)
+        {
+            try
+            {
+                var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+                return bitmap;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"LoadImage 실패: {ex.Message}");
+                return null;
+            }
+        }
         private async Task ConnectAndSubscribe()
         {
             await _mqttModel.MqttConnect();

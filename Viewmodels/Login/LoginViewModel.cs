@@ -24,7 +24,19 @@ namespace HyunDaiINJ.ViewModels.Login
             Username = "admin1";
             Password = "string";
         }
-
+        private string _loggedInName;
+        public string LoggedInName
+        {
+            get => _loggedInName;
+            set
+            {
+                if (_loggedInName != value)
+                {
+                    _loggedInName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public string Username
         {
             get => _username;
@@ -63,30 +75,31 @@ namespace HyunDaiINJ.ViewModels.Login
 
         private async Task OnLoginAsync()
         {
-            // 로그인 API 호출
-            bool isLoginSuccess = await _api.LoginAsync(Username, Password);
+            var loginResult = await _api.LoginAsync(Username, Password);
 
-            if (isLoginSuccess)
+            if (loginResult == null)
             {
-                // role 추출
-                var role = JwtParser.ExtractRoleFromJwt(MSDApi.JwtToken);
+                MessageBox.Show("로그인 실패", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-                if (role == "systemAdmin" || Regex.IsMatch(role, @"^admin.*$", RegexOptions.IgnoreCase))
-                {
-                    // LoginSuccess 이벤트 발생
-                    LoginSuccess?.Invoke();
-                }
+            // 로그인 성공
+            // role 검사
+            var role = JwtParser.ExtractRoleFromJwt(MSDApi.JwtToken);
 
-                else
-                {
-                    // 권한이 맞지 않을 때
-                    System.Windows.MessageBox.Show("권한 부족", "오류", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+            if (role == "systemAdmin" || Regex.IsMatch(role, @"^admin.*$", RegexOptions.IgnoreCase))
+            {
+                // 서버 응답의 name 필드를 LoginViewModel에 저장
+                LoggedInName = loginResult.Name;
+
+                // 이벤트 호출로 View에게 알려줌
+                LoginSuccess?.Invoke();
+
+                Console.WriteLine($"[로그인 성공] Name={loginResult.Name}, EmployeeNumber={loginResult.EmployeeNumber}");
             }
             else
             {
-                // 로그인 실패
-                System.Windows.MessageBox.Show("로그인 실패", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("권한 부족", "오류", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

@@ -64,35 +64,43 @@ public class MSDApi
 
 
 
-    public async Task<bool> LoginAsync(string userName, string password)
+    public async Task<LoginResponseDTO> LoginAsync(string userName, string password)
     {
         try
         {
+            // 1) 요청 바디 준비
             var loginModel = new { LoginId = userName, LoginPw = password };
             string jsonBody = JsonConvert.SerializeObject(loginModel);
 
+            // 2) POST 요청
             var response = await _client.PostAsync("http://13.125.114.64:5282/api/login",
                 new StringContent(jsonBody, Encoding.UTF8, "application/json"));
 
+            // 3) 응답이 성공 상태코드가 아니면 null 반환
             if (!response.IsSuccessStatusCode)
-                return false;
+                return null;
 
+            // 4) 응답 바디 역직렬화
             string responseData = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<LoginResponseDTO>(responseData);
-            if (result == null)
-                return false;
 
-            // JWT 보관
+            if (result == null)
+                return null;
+
+            // 5) JWT, 공개키 등 저장
             JwtToken = result.JwtToken;
             JwtPublicKey = result.JwtPublicKey;
 
-            return true;
+            // 6) 로그인 성공 -> DTO 반환
+            return result;
         }
         catch
         {
-            return false;
+            // 예외 발생 시 null 반환
+            return null;
         }
     }
+
 
     public async Task<List<VisionNgDTO>> GetNgImagesAsync(List<string> lineIds, int offset, int count)
     {

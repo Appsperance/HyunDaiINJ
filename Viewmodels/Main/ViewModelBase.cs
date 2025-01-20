@@ -16,9 +16,10 @@ namespace HyunDaiINJ.ViewModels.Main
         protected virtual void OnPropertyChanged(string propName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 
-        public static void OnStaticPropertyChanged(string propertyName)
+        // (1) CallerMemberName으로 기본 파라미터 받는 오버로드 추가
+        protected virtual void OnPropertyStaticChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
         {
-            StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }

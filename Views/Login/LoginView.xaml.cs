@@ -9,6 +9,7 @@ namespace HyunDaiINJ.Views.Login
 {
     public partial class LoginView : Window
     {
+
         public LoginView()
         {
             InitializeComponent();
@@ -42,20 +43,21 @@ namespace HyunDaiINJ.Views.Login
         /// </summary>
         private void OnLoginSuccess()
         {
-            // 1) EventAggregator를 새로 하나 생성
-            var eventAggregator = new EventAggregator();
+            if (DataContext is LoginViewModel loginVM)
+            {
+                var eventAggregator = new EventAggregator();
 
-            // MainView 열기
-            var mainView = new MainView();
-            // (2) MainViewModel 생성 후 할당
-            mainView.DataContext = new MainViewModel(eventAggregator);
-            
+                var mainView = new MainView();
+                var mainVM = new MainViewModel(eventAggregator);
 
-            mainView.Show();
+                // 여기서 loginVM.LoggedInName을 MainViewModel.UserName 등에 세팅
+                mainVM.UserName = loginVM.LoggedInName;
 
-            Console.WriteLine($"mainViewVMVMVMVMVM : {mainView.DataContext}");
-            // 현재(LoginView) 창 닫기
-            this.Close();
+                mainView.DataContext = mainVM;
+                mainView.Show();
+
+                this.Close();
+            }
         }
     }
 }

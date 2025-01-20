@@ -78,7 +78,25 @@ namespace HyunDaiINJ.ViewModels.Main
                 }
             }
         }
+        private string _userName;
+        public string UserName
+        {
+            get => _userName;
+            set
+            {
+                if (_userName != value)
+                {
+                    _userName = value;
+                    OnPropertyStaticChanged();  // 바인딩 갱신
+                    OnPropertyStaticChanged(nameof(UserNameWithSuffix));
+                }
+            }
+        }
 
+        // “님” 접미사 붙여서 표시하고 싶으면:
+        public string UserNameWithSuffix => string.IsNullOrEmpty(_userName)
+            ? ""
+            : $"{_userName}님";
         // 명령: 탭 추가/닫기
         public ICommand AddTabCommand { get; }
         public ICommand SelectTabCommand { get; }
