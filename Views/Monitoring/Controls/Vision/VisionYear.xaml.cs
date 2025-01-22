@@ -6,11 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HyunDaiINJ.DATA.DTO;
 using System.Diagnostics;
+using HyunDaiINJ.ViewModels.Monitoring.Vision;
 
 namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {
     public partial class VisionYear : UserControl
     {
+        private VisionYearViewModel _viewModel;
         public VisionYear()
         {
             InitializeComponent();
@@ -18,23 +20,34 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
             {
                 return;
             }
+
+            // ViewModel 생성
+            _viewModel = new VisionYearViewModel();
+            this.DataContext = _viewModel;
+
+            // YearLabelSummaries 속성 변경 감지
+            _viewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(VisionYearViewModel.YearLabelSummaries))
+                {
+                    SetData(_viewModel.YearLabelSummaries);
+                }
+            };
         }
 
-        public async void SetData(IEnumerable<VisionNgDTO> data)
+        public async void SetData(System.Collections.Generic.IEnumerable<VisionNgDTO> data)
         {
             if (data == null)
             {
                 return;
             }
 
-            // 로그: data가 몇 개인지, 어떤 값인지
-            var listData = data.ToList();
-
             if (WebView.CoreWebView2 == null)
             {
                 await WebView.EnsureCoreWebView2Async();
             }
 
+            var listData = data.ToList();
             var chartConfig = BuildChartConfig(listData);
             var script = System.Text.Json.JsonSerializer.Serialize(chartConfig);
 
@@ -54,7 +67,8 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
                 "rgba(54, 162, 235, 0.7)",
                 "rgba(255, 206, 86, 0.7)",
                 "rgba(153, 102, 255, 0.7)",
-                "rgba(255, 159, 64, 0.7)"
+                "rgba(255, 159, 64, 0.7)",
+                "rgba(201, 203, 207, 0.7)" // 7번째 (연한 회색)
             };
 
             var datasets = new List<object>();

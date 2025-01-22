@@ -2,11 +2,14 @@
 using System.ComponentModel;
 using System.Windows.Controls;
 using Microsoft.Web.WebView2.Core;
+using HyunDaiINJ.ViewModels.Monitoring.vision; // ViewModel namespace
 
 namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
 {
     public partial class VisionWeek : UserControl
     {
+        private VisionWeekViewModel _viewModel;
+
         public VisionWeek()
         {
             InitializeComponent();
@@ -14,6 +17,23 @@ namespace HyunDaiINJ.Views.Monitoring.Controls.Vision
             {
                 return;
             }
+
+            // ViewModel 생성
+            _viewModel = new VisionWeekViewModel();
+            this.DataContext = _viewModel;
+
+            // (1) 차트 스크립트 업데이트 이벤트 구독
+            _viewModel.ChartScriptUpdated += OnChartScriptUpdated;
+        }
+
+        private async void OnChartScriptUpdated()
+        {
+            // (2) ViewModel에서 만든 차트 스크립트를 가져와 SetData 호출
+            //     UI 스레드에서 동작하도록 Dispatcher 사용 가능
+            await Dispatcher.InvokeAsync(() =>
+            {
+                SetData(_viewModel.ChartScript);
+            });
         }
 
         /// <summary>

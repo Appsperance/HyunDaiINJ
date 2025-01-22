@@ -149,14 +149,14 @@
                 </DataGrid.Resources>
                 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Id}" Header="ID" Width="*" >
+                    <!--<DataGridTextColumn Binding="{Binding Id}" Header="ID" Width="*" >
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="TextAlignment" Value="Center"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                    </DataGridTextColumn>-->
 
                     <DataGridTextColumn Binding="{Binding PartId}" Header="제품명" Width="*">
                         <DataGridTextColumn.ElementStyle>
@@ -175,7 +175,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding DisplayDateTime}" Header="생성날짜" Width="*">
+                    <DataGridTextColumn Binding="{Binding DisplayDateTime}" Header="발생시간" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="TextAlignment" Value="Center"/>

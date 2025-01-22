@@ -182,7 +182,9 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Process
                     await DisplayImageSequenceAsync(new[]
                     {
                         "Resources/1.png", "Resources/2.png", "Resources/3.png", "Resources/4.png",
-                        "Resources/5.png", "Resources/6.png", "Resources/7.png", "Resources/8.png"
+                        "Resources/5.png", "Resources/6.png", "Resources/7.png", "Resources/8.png",
+                        "Resources/9.png", "Resources/10.png", "Resources/11.png", "Resources/12.png",
+                        "Resources/13.png", "Resources/14.png"
                     }, localToken);
                     break;
 
@@ -193,7 +195,8 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Process
 
                     await DisplayImageSequenceAsync(new[]
                     {
-                        "Resources/15.png", "Resources/16.png", "Resources/17.png", "Resources/18.png"
+                        "Resources/15.png", "Resources/16.png", "Resources/17.png", "Resources/18.png",
+                        "Resources/19.png", "Resources/20.png", "Resources/21.png", "Resources/22.png"
                     }, localToken);
                     break;
 
@@ -204,7 +207,8 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Process
 
                     await DisplayImageSequenceAsync(new[]
                     {
-                        "Resources/23.png", "Resources/24.png", "Resources/25.png", "Resources/26.png"
+                         "Resources/23.png", "Resources/24.png", "Resources/25.png", "Resources/26.png",
+                         "Resources/27.png", "Resources/29.png"
                     }, localToken);
                     break;
 

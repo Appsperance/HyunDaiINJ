@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,22 +45,23 @@ namespace HyunDaiINJ.Views.Monitoring.Pages.Monitoring
 
         private async void VisionStat_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            // VisionDaily, VisionWeek, VisionYear는 x:Name으로 참조 가능(예: XAML에 x:Name="DailyChart")
+            try
+            {
+                await _viewModel.LoadDataFromServerAsync();
+                await _yearViewModel.LoadVisionNgDataYearAsync();
+                await _dailyViewModel.LoadVisionNgDataDailyAsync();
+                await _weekViewModel.LoadVisionNgDataWeekAsync();
 
-            //DailyChart.SetData(_viewModel.DailyData);
-            //WeekChart.SetData(_viewModel.WeekData);
-            // 윈도우가 로드될 때, 서버에서 데이터 가져옴
-            await _viewModel.LoadDataFromServerAsync();
-            await _yearViewModel.LoadVisionNgDataYearAsync();
-            await _dailyViewModel.LoadVisionNgDataDailyAsync();
-            await _weekViewModel.LoadVisionNgDataWeekAsync();
-
-            // 이제 세 개 차트가 거의 동시에 Render를 시작하게 되어
-            // 뒤죽박죽 순서가 아니라, 한꺼번에 표시됨
-            YearChart.SetData(_viewModel.NgDetailedData);
-            YearChart.SetData(_yearViewModel.YearLabelSummaries);
-            WeekChart.SetData(_weekViewModel.ChartScript);
-            DailyChart.SetChartScript(_dailyViewModel.ChartScript);
+                YearChart.SetData(_viewModel.NgDetailedData);
+                YearChart.SetData(_yearViewModel.YearLabelSummaries);
+                WeekChart.SetData(_weekViewModel.ChartScript);
+                DailyChart.SetChartScript(_dailyViewModel.ChartScript);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"데이터 로드 중 오류 발생: {ex.Message}");
+                File.AppendAllText("error.log", ex.ToString());
+            }
         }
     }
 }

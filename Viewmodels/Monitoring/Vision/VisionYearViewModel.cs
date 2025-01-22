@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Threading;
 using HyunDaiINJ.DATA.DTO;
 
 namespace HyunDaiINJ.ViewModels.Monitoring.Vision
@@ -12,6 +13,9 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
     public class VisionYearViewModel : INotifyPropertyChanged
     {
         private readonly MSDApi _api;
+
+        // 10초마다 LoadVisionNgDataYearAsync()를 호출할 타이머
+        private DispatcherTimer _timer;
 
         // 서버에서 불러온 원본 DTO
         private ObservableCollection<VisionNgDTO> _yearData;
@@ -42,6 +46,28 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
             _api = new MSDApi();
             YearData = new ObservableCollection<VisionNgDTO>();
             YearLabelSummaries = new ObservableCollection<VisionNgDTO>();
+
+            // (1) 10초 간격 DispatcherTimer 설정
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(10)
+                
+            };
+            _timer.Tick += async (s, e) =>
+            {
+                Console.WriteLine("[VisionYearViewModel] Timer Tick event fired. (Before API call)");
+                try
+                {
+                    await LoadVisionNgDataYearAsync();
+                    Console.WriteLine("[VisionYearViewModel] Timer Tick event fired. (After API call)");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[VisionYearViewModel] Tick event EXCEPTION: " + ex.Message);
+                }
+            };
+
+            _timer.Start();
         }
 
         /// <summary>
@@ -56,11 +82,17 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
                 int count = 500;
 
                 var dtoList = await _api.GetNgImagesAsync(lineIds, offset, count);
+                if (dtoList == null)
+                {
+                    YearData.Clear();
+                    YearLabelSummaries.Clear();
+                    return;
+                }
 
                 // 기존 데이터 초기화
                 YearData.Clear();
 
-                // dateTime → YearNumber
+                // (1) DateTime → YearNumber
                 foreach (var d in dtoList)
                 {
                     if (!string.IsNullOrEmpty(d.DateTime))
@@ -73,7 +105,7 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
                     YearData.Add(d);
                 }
 
-                // (2) GroupBy
+                // (2) GroupBy (년도+라벨) → Count
                 BuildYearLabelSummaries();
             }
             catch (Exception ex)
@@ -84,29 +116,20 @@ namespace HyunDaiINJ.ViewModels.Monitoring.Vision
 
         private void BuildYearLabelSummaries()
         {
-            YearLabelSummaries.Clear();
-
             var grouped = YearData
                 .GroupBy(d => new { d.YearNumber, d.NgLabel })
-                .Select(g => new
+                .Select(g => new VisionNgDTO
                 {
                     YearNumber = g.Key.YearNumber,
                     NgLabel = g.Key.NgLabel,
-                    TotalCount = g.Count() // 행 개수
+                    LabelCount = g.Count()
                 })
                 .ToList();
 
-            foreach (var g in grouped)
-            {
-                YearLabelSummaries.Add(new VisionNgDTO
-                {
-                    YearNumber = g.YearNumber,
-                    NgLabel = g.NgLabel,
-                    LabelCount = g.TotalCount
-                });
-            }
-
+            // 재할당 -> OnPropertyChanged("YearLabelSummaries") 발생
+            YearLabelSummaries = new ObservableCollection<VisionNgDTO>(grouped);
         }
+
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

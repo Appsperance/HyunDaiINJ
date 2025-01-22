@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using HyunDaiINJ.DATA.DTO;
 using HyunDaiINJ.Models.Monitoring.Vision; // MSDApi 등
 
@@ -13,6 +14,9 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
     public class VisionDailyViewModel : INotifyPropertyChanged
     {
         private readonly MSDApi _api;
+
+        // 폴링(10초)용 타이머
+        private DispatcherTimer _timer;
 
         private List<VisionNgDTO> _dailyDataList;
         public List<VisionNgDTO> DailyDataList
@@ -39,10 +43,24 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
         // 뷰에게 "차트 스크립트가 갱신됐다"는 이벤트 알림
         public event Action ChartScriptUpdated;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public VisionDailyViewModel()
         {
             _api = new MSDApi();
             DailyDataList = new List<VisionNgDTO>();
+
+            // (1) 폴링 타이머 설정 (10초마다 재호출)
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(10)
+            };
+            _timer.Tick += async (s, e) =>
+            {
+                Console.WriteLine("[VisionDailyViewModel] Timer tick - calling LoadVisionNgDataDailyAsync()");
+                await LoadVisionNgDataDailyAsync();
+            };
+            _timer.Start();
         }
 
         /// <summary>
@@ -52,15 +70,14 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
         {
             try
             {
-                // (1) API 호출
                 var lineIds = new List<string> { "vp01", "vi01", "vp03", "vp04", "vp05" };
                 int offset = 0;
                 int count = 500;
 
                 var allData = await _api.GetNgImagesAsync(lineIds, offset, count);
-               
+
                 // (2) 날짜 범위 설정 (오늘 0시 ~ 내일 0시)
-                var targetDateKst = DateTime.Today; // 오늘 0시, PC가 KST라고 가정
+                var targetDateKst = DateTime.Today;
                 var nextDayKst = targetDateKst.AddDays(1);
 
                 // (3) 필터
@@ -68,46 +85,47 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                 {
                     if (DateTimeOffset.TryParse(d.DateTime, out var dto))
                     {
-                        var kstTime = dto.LocalDateTime; // PC가 KST라고 가정
+                        var kstTime = dto.LocalDateTime;
                         return (kstTime >= targetDateKst && kstTime < nextDayKst);
                     }
                     return false;
                 }).ToList();
 
+                // (4) 결과 처리
                 if (filteredData.Count == 0)
                 {
                     DailyDataList.Clear();
+                    ChartScript = "";
+                    OnChartScriptUpdated();
                     return;
                 }
 
-                // (4) NgLabel별 집계 → LabelCount
+                // (5) NgLabel별 집계 → LabelCount
                 var grouped = filteredData
                     .GroupBy(d => d.NgLabel)
                     .Select(g => new { NgLabel = g.Key, Count = g.Count() })
                     .ToList();
 
-                // (5) 가장 이른 KST시각
+                // (6) 가장 이른 시각
                 var earliestKst = filteredData
                     .Select(d => DateTimeOffset.Parse(d.DateTime).LocalDateTime)
                     .Min();
 
-                // (6) 차트 스크립트 생성
+                // (7) 차트 스크립트 생성
                 string configJson = BuildDailyChartScript(grouped, earliestKst);
                 ChartScript = configJson;
 
-                // (7) DailyDataList 바인딩(필요 시)
+                // (8) DailyDataList 갱신
                 DailyDataList = filteredData;
 
-                // (8) 알림 이벤트
+                // (9) 알림 이벤트
                 OnChartScriptUpdated();
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"LoadVisionNgDataDailyAsync error: {ex.Message}");
             }
         }
-
 
         /// <summary>
         /// (내부) 일간 차트를 위한 Chart.js config JSON 생성
@@ -119,14 +137,15 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
 
             var datasets = new List<object>();
             var colorPalette = new List<string>
-    {
-        "rgba(75, 192, 192, 0.7)",
-        "rgba(255, 99, 132, 0.7)",
-        "rgba(54, 162, 235, 0.7)",
-        "rgba(255, 206, 86, 0.7)",
-        "rgba(153, 102, 255, 0.7)",
-        "rgba(255, 159, 64, 0.7)"
-    };
+            {
+                "rgba(75, 192, 192, 0.7)",
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(153, 102, 255, 0.7)",
+                "rgba(255, 159, 64, 0.7)",
+                "rgba(201, 203, 207, 0.7)" // 7번째 (연한 회색)
+            };
 
             int colorIndex = 0;
             foreach (var item in grouped)
@@ -166,11 +185,11 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                         {
                             grid = new
                             {
-                                color = "#404040"  // x축 그리드 선 색깔을 #404040으로 설정
+                                color = "#404040"
                             },
                             ticks = new
                             {
-                                color = "#95C0FF"  // x축 tick 색상 설정
+                                color = "#95C0FF"
                             }
                         },
                         y = new
@@ -183,11 +202,11 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
                             },
                             grid = new
                             {
-                                color = "#404040"  // y축 그리드 선 색깔을 #404040으로 설정
+                                color = "#404040"
                             },
                             ticks = new
                             {
-                                color = "#95C0FF"  // y축 tick 색상 설정
+                                color = "#95C0FF"
                             }
                         }
                     }
@@ -197,16 +216,14 @@ namespace HyunDaiINJ.ViewModels.Monitoring.vision
             return JsonSerializer.Serialize(config);
         }
 
-        // INotifyPropertyChanged 구현
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string prop = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
         private void OnChartScriptUpdated()
         {
             ChartScriptUpdated?.Invoke();
         }
+
+        #region INotifyPropertyChanged
+        protected void OnPropertyChanged([CallerMemberName] string prop = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         #endregion
     }
 }
